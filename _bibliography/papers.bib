@@ -68,14 +68,17 @@
   booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
   pages={22113--22123},
   year={2023},
-  selected={true}
+  selected={true},
+  arxiv={2308.11551},
+  abstract={Video-Text Retrieval (VTR) is a crucial multi-modal task in an era of massive video-text data on the Internet. A plethora of work characterized by using a two-stream Vision-Language model architecture that learns a joint representation of video-text pairs has become a prominent approach for the VTR task. However, these models operate under the assumption of bijective video-text correspondences and neglect a more practical scenario where video content usually encompasses multiple events, while texts like user queries or webpage metadata tend to be specific and correspond to single events. This establishes a gap between the previous training objective and real-world applications, leading to the potential performance degradation of earlier models during inference. In this study, we introduce the Multi-event Video-Text Retrieval (MeVTR) task, addressing scenarios in which each video contains multiple different events, as a niche scenario of the conventional Video-Text Retrieval Task. We present a simple model, Me-Retriever, which incorporates key event video representation and a new MeVTR loss for the MeVTR task. Comprehensive experiments show that this straightforward framework outperforms other models in the Video-to-Text and Text-to-Video tasks, effectively establishing a robust baseline for the MeVTR task. We believe this work serves as a strong foundation for future studies.},
+  code={https://github.com/gengyuanmax/MeVTR}
 }
 
 
 @inproceedings{han-etal-2021-time,
     title = "Time-dependent Entity Embedding is not All You Need: A Re-evaluation of Temporal Knowledge Graph Completion Models under a Unified Framework",
-    author = "Han, Zhen and
-      Zhang, Gengyuan and
+    author = "Han${*}$, Zhen and
+      Zhang${*}$, Gengyuan and
       Ma, Yunpu  and
       Tresp, Volker",
     booktitle = "Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing",
@@ -93,7 +96,10 @@
   author={Zhang, Gengyuan and Zhang, Yurui and Zhang, Kerui and Tresp, Volker},
   journal={arXiv preprint arXiv:2307.06166},
   year={2023},
-  selected={true}
+  selected={true},
+  arxiv={2307.06166},
+  abstract={Vision-Language Models (VLMs) are expected to be capable of reasoning with commonsense knowledge as human beings. One example is that humans can reason where and when an image is taken based on their knowledge. This makes us wonder if, based on visual cues, Vision-Language Models that are pre-trained with large-scale image-text resources can achieve and even outperform human's capability in reasoning times and location. To address this question, we propose a two-stage \recognition\space and \reasoning\space probing task, applied to discriminative and generative VLMs to uncover whether VLMs can recognize times and location-relevant features and further reason about it. To facilitate the investigation, we introduce WikiTiLo, a well-curated image dataset compromising images with rich socio-cultural cues. In the extensive experimental studies, we find that although VLMs can effectively retain relevant features in visual encoders, they still fail to make perfect reasoning. We will release our dataset and codes to facilitate future studies.},
+  code={https://github.com/gengyuanmax/WikiTiLo}
 }
 
 
@@ -101,13 +107,16 @@
   title={A systematic survey of prompt engineering on vision-language foundation models},
   author={Gu, Jindong and Han, Zhen and Chen, Shuo and Beirami, Ahmad and He, Bailan and Zhang, Gengyuan and Liao, Ruotong and Qin, Yao and Tresp, Volker and Torr, Philip},
   journal={arXiv preprint arXiv:2307.12980},
-  year={2023}
+  year={2023},
+  abstract={Prompt engineering is a technique that involves augmenting a large pre-trained model with task-specific hints, known as prompts, to adapt the model to new tasks. Prompts can be created manually as natural language instructions or generated automatically as either natural language instructions or vector representations. Prompt engineering enables the ability to perform predictions based solely on prompts without updating model parameters, and the easier application of large pre-trained models in real-world tasks. In past years, Prompt engineering has been well-studied in natural language processing. Recently, it has also been intensively studied in vision-language modeling. However, there is currently a lack of a systematic overview of prompt engineering on pre-trained vision-language models. This paper aims to provide a comprehensive survey of cutting-edge research in prompt engineering on three types of vision-language models: multimodal-to-text generation models (e.g. Flamingo), image-text matching models (e.g. CLIP), and text-to-image generation models (e.g. Stable Diffusion). For each type of model, a brief model summary, prompting methods, prompting-based applications, and the corresponding responsibility and integrity issues are summarized and discussed. Furthermore, the commonalities and differences between prompting on vision-language models, language models, and vision models are also discussed. The challenges, future directions, and research opportunities are summarized to foster future research on this topic.},
+  arxiv={2307.12980},
 }
 
 @article{zhang2022cl,
   title={CL-CrossVQA: A Continual Learning Benchmark for Cross-Domain Visual Question Answering},
   author={Zhang, Yao and Chen, Haokun and Frikha, Ahmed and Yang, Yezi and Krompass, Denis and Zhang, Gengyuan and Gu, Jindong and Tresp, Volker},
   journal={arXiv preprint arXiv:2211.10567},
-  year={2022}
+  year={2022},
+  arxiv={2211.10567},
 }
 
