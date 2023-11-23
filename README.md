@@ -1,4 +1,8 @@
 ### Hi there 👋
+👨‍🎓 I am currently a PhD student at Ludwig-Maximilian University of Munich, aka LMU, aka University of Munich
+📫 How to reach me:
+- zhang@dbs.ifi.lmu.de (work)
+- gengyuanmax@gmail.com (personal)
 
 <!--
 **gengyuanmax/gengyuanmax** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
