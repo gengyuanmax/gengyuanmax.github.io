@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Paper accepted at [ICCV 2023](https://iccv2023.thecvf.com/)!
+1 Paper accepted at [ICCV 2023](https://iccv2023.thecvf.com/)!
