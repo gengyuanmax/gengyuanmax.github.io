@@ -60,13 +60,7 @@ layout: default
           <br>
 
 
-          <!-- News -->
-          {% if page.news and site.announcements.enabled -%}
-            <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
-            {%- include news.html limit=true %}
-          {%- endif %}
 
-          <br>
 
           <!-- Latest posts -->
           {% if page.latest_posts -%}
@@ -81,6 +75,13 @@ layout: default
             <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">selected publications</a></h2>
             {%- include selected_papers.html %}
           {%- endif %}
+
+          <!-- News -->
+          {% if page.news and site.announcements.enabled -%}
+          <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
+          {%- include news.html limit=true %}
+          {%- endif %}
+          <br>
         </article>
 
 </div>
