@@ -42,6 +42,9 @@ layout: default
             {{ content }}
           </div>
 
+          <br>
+          <br>
+
           <!-- Social -->
           {%- if page.social %}
             <div class="social" style="text-align: left;">
@@ -69,6 +72,13 @@ layout: default
           {%- endif %}
 
           <br>
+          <br>
+
+          <!-- News -->
+          {% if page.news and site.announcements.enabled -%}
+          <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
+          {%- include news.html limit=true %}
+          {%- endif %}
 
           <!-- Selected papers -->
           {% if page.selected_papers -%}
@@ -76,11 +86,8 @@ layout: default
             {%- include selected_papers.html %}
           {%- endif %}
 
-          <!-- News -->
-          {% if page.news and site.announcements.enabled -%}
-          <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
-          {%- include news.html limit=true %}
-          {%- endif %}
+
+          <br>
           <br>
         </article>
 
