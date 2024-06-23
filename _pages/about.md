@@ -17,9 +17,11 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
+`*Currently also looking for Internships ;) Please contact me if you find a fit*`
+
 Hi, I am Gengyuan(张耕源). I am currently pursuing my PhD degree at [Ludwig-Maximilian University](https://www.lmu.de/de/index.html) (aka LMU Munich/University of Munich), supervised by [Prof. Volker Tresp](https://www.dbs.ifi.lmu.de/~tresp/). 
 
-My research interests include *Video Understanding* and *Visual Reasoning* as an intersection of Computer Vision and Natural Language Processing.
+My research interests include *Video Understanding* and *Multimodal Reasoning* as an intersection of Computer Vision and Natural Language Processing.
 
 Prior to this, I attained my bachelor degree (2018) in [Zhejiang University](https://www.zju.edu.cn/english/), China and my master degree (2021) in [Technical University of Munich](https://www.tum.de/), Germany.
 
