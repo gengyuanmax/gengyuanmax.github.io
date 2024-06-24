@@ -16,9 +16,10 @@
         - Research
         - title: Teaching
           contents:
-            - Tutorial - Machine Learning (SS22, SS23, WS23/24)
+            - Tutorial - Machine Learning (SS22, SS23, WS23/24, SS24)
             - Master Seminar - Machine Learning with Knowledge Graphs (SS23, WS23/24)
             - Master Seminar - Foundations Models in AI (SS23, WS23/24)
+            - Master Practical Course - Connecting Language to Vision
     - title: Master
       institution: Technical University of Munich, Munich, Germany
       year: 2018 - 2021
