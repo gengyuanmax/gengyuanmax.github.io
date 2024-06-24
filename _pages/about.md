@@ -6,7 +6,7 @@ subtitle:
 
 profile:
   align: right
-  image: portrait.jpg
+  image: portrait2.jpeg
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>pronoun: he/him</p>
