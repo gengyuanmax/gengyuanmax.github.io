@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-One new paper is accepted by WACV2025, Tuscon, Arizone!
+One new paper is accepted by WACV 2025, Tuscon, Arizona!
