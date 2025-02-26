@@ -17,8 +17,6 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-`*Currently also looking for Internships ;) Please contact me if you find a fit*`
-
 Hi, I am Gengyuan(张耕源). I am currently pursuing my PhD degree at [Ludwig-Maximilian University](https://www.lmu.de/de/index.html) (aka LMU Munich/University of Munich), supervised by [Prof. Volker Tresp](https://www.dbs.ifi.lmu.de/~tresp/). 
 
 My research interests include *Video Understanding* and *Multimodal Reasoning* as an intersection of Computer Vision and Natural Language Processing.
@@ -29,7 +27,8 @@ Originally, I am from Hunan, China.
 
 - uni email: [zhang{at}dbs[dot]ifi[dot]lmu[dot]de](mailto:zhang@dbs.ifi.lmu.de)
 - personal email: [gengyuanmax{at}gmail[dot]com](mailto:gengyuanmax@gmail.com)
-- hobbies: Plants, Crusaeder Kings III, Traveling
+- hobbies: Plants, Crusaeder Kings III, Travelling
+- have a cute Dackel (dachshund)
 
 <!-- Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
 

@@ -68,28 +68,42 @@
   year={2024},
   arxiv={2406.10079},
   selected={true},
+  booktitle={Proceedings of the IEEE/CVF Computer Vision and Pattern Recognition (CVPR) 2025},
   code={https://icq-benchmark.github.io}
 }
 
 
-@inproceedings{amoroso2025perceive,
-  title={Perceive, Query \& Reason: Enhancing Video QA with Question-Guided Temporal Queries},
-  author={Amoroso${*}$, Roberto and Zhang${*}$, Gengyuan and Koner, Rajat and Baraldi, Lorenzo and Cucchiara, Rita and Tresp, Volker and others},
-  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2025},
-  selected={true},
-  year={2025}
-}
-
 @inproceedings{zhang2023multi,
   title={Multi-event Video-Text Retrieval},
   author={Zhang, Gengyuan and Ren, Jisen and Gu, Jindong and Tresp, Volker},
-  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision 2023},
   pages={22113--22123},
   year={2023},
   selected={true},
   arxiv={2308.11551},
   abstract={Video-Text Retrieval (VTR) is a crucial multi-modal task in an era of massive video-text data on the Internet. A plethora of work characterized by using a two-stream Vision-Language model architecture that learns a joint representation of video-text pairs has become a prominent approach for the VTR task. However, these models operate under the assumption of bijective video-text correspondences and neglect a more practical scenario where video content usually encompasses multiple events, while texts like user queries or webpage metadata tend to be specific and correspond to single events. This establishes a gap between the previous training objective and real-world applications, leading to the potential performance degradation of earlier models during inference. In this study, we introduce the Multi-event Video-Text Retrieval (MeVTR) task, addressing scenarios in which each video contains multiple different events, as a niche scenario of the conventional Video-Text Retrieval Task. We present a simple model, Me-Retriever, which incorporates key event video representation and a new MeVTR loss for the MeVTR task. Comprehensive experiments show that this straightforward framework outperforms other models in the Video-to-Text and Text-to-Video tasks, effectively establishing a robust baseline for the MeVTR task. We believe this work serves as a strong foundation for future studies.},
   code={https://github.com/gengyuanmax/MeVTR}
+}
+
+@article{zhang2025memoryhelpsconfabulationmisleads,
+      title={Memory Helps, but Confabulation Misleads: Understanding Streaming Events in Videos with MLLMs}, 
+      author={Gengyuan Zhang and Mingcong Ding and Tong Liu and Yao Zhang and Volker Tresp},
+      year={2025},
+      eprint={2502.15457},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      selected={true},
+      abstract={Multimodal large language models (MLLMs) have demonstrated strong performance in understanding videos holistically, yet their ability to process streaming videos-videos are treated as a sequence of visual events-remains underexplored. Intuitively, leveraging past events as memory can enrich contextual and temporal understanding of the current event. In this paper, we show that leveraging memories as contexts helps MLLMs better understand video events. However, because such memories rely on predictions of preceding events, they may contain misinformation, leading to confabulation and degraded performance. To address this, we propose a confabulation-aware memory modification method that mitigates confabulated memory for memory-enhanced event understanding.},
+      url={https://arxiv.org/abs/2502.15457}, 
+}
+
+@inproceedings{amoroso2025perceive,
+  title={Perceive, Query \& Reason: Enhancing Video QA with Question-Guided Temporal Queries},
+  author={Amoroso${*}$, Roberto and Zhang${*}$, Gengyuan and Koner, Rajat and Baraldi, Lorenzo and Cucchiara, Rita and Tresp, Volker and others},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2025},
+  selected={true},
+  abstract={Video Question Answering (Video QA) is a challenging video understanding task that requires models to comprehend entire videos, identify the most relevant information based on contextual cues from a given question, and reason accurately to provide answers. Recent advancements in Multimodal Large Language Models (MLLMs) have transformed video QA by leveraging their exceptional commonsense reasoning capabilities. This progress is largely driven by the effective alignment between visual data and the language space of MLLMs. However, for video QA, an additional space-time alignment poses a considerable challenge for extracting question-relevant information across frames. In this work, we investigate diverse temporal modeling techniques to integrate with MLLMs, aiming to achieve question-guided temporal modeling that leverages pre-trained visual and textual alignment in MLLMs. We propose T-Former, a novel temporal modeling method that creates a question-guided temporal bridge between frame-wise visual perception and the reasoning capabilities of LLMs. Our evaluation across multiple video QA benchmarks demonstrates that T-Former competes favorably with existing temporal modeling approaches and aligns with recent advancements in video QA.},
+  year={2025}
 }
 
 @article{zhang2023spot,
@@ -119,11 +133,12 @@
     abstract = "Various temporal knowledge graph (KG) completion models have been proposed in the recent literature. The models usually contain two parts, a temporal embedding layer and a score function derived from existing static KG modeling approaches. Since the approaches differ along several dimensions, including different score functions and training strategies, the individual contributions of different temporal embedding techniques to model performance are not always clear. In this work, we systematically study six temporal embedding approaches and empirically quantify their performance across a wide range of configurations with about 3000 experiments and 13159 GPU hours. We classify the temporal embeddings into two classes: (1) timestamp embeddings and (2) time-dependent entity embeddings. Despite the common belief that the latter is more expressive, an extensive experimental study shows that timestamp embeddings can achieve on-par or even better performance with significantly fewer parameters. Moreover, we find that when trained appropriately, the relative performance differences between various temporal embeddings often shrink and sometimes even reverse when compared to prior results. For example, TTransE (CITATION), one of the first temporal KG models, can outperform more recent architectures on ICEWS datasets. To foster further research, we provide the first unified open-source framework for temporal KG completion models with full composability, where temporal embeddings, score functions, loss functions, regularizers, and the explicit modeling of reciprocal relations can be combined arbitrarily.",
 }
 
-@article{zhang2023can,
-  title={Can Vision-Language Models be a Good Guesser? Exploring VLMs for Times and Location Reasoning},
+@inproceedings{zhang2023can,
+  title={Can vision-language models be a good guesser? exploring vlms for times and location reasoning},
   author={Zhang, Gengyuan and Zhang, Yurui and Zhang, Kerui and Tresp, Volker},
-  journal={arXiv preprint arXiv:2307.06166},
-  year={2023},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={636--645},
+  year={2024},
   selected={true},
   arxiv={2307.06166},
   abstract={Vision-Language Models (VLMs) are expected to be capable of reasoning with commonsense knowledge as human beings. One example is that humans can reason where and when an image is taken based on their knowledge. This makes us wonder if, based on visual cues, Vision-Language Models that are pre-trained with large-scale image-text resources can achieve and even outperform human's capability in reasoning times and location. To address this question, we propose a two-stage \recognition\space and \reasoning\space probing task, applied to discriminative and generative VLMs to uncover whether VLMs can recognize times and location-relevant features and further reason about it. To facilitate the investigation, we introduce WikiTiLo, a well-curated image dataset compromising images with rich socio-cultural cues. In the extensive experimental studies, we find that although VLMs can effectively retain relevant features in visual encoders, they still fail to make perfect reasoning. We will release our dataset and codes to facilitate future studies.},
@@ -135,7 +150,7 @@
   title={Multimodal Pragmatic Jailbreak on Text-to-image Models},
   author={Tong Liu and Zhixin Lai and Zhang, Gengyuan and Philip Torr and Vera Demberg and Volker Tresp and Jindong Gu},
   year={2024},
-  booktitle={Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing},
+  booktitle={arXiv preprint arXiv:2409.19149},
 }
 
 
@@ -143,7 +158,7 @@
   title={VideoINSTA: Zero-shot Long Video Understanding via Informative Spatial-Temporal Reasoning with LLMs},
   author={Ruotong Liao and Max Erler and Huiyu Wang and Guangyao Zhai and Zhang, Gengyuan and Yunpu Ma and Volker Tresp},
   year={2024},
-  journal={EMNLP 2024}
+  journal={Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing},
 }
 
 
@@ -169,7 +184,8 @@
   title={CL-CrossVQA: A Continual Learning Benchmark for Cross-Domain Visual Question Answering},
   author={Zhang, Yao and Chen, Haokun and Frikha, Ahmed and Yang, Yezi and Krompass, Denis and Zhang, Gengyuan and Gu, Jindong and Tresp, Volker},
   journal={arXiv preprint arXiv:2211.10567},
-  year={2022},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2025},
+  year={2025},
   arxiv={2211.10567},
 }
 
