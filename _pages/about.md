@@ -6,7 +6,7 @@ subtitle:
 
 profile:
   align: right
-  image: portrait2.jpeg
+  image: portrait3.jpeg
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>pronoun: he/him</p>
@@ -23,12 +23,14 @@ My research interests include *Video Understanding* and *Multimodal Reasoning* a
 
 Prior to this, I attained my bachelor degree (2018) in [Zhejiang University](https://www.zju.edu.cn/english/), China and my master degree (2021) in [Technical University of Munich](https://www.tum.de/), Germany.
 
-Originally, I am from Hunan, China.
+Originally, I am from [Hunan](https://en.wikipedia.org/wiki/Hunan), China.
 
 - uni email: [zhang{at}dbs[dot]ifi[dot]lmu[dot]de](mailto:zhang@dbs.ifi.lmu.de)
 - personal email: [gengyuanmax{at}gmail[dot]com](mailto:gengyuanmax@gmail.com)
-- hobbies: Plants, Crusaeder Kings III, Travelling
+- hobbies: Plants, Crusaeder Kings III, Travelling, Cooking
 - have a cute Dackel (dachshund)
+
+`I am open to any collaboration and full-time job opportunities.`
 
 <!-- Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
 
