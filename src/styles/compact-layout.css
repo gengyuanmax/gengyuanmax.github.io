@@ -3,7 +3,6 @@
 #personal-site .he-nav{padding-top:10px;}
 #personal-site .he-nav a{min-height:76px;gap:6px;padding:8px 0 12px;}
 #personal-site .he-nav-shell{padding-bottom:14px;}
-#personal-site .he-nav-shell[data-active-area="research"]{padding-bottom:0;}
 #personal-site .he-shortcuts{padding-block:6px;}
 #personal-site .he-shortcuts a{min-height:36px;}
 #personal-site .he-research-masthead{padding-bottom:32px;}
@@ -61,4 +60,18 @@
 #personal-site .he-role-part{display:inline-block;}
 @container(max-width:720px){
  #personal-site .he-slogan-opening,#personal-site .he-slogan-pair{display:block;white-space:nowrap;}
+}
+
+/* Research opens with its title, then the chapter index. */
+#personal-site .he-research-masthead{align-items:center;padding-bottom:24px;}
+#personal-site .he-research-masthead h1{grid-column:1/8;grid-row:1;}
+#personal-site .he-research-intro{grid-column:9/13;grid-row:1;margin-top:0;padding-bottom:0;}
+#personal-site .he-research-page > .he-shortcuts{margin:0 0 28px;position:sticky;top:var(--he-nav-height,100px);z-index:15;background:var(--paper);}
+@container(max-width:720px){
+ #personal-site .he-research-masthead h1{grid-column:1/8;}
+ #personal-site .he-research-intro{grid-column:8/13;font-size:14px;}
+}
+@container(max-width:480px){
+ #personal-site .he-research-masthead h1{grid-column:1/-1;}
+ #personal-site .he-research-intro{grid-column:1/-1;grid-row:2;margin-top:16px;}
 }

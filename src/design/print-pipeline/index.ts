@@ -1,3 +1,4 @@
+import {lineScreen} from './line-screen.ts';
 import {printText,type TextRecipe} from './text.ts';
 /** Public entry: adapters supply originals, registered profiles own screening.
  * Versioned kernels preserve existing visual recipes during staged migration. */
@@ -7,10 +8,13 @@ import type {ProceduralSource,RasterSource,Dot} from './types.ts';
 export type PolygonElement={id:string;profile:'polygon-v1';width:number;height:number;seed:number;plate:string;source:ProceduralSource;screen:PolygonScreen};
 export type MaterialElement<Id extends string=string>={id:string;profile:'material-v1';width:number;height:number;scale:number;plate:Id;source:RasterSource;press:Press<Id>;origin?:{x:number;y:number};solid?:boolean;textRecipe?:TextRecipe};
 export type InsertElement={id:string;profile:'insert';source:{kind:'graphic';src:string}};
-export type PrintElement=PolygonElement|MaterialElement|InsertElement;
+export type LineElement={id:string;profile:'line-v3';source:{kind:'shape'};pitch:number;angle:number;coverage:number;seed:number;grain:number;starvation:number};
+export type PrintElement=PolygonElement|MaterialElement|InsertElement|LineElement;
 export function definePrintElement<T extends PrintElement>(element:T):Readonly<T>{
  if(!element.id.trim())throw new Error('Print element requires a stable id');
- if(element.profile==='insert'){
+ if(element.profile==='line-v3'){
+  if(![element.seed,element.grain,element.starvation].every(Number.isFinite)||!Number.isFinite(element.pitch)||element.pitch<=0||!Number.isFinite(element.angle)||!Number.isFinite(element.coverage)||element.coverage<0||element.coverage>1)throw new Error('Invalid line screen');
+ }else if(element.profile==='insert'){
   if(!element.source.src)throw new Error('Insert requires its original image');
  }else{
   if(!Number.isFinite(element.width)||!Number.isFinite(element.height)||element.width<=0||element.height<=0)throw new Error('Invalid print dimensions');
@@ -25,7 +29,9 @@ export function definePrintElement<T extends PrintElement>(element:T):Readonly<T
 export function screenPrintElement(e:Readonly<PolygonElement>):Dot[];
 export function screenPrintElement<Id extends string>(e:Readonly<MaterialElement<Id>>):Float32Array;
 export function screenPrintElement(e:Readonly<InsertElement>):string;
+export function screenPrintElement(e:Readonly<LineElement>):string;
 export function screenPrintElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
+ if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation);
  if(e.profile==='insert')return e.source.src;
  if(e.profile==='polygon-v1')return screenPolygons(e.source,e.width,e.height,e.seed,e.plate,e.screen);
  if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],{transfer:{grain:e.press.grain,starve:e.press.starve,holes:e.press.holes,band:e.press.band},...e.textRecipe},e.press.sheet);

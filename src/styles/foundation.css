@@ -63,3 +63,8 @@ body { margin: 0; background: var(--paper); padding: var(--sheet-margin); --shee
 #personal-site .author-entry { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; padding:20px 0; font:400 12px/1.5 var(--reading-face); }
 @media(max-width:600px) { body { --sheet-margin: 8px; } }
 @media(prefers-reduced-motion:reduce) { #personal-site[data-enhanced] .he-track { transition: none; } }
+
+/* Panel and research-subnav changes are intentional layout changes. Do not let
+   browser scroll anchoring compensate by moving the sticky navigation. */
+#personal-site { overflow-anchor:none; }
+html { scrollbar-gutter:stable; }

@@ -1,25 +1,24 @@
 ---
 import GridGuides from './GridGuides.astro';
 import InkText from './InkText.astro';
-import {navigation,pillars} from '../data/content';
+import {navigation} from '../data/content';
 import {design} from '../config/design';
 import {resolve,styleText} from '../design/settings';
+
 ---
 <header class="he-nav-shell">
   <nav class="he-nav" aria-label="主导航">{navigation.map((item,i)=>{
    const id=`nav-${item.id}`;
    return <a href={`#${item.id}`} data-area-link={item.id} data-label={item.label} aria-controls={item.id} data-style-element={id} data-style-area-owner={item.id} style={styleText(resolve(design,item.id,id).values,design)}>
     <svg class="he-nav-plate" aria-hidden="true"><rect class="he-nav-plate-a" width="100%" height="100%"/><rect class="he-nav-plate-b" width="100%" height="100%"/></svg>
-    <span class="he-nav-number" aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span>
+    <span class="he-nav-signature" aria-hidden="true"><span>SIG</span><b>{String.fromCharCode(65+i)}</b></span>
     <span class="he-nav-label"><InkText text={item.label}/></span>
   </a>;})}</nav>
-  <nav class="he-shortcuts" aria-label="Research 三个方向快速定位">{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span>{p.short}</a>)}</nav>
  <GridGuides/>
  <script is:inline>
   /* Same state navigation.ts sets, applied while parsing so the first frame already shows it. */
   (()=>{const header=document.currentScript.parentElement,area=header.closest('#personal-site')?.dataset.bootArea;if(!area)return;
    header.dataset.activeArea=area;header.querySelectorAll('[data-area-link]').forEach(a=>{if(a.dataset.areaLink===area)a.setAttribute('aria-current','page');});
-   const shortcuts=header.querySelector('.he-shortcuts');if(shortcuts)shortcuts.hidden=area!=='research';
    header.closest('#personal-site').style.setProperty('--he-header-height',header.offsetHeight+'px');})();
  </script>
 </header>

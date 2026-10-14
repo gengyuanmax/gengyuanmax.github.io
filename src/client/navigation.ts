@@ -1,4 +1,6 @@
-import { areaIds } from '../design/settings';
+import { areaIds,resolve,type DesignConfig } from '../design/settings';
+import {screen} from '../design/screen';
+import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root) {
  const pages=[...root.querySelectorAll<HTMLElement>('.he-page')];
@@ -8,21 +10,30 @@ if(root) {
  const shortcuts=root.querySelector<HTMLElement>('.he-shortcuts')!;
  const links=[...root.querySelectorAll<HTMLAnchorElement>('[data-area-link]')];
  const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter')];
- let active=0, jump=0, scrollFrame=0, settle=0;
+ root.addEventListener('design:updated',event=>{
+  const lineSettings=resolve((event as CustomEvent<DesignConfig>).detail).values;
+  const recipe=screen('medium','a',lineSettings);
+  shortcuts.querySelector('.he-chapter-indicator')!.innerHTML=screenPrintElement(definePrintElement({id:'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation}));
+ });
+ let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
+ let chapterTarget:string|null=null,chapterScrolling=false;
+ function releaseChapter(){clearTimeout(chapterIdle);chapterTarget=null;chapterScrolling=false;}
  function settled(){clearTimeout(settle);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
  track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  function fit() {
-  const height=pages[active].offsetHeight+'px',headerHeight=header.offsetHeight+'px';
+  const height=pages[active].offsetHeight+'px',navHeight=header.offsetHeight+'px',headerHeight=(header.offsetHeight+(active===1?shortcuts.offsetHeight:0))+'px';
+  if(root!.style.getPropertyValue('--he-nav-height')!==navHeight)root!.style.setProperty('--he-nav-height',navHeight);
   if(viewport.style.height!==height)viewport.style.height=height;
   if(root!.style.getPropertyValue('--he-header-height')!==headerHeight)root!.style.setProperty('--he-header-height',headerHeight);
  }
- function markChapter(id:string) { shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
+ function markChapter(id:string) { const index=chapters.findIndex(c=>c.id===id);shortcuts.style.setProperty('--chapter-index',String(Math.max(0,index)));shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
  function navigate(id:string, {history=true,scroll=true,focus=false}={}) {
   const chapter=chapters.find(c=>c.id===id);
   const index=chapter?1:pages.findIndex(p=>p.id===id);
   if(index<0)return;
   clearTimeout(jump);
+  releaseChapter();
   const changed=index!==active;
   clearTimeout(settle);
   if(changed&&!reduced()){
@@ -34,18 +45,25 @@ if(root) {
   // Moving focus out of a panel precedes making that panel inert.
   const focused=document.activeElement;
   if(changed&&focused instanceof HTMLElement&&pages.some((p,i)=>i!==index&&p.contains(focused)))links[index].focus({preventScroll:true});
-  shortcuts.hidden=index!==1;
+  // At the page top, preserve the paper margin. Only reset when the user has
+  // scrolled past the site top, before changing the shortcut row or page height.
+  // Unconditional scrollIntoView moved a top-of-page header by the sheet margin.
+  if(scroll&&!chapter&&root!.getBoundingClientRect().top<0)root!.scrollIntoView({block:'start',behavior:'instant'});
   header.dataset.activeArea=pages[index].id;
   pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  // Reset ordinary page navigation before the slide, not half a second after it.
-  if(scroll&&!chapter)root!.scrollIntoView({block:'start',behavior:'instant'});
   track.style.transform=`translateX(-${index*100}%)`;
   fit();
   if(history&&location.hash!==`#${id}`)window.history.pushState(null,'',`#${id}`);
   root!.querySelector('[data-navigation-status]')!.textContent=chapter?shortcuts.querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
-  if(chapter)markChapter(id);
-  if(scroll&&chapter)jump=window.setTimeout(()=>{
+  if(chapter)markChapter(id);else if(index===1)markChapter(chapters[0].id);
+  if(scroll&&chapter){
+   // Keep the clicked destination selected while smooth scrolling crosses other
+   // chapters. Scrollspy must not pull the moving indicator backwards mid-flight.
+   chapterTarget=id;
+   jump=window.setTimeout(()=>{
+   chapterScrolling=true;
+   chapterIdle=window.setTimeout(releaseChapter,2000);
    fit();
    chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
    if(focus&&chapter){
@@ -53,6 +71,7 @@ if(root) {
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});
    }
   },changed&&!reduced()?490:0);
+  }
  }
  root.dataset.enhanced='true';
  if(import.meta.env.DEV)root.addEventListener('design:navigate',e=>navigate((e as CustomEvent<string>).detail,{history:false,scroll:false}));
@@ -94,11 +113,21 @@ if(root) {
   if(Math.abs(total)>100){navigate(id);total=0;lastMove=now;}
  },{passive:false});
  window.addEventListener('scroll',()=>{
+  if(chapterTarget){
+   if(chapterScrolling){clearTimeout(chapterIdle);chapterIdle=window.setTimeout(releaseChapter,160);}
+   return;
+  }
   if(active!==1||scrollFrame)return;
-  scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;let id=chapters[0].id;const edge=header.getBoundingClientRect().bottom+80;for(const c of chapters)if(c.getBoundingClientRect().top<=edge)id=c.id;markChapter(id);});
+  scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;if(chapterTarget)return;let id=chapters[0].id;const edge=header.getBoundingClientRect().bottom+shortcuts.offsetHeight+80;for(const c of chapters)if(c.getBoundingClientRect().top<=edge)id=c.id;markChapter(id);});
  },{passive:true});
+ // Manual scrolling immediately restores scrollspy ownership.
+ const interruptChapter=()=>{if(chapterTarget){clearTimeout(jump);releaseChapter();}};
+ window.addEventListener('wheel',interruptChapter,{passive:true});
+ window.addEventListener('touchstart',interruptChapter,{passive:true});
+ window.addEventListener('keydown',e=>{if(['PageUp','PageDown','Home','End','ArrowUp','ArrowDown',' '].includes(e.key))interruptChapter();});
+ window.addEventListener('scrollend',()=>{if(chapterScrolling)releaseChapter();});
  window.addEventListener('popstate',readHash);window.addEventListener('hashchange',readHash);
- const observer=new ResizeObserver(fit);[header,...pages].forEach(p=>observer.observe(p));
+ const observer=new ResizeObserver(fit);[header,shortcuts,...pages].forEach(p=>observer.observe(p));
  document.fonts.ready.then(fit);
  if(import.meta.env.DEV)import('./preview');
 }

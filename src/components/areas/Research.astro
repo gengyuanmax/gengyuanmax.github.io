@@ -1,4 +1,5 @@
 ---
+import ResearchShortcuts from '../ResearchShortcuts.astro';
 import InkText from '../InkText.astro';
 import EmphasisText from '../EmphasisText.astro';
 import {bodyEmphasis} from '../../config/body-emphasis';
@@ -16,6 +17,7 @@ const slots:Record<string,string>={feature:'he-project-feature',side:'he-project
 ---
 <GridGuides />
 <header class="he-research-masthead"><PrintTitle id="research-title" area="research" lines={["Visual","Intelligence"]}/><p class="he-research-intro">{sectionCopy.research}</p></header>
+<ResearchShortcuts/>
 <div class="he-research-flow" data-reading-host>{researchComposition.map((chapter,i)=>{
  const pillar=pillars.find(p=>p.id===chapter.pillar)!;
  return <section class:list={['he-research-chapter',chapter.className]} id={pillar.id} aria-labelledby={`${pillar.id}-title`}>
