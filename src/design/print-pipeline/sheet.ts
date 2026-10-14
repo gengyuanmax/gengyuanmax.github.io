@@ -21,14 +21,25 @@ export function spreadRectangle(mask:Float32Array,w:number,h:number,r:number,fie
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)for(let k=-r;k<=r;k++){if(y+k>=0&&y+k<h&&horizontal[(y+k)*w+x]){vertical[y*w+x]=1;break;}}
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(!mask[y*w+x]&&vertical[y*w+x]&&field(x,y)<amount)mask[y*w+x]=1;
 }
+/** Below this many device pixels per screen cell, a single binary sample per pixel
+ * cannot represent the gaps between dots: they alias into flickering 1px holes. */
+export const minBinaryCell=6;
+const subsamples=4;
 export function screenSheet<Id extends string>(tone:Float32Array,w:number,h:number,ink:Id,p:Press<Id>,scale:number,origin:{x:number;y:number},solid:boolean){
  const out=new Float32Array(w*h),angle=p.angles[ink]*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+ const shape=p.shapes[ink],fine=!solid&&p.pitch*scale<minBinaryCell,step=1/(subsamples*scale);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-  const t=tone[y*w+x];if(!t)continue;const v=Math.min(1,t+p.gain*.32*4*t*(1-t)),xx=x/scale+origin.x,yy=y/scale+origin.y;
-  out[y*w+x]=solid?t:Number(v>spotT(p.shapes[ink],(xx*c+yy*s)/p.pitch,(-xx*s+yy*c)/p.pitch));
+  const t=tone[y*w+x];if(!t)continue;const v=Math.min(1,t+p.gain*.32*4*t*(1-t));
+  if(solid){out[y*w+x]=t;continue;}
+  if(!fine){const xx=x/scale+origin.x,yy=y/scale+origin.y;out[y*w+x]=Number(v>spotT(shape,(xx*c+yy*s)/p.pitch,(-xx*s+yy*c)/p.pitch));continue;}
+  // Area coverage of the same AM lattice: hard dot geometry, resolved below the pixel.
+  let inked=0;const x0=x/scale+origin.x+step/2,y0=y/scale+origin.y+step/2;
+  for(let sy=0;sy<subsamples;sy++)for(let sx=0;sx<subsamples;sx++){const xx=x0+sx*step,yy=y0+sy*step;if(v>spotT(shape,(xx*c+yy*s)/p.pitch,(-xx*s+yy*c)/p.pitch))inked++;}
+  out[y*w+x]=inked/(subsamples*subsamples);
  }
- // At 1x leave the binary screen alone. Text uses its separate sharp-type profile.
- if(!solid&&p.edge>0&&scale>=2){const f=sheetFields(p.sheet!.seed);spreadRectangle(out,w,h,1,(x,y)=>f.edge(x/scale+origin.x,y/scale+origin.y),.3+.6*p.gain);}
+ // Native random spread only where a cell spans enough device pixels to stay a dot.
+ // For sub-minBinaryCell cells it would close gaps at random and read as glitch.
+ if(!solid&&!fine&&p.edge>0&&scale>=2){const f=sheetFields(p.sheet!.seed);spreadRectangle(out,w,h,1,(x,y)=>f.edge(x/scale+origin.x,y/scale+origin.y),.3+.6*p.gain);}
  return out;
 }
 export function paintSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,h:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale:number){
