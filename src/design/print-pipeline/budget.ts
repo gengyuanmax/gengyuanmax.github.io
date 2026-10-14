@@ -14,14 +14,18 @@ export const noiseBudget={
  tone:{amplitude:.08,minScale:80},
  /** Post-screen ink loss on images, grounds and geometry. */
  transfer:{starvation:.15,grainLoss:.12,grainArea:.04,roller:.05},
- /** Text keeps its own, tighter limits: sharp outlines, low-frequency ink only. */
- text:{display:.05,heading:.04},
+ /** Total ink loss on type (print-type-v4: the images' own transfer, title-capped). */
+ text:{display:.15,heading:.12,
+  /** Display-name dots (user, 2026-10-14): size ± fraction, centre shift as a fraction of
+   * the pitch, and the blue plate's register against the red letter in CSS px. */
+  dots:{radius:.18,shift:.06,registration:1.25}},
  /** Midtone dot gain added to the tone curve before screening. */
  dotGain:.4,
  /** Shared paper texture strength. */
  paper:.1,
- /** Plate offsets in CSS px. Text is clamped further in duotone-type.css (.75 / .5). */
- registration:{plate:3,research:2},
+ /** Plate offsets in CSS px (every page plate, research circles included). Text is clamped
+  * further in duotone-type.css (.75 / .5). */
+ registration:{plate:3},
  /** Research circles (polygon-v1): pre-screen per-dot noise and dot size. */
  research:{ink:.15,feed:.2,fiber:.08,dotGain:1.3,dropout:.15},
 } as const;
@@ -46,8 +50,6 @@ export const budgetedSettings:readonly (readonly [string,number,'signed'?])[]=[
  ['researchFiberNoise',noiseBudget.research.fiber],
  ['researchDotGain',noiseBudget.research.dotGain],
  ['researchDropout',noiseBudget.research.dropout],
- ['researchOrangeX',noiseBudget.registration.research,'signed'],
- ['researchOrangeY',noiseBudget.registration.research,'signed'],
- ['yellowX',noiseBudget.registration.research,'signed'],
- ['yellowY',noiseBudget.registration.research,'signed'],
+ ['yellowX',noiseBudget.registration.plate,'signed'],
+ ['yellowY',noiseBudget.registration.plate,'signed'],
 ];

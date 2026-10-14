@@ -13,3 +13,7 @@ export const selectedComposition={
 // exact relation. Units remain those of the original 640 × 540 lab sheet.
 export const portraitViewport={x:104,y:34,width:458,height:438};
 export const compositionAsset='/images/portrait-composition.png';
+
+/** Portrait and its circle share one screen tier. Fine (2px) is the only tier at which the
+ * face reads at display size (user review 2026-10-14); medium 4px and 3px lose eyes and mouth. */
+export const portraitScreenLevel='fine' as const;

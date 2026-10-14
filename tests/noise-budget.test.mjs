@@ -62,7 +62,7 @@ test('research dots respect the budget for per-dot noise, dot gain and dropout',
   assert.ok(d.radius<=Math.max(7*.76*1.1,7/2*Math.sqrt(d.tone)*r.dotGain*1.1)+1e-6,'dot gain above budget');
  }
 });
-test('research plate offsets are clamped to the research registration budget',()=>{
- const plates=researchPlates({...defaults,researchOrangeX:9,researchOrangeY:-9,yellowX:12,yellowY:-12});
- for(const id of ['orange','yellow'])for(const axis of ['x','y'])assert.ok(Math.abs(plates[id][axis])<=noiseBudget.registration.research);
+test('research plate offsets come from the page plates and stay inside the plate budget',()=>{
+ const plates=researchPlates({...defaults,registration:9,registrationY:-9,yellowX:12,yellowY:-12});
+ for(const id of ['blue','orange','yellow'])for(const axis of ['x','y'])assert.ok(Math.abs(plates[id][axis])<=noiseBudget.registration.plate);
 });

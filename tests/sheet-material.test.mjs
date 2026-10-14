@@ -17,7 +17,7 @@ test('native AM screen and ink transfer match the reference render for mono, duo
   reference.render(canvas,params,{});
   // Same RGBA original enters independent production and reference separation.
   const originals=separatePrintLab(rgba,{...params,mode}).tones,ids=['a','b','c'];
-  const press=onSheet({...pressSettings({...defaults,dotGain:0,grain:0,starvation:0,pressGrain:0,inkEdge:0}),band:0,pitch:6,angles:{a:15,b:45,c:75},shapes:{a:'round',b:'round',c:'round'},offset:{x:0,y:0}},1337,{x:0,y:0});
+  const press=onSheet({...pressSettings({...defaults,dotGain:0,grain:0,starvation:0,pressGrain:0,inkEdge:0}),band:0,pitch:6,angles:{a:15,b:45,c:75},shapes:{a:'round',b:'round',c:'round'},offset:{x:0,y:0},registration:{}},1337,{x:0,y:0});
   const layers=originals.flatMap((tone,i)=>tone?[{ink:ids[i],opaque:blend==='opaque',coverage:screenOriginal('reference-image',{kind:'photo',mask:new Float32Array(n*n).fill(1),tone},n,n,ids[i],press)}]:[]);
   const actual=paintMaterial(layers,n,n,colors,press);
   let max=0;for(let i=0;i<actual.length;i++)max=Math.max(max,Math.abs(actual[i]-expected[i]));
@@ -39,12 +39,12 @@ test('ink patches remain continuous across independently rendered rectangular el
  assert.notEqual(sheetInk(5,34,30),sheetInk(6,34,30));
 });
 test('sheet screening is binary from minBinaryCell device pixels, area coverage below, and keeps rectangular dimensions',async()=>{
- const {minBinaryCell}=await import('../src/design/print-pipeline/sheet.ts');
+ const {binaryCell}=await import('../src/design/print-pipeline/sheet.ts');
  for(const scale of [1,2]){const w=80*scale,h=12*scale,tone=new Float32Array(w*h).fill(.4),p=onSheet(pressSettings(defaults),5,{x:20,y:40});
   const screened=screenOriginal('field',{kind:'shape',mask:tone,tone},w,h,'a',p,scale,p.sheet.origin);
   assert.equal(screened.length,w*h);assert.ok(screened.every(v=>v>=0&&v<=1));
   // Medium is 4 CSS px: 8 device px at 2x stays the native binary screen; 4 at 1x cannot hold one.
-  if(p.pitch*scale>=minBinaryCell)assert.ok(screened.every(v=>v===0||v===1));else assert.ok(screened.some(v=>v>0&&v<1));
+  if(binaryCell(p.pitch,scale))assert.ok(screened.every(v=>v===0||v===1));else assert.ok(screened.some(v=>v>0&&v<1));
  }
 });
 

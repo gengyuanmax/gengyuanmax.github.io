@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {screenOriginal,pressSettings,elementPress,onSheet} from '../src/design/print-pipeline/index.ts';
-import {minBinaryCell} from '../src/design/print-pipeline/sheet.ts';
+import {minBinaryCell,binaryCell} from '../src/design/print-pipeline/sheet.ts';
 import {defaults} from '../src/design/settings.ts';
 
 // A uniform tone must print as a uniform screen. Sub-pixel gaps that alias into
@@ -33,4 +33,13 @@ test('cells of at least minBinaryCell device pixels keep the binary Print Lab sc
 test('cells below minBinaryCell resolve area coverage instead of single samples',()=>{
  const {coverage}=uniformGround(2,.5,'fine');
  assert.ok(coverage.some(v=>v>0&&v<1),'fine screen at 2x must carry fractional dot coverage');
+});
+test('the fine screen looks the same on a DPR 3 phone as on 1x and 2x screens',()=>{
+ for(const tone of [.35,.6,.82]){
+  const three=uniformGround(3,tone),one=blocks(uniformGround(1,tone)),b=blocks(three);
+  assert.equal(binaryCell(2,3),false,'fine 2px cells must not switch to binary at DPR 3');
+  assert.ok(three.coverage.some(v=>v>0&&v<1));
+  assert.ok(b.std<=.02,`3x block variation ${b.std.toFixed(3)} exceeds .02`);
+  assert.ok(Math.abs(b.mean-one.mean)<=.03,`3x density ${b.mean.toFixed(3)} vs 1x ${one.mean.toFixed(3)}`);
+ }
 });

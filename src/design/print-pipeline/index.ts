@@ -28,7 +28,7 @@ export function screenPrintElement(e:Readonly<InsertElement>):string;
 export function screenPrintElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
  if(e.profile==='insert')return e.source.src;
  if(e.profile==='polygon-v1')return screenPolygons(e.source,e.width,e.height,e.seed,e.plate,e.screen);
- if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],e.textRecipe,e.press.sheet);
+ if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],{transfer:{grain:e.press.grain,starve:e.press.starve,holes:e.press.holes,band:e.press.band},...e.textRecipe},e.press.sheet);
  return screenPlate(e.source.tone,e.width,e.height,e.plate,e.press,e.scale,e.origin,e.solid);
 }
 export {paintMaterial,pressSettings,elementPress,materialVersion,type Press} from './material.ts';
@@ -54,3 +54,5 @@ export {renderFieldOriginals,type FieldOriginal} from './field.ts';
 
 export {dotPitch,dotPlateImage,groundFirstCoverage} from './first-frame.ts';
 export {noiseBudget} from './budget.ts';
+export {rng,salt} from './noise.ts';
+export {pagePlates,plateTables,referencePlate,type PagePlate,type PlateInk} from './plates.ts';

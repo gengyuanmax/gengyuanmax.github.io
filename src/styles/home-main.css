@@ -128,16 +128,13 @@
  #personal-site :is(button,summary){min-height:32px;}
 }
 
-/* Original project artwork is a separate printed insert, held on this sheet. */
-#personal-site .he-print-lab-spread a{display:block;border-bottom:0;padding:0 0 8px;}
-#personal-site .he-print-lab-spread .he-insert-sheet{position:relative;display:block;margin:0;padding:6px;background:var(--paper);border:0;box-shadow:none;}
-#personal-site .he-print-lab-spread .he-insert-caption{display:block;margin-top:12px;color:var(--blue-ink);}
-#personal-site .he-print-lab-spread a:focus-visible{outline:2px solid var(--blue-ink);outline-offset:7px;}
-#personal-site .he-print-lab-spread a:hover .he-insert-caption{text-decoration:underline;text-underline-offset:3px;}
-
-/* A spot yellow belongs only to the inserted project's attachment material. */
-#personal-site .he-print-lab-spread{--insert-tape-ink:#f2df8a;}
-#personal-site .he-insert-tape{position:absolute;display:block;z-index:1;top:-12px;left:var(--tape-x);width:var(--tape-width);max-width:88px;height:26px;margin:0;border:0;box-shadow:none;background:var(--insert-tape-ink);opacity:.85;mix-blend-mode:multiply;transform:translateX(-50%) rotate(var(--tape-angle));pointer-events:none;mask-image:radial-gradient(circle,#000b .35px,#000 .7px);mask-size:var(--screen-fine) var(--screen-fine);}
+/* Print Labs is a loose pile of its own sample sheets (insert-stack.ts): four stocks
+   in original colour, overlapping on the page. No tape, frame, stroke or shadow. */
+#personal-site .he-insert-stack{position:relative;display:block;width:100%;aspect-ratio:1/var(--stack-height);container-type:inline-size;border:0;padding:0;}
+#personal-site .he-insert-stack .he-insert-sheet{position:absolute;left:var(--sheet-x);top:var(--sheet-y);width:72%;height:auto;margin:0;transform:rotate(var(--sheet-angle));transform-origin:50% 50%;transition:transform 320ms cubic-bezier(.22,.7,.2,1);}
+@media (hover:hover){#personal-site .he-insert-stack:hover .he-insert-sheet{transform:translate(var(--fan-x),var(--fan-y)) rotate(calc(var(--sheet-angle) * 1.5));}}
+#personal-site .he-insert-stack:focus-visible{outline:2px solid var(--blue-ink);outline-offset:10px;}
+@media(prefers-reduced-motion:reduce){#personal-site .he-insert-stack .he-insert-sheet{transition:none;}}
 
 /* One cover represents the whole Print Labs artifact. */
 #personal-site .he-print-lab-overview{display:block;width:min(100%,280px);padding:12px 0 16px;}

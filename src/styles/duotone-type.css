@@ -14,14 +14,17 @@
 #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{color:var(--blue-ink);-webkit-text-fill-color:currentColor;background:none;transform:translate(var(--press-reg-x),var(--press-reg-y));}
 /* Navigation and linked project names receive the red plate on interaction. */
 #personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a) .he-type-a{opacity:0;}
-#personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a):is(:hover,:focus-visible,[aria-current="page"]) .he-type-a{opacity:1;}
+#personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a):is(:focus-visible,[aria-current="page"]) .he-type-a{opacity:1;}
+@media (hover:hover){#personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a):hover .he-type-a{opacity:1;}}
 #personal-site .he-nav a::after{filter:none;}
 #personal-site .he-pillars a .he-type-b{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;}
-#personal-site a:hover .he-type-line>.he-type-b{text-decoration:underline;text-underline-offset:.12em;}
+@media (hover:hover){#personal-site a:hover .he-type-line>.he-type-b{text-decoration:underline;text-underline-offset:.12em;}}
 /* Fine type is one untextured blue plate, with no artificial grey hierarchy. */
 #personal-site :is(p,summary,.he-date,.he-meta,.he-item-meta,.he-contact a,.he-project-resources a,.he-theme-tags a,.he-shortcuts a,.he-reading-marker,.he-artifact-controls button,.he-artifact-group-label,.he-slogan-prefix){background-image:none;-webkit-text-fill-color:currentColor;}
 #personal-site :is(.em-ink,.em-knock){background:none;color:inherit;-webkit-text-fill-color:currentColor;font:inherit;font-weight:600;text-decoration:none;padding:0;margin:0;}
 #personal-site .he-type-line[data-press-fine="true"]>.he-type-a{opacity:0!important;}
+/* Exception: the current tab is the same exact-register overprint at every width, so phone and desktop show one state. */
+#personal-site .he-nav a[aria-current="page"] .he-type-line[data-press-fine="true"]>.he-type-a{opacity:1!important;}
 #personal-site .he-type-line[data-press-fine="true"]>.he-type-b{transform:none;filter:none;mask-image:none!important;}
 #personal-site .he-item-meta strong{background:var(--blue-ink);color:var(--paper);-webkit-text-fill-color:var(--paper);}
 #personal-site .he-page::after{opacity:1;}
@@ -66,8 +69,8 @@
 #personal-site .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
 #personal-site .he-type-line[data-text-tier="body"]>.he-type-b{transform:none;mask-image:none!important;}
 
-/* Dotted glyphs use one half-pixel register; clipping retains partial edge dots. */
-#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-.5px,var(--registration-x),.5px),clamp(-.5px,var(--registration-y),.5px));}
+/* Dotted name: one register against the red letter, inside noiseBudget.text.dots.registration (1.25px). */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-1.25px,var(--registration-x),1.25px),clamp(-1.25px,var(--registration-y),1.25px));}
 
 /* Dotted display name: the blue plate is the final AM lattice from the first frame,
    painted by CSS (--dot-plate from first-frame.ts), clipped by the real glyphs.
@@ -77,3 +80,4 @@
 @supports (width:round(nearest,1px,1px)){#personal-site [data-treatment="dotted"]>.he-type-line{--dot-pitch:max(2px,round(nearest,1em / 16,1px));}}
 #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{-webkit-mask-image:var(--dot-plate);mask-image:var(--dot-plate);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);}
 #personal-site [data-treatment="dotted"]>.he-type-line:is([data-text-tier="heading"],[data-text-tier="body"])>.he-type-b{-webkit-mask-image:none;mask-image:none;}
+

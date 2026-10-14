@@ -1,7 +1,7 @@
 import {paperOrigin,pixelSurface,cropSurface,publishCanvas,createPrintMount} from '../design/print-pipeline/browser';
 import {recordScreen} from './screen-data';
 import {design} from '../config/design';
-import {selectedComposition as recipe,portraitViewport as view} from '../config/portrait-composition';
+import {selectedComposition as recipe,portraitViewport as view,portraitScreenLevel} from '../config/portrait-composition';
 import {canvasLayers,paintComposition,type CompositionChoice} from '../design/composition-canvas';
 import {getPalette,resolve,type DesignConfig} from '../design/settings';
 import type {Operation} from '../design/element-composition';
@@ -25,7 +25,7 @@ if(root&&figure&&canvas&&fallback){
    const palette=getPalette(config,s.palette),dpr=Math.max(window.devicePixelRatio||1,1);
    const choice:CompositionChoice={op:s.compositionOperation as Operation,shape:s.compositionShape,pitch:s.compositionPitch,mis:s.compositionMis};
    const width=Math.round(fallback.clientWidth*dpr),fullWidth=Math.round(width*recipe.sheet.width/view.width);
-   let press=elementPress(pressSettings({...s,registration:resolve(config).values.registration,registrationY:resolve(config).values.registrationY}),'home-portrait','image');
+   let press=elementPress(pressSettings({...s,registration:resolve(config).values.registration,registrationY:resolve(config).values.registrationY},portraitScreenLevel),'home-portrait','image');
    const position=paperOrigin(fallback,home!),unit=fallback.clientWidth/view.width;
    const origin={x:position.x-view.x*unit,y:position.y-view.y*unit};
    press=onSheet(press,resolve(config).values.seed,origin,home!.offsetHeight);

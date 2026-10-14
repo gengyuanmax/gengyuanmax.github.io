@@ -11,7 +11,7 @@
 #personal-site .rm-label-hit{fill:none;stroke:transparent;pointer-events:stroke;}
 #personal-site .rm-label-arc text{pointer-events:visiblePainted;}
 #personal-site .rm-directions a:focus-visible{outline:none;}
-#personal-site .rm-directions a:is(:hover,:focus-visible) text{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;}
+@media (hover:hover){#personal-site .rm-directions a:is(:hover,:focus-visible) text{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;}}
 #personal-site:has(.research-map[data-view="circles"]) .rm-tree,#personal-site:has(.research-map[data-view="circles"]) .he-home-branches{display:none;}
 #personal-site .research-map[data-view="tree"]{display:none;}
 #personal-site:has(.research-map[data-view="circles"]) .he-home .he-brand{grid-column:1/5;}
@@ -35,7 +35,7 @@
 #personal-site .rm-touch-help{display:none;}
 @media(pointer:coarse){#personal-site .rm-touch-help{display:block;font-size:12px;}#personal-site .rm-touch-help a[hidden]{display:none;}}
 
-#personal-site .rm-directions a:hover{text-decoration:underline;}
+@media (hover:hover){#personal-site .rm-directions a:hover{text-decoration:underline;}}
 #personal-site .rm-fallback{position:absolute;inset:0;width:100%;height:100%;}
 #personal-site .rm-inks{visibility:hidden;}
 #personal-site [data-canvas-ready="true"] .rm-inks{visibility:visible;}
@@ -46,3 +46,4 @@
 /* With JS the circles appear when their final canvas is ready. The build-time PNG uses a
    reference layout and the build day's seed, so it would be a different print: no-JS only. */
 #personal-site[data-enhanced] .rm-fallback{visibility:hidden;}
+#personal-site .rm-inks{mix-blend-mode:multiply;}

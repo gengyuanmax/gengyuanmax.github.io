@@ -35,15 +35,11 @@ export const parameters = {
   researchInkNoise:{label:'研究圆 · 墨量起伏',group:'构图',type:'number',default:.15,min:0,max:.15,step:.01,scopes:globalOnly},
   researchFeedNoise:{label:'研究圆 · 走纸浅带',group:'构图',type:'number',default:.2,min:0,max:.2,step:.01,scopes:globalOnly},
   researchFiberNoise:{label:'研究圆 · 纸纤维减墨',group:'构图',type:'number',default:.065,min:0,max:.08,step:.005,scopes:globalOnly},
-  researchBlueAngle:{label:'研究蓝版 · 网角',group:'印刷墨层',type:'number',default:15,min:0,max:180,step:1,scopes:globalOnly},
-  researchOrangeAngle:{label:'研究橙版 · 网角',group:'印刷墨层',type:'number',default:75,min:0,max:180,step:1,scopes:globalOnly},
 
   researchStagger:{label:'研究圆 · 上下偏移',group:'构图',type:'number',default:18,min:-30,max:30,step:2,scopes:globalOnly},
   researchOperation:{label:'研究圆 · 元素操作',group:'构图',type:'select',default:'over',options:{over:'叠印'},scopes:globalOnly},
 
   researchPitch:{label:'研究圆 · 可见网点网距',group:'构图',type:'number',default:7,min:6,max:8,step:1,scopes:globalOnly},
-  researchOrangeX:{label:'研究橙版 · 错版 X',group:'印刷墨层',type:'number',default:1.5,min:-2,max:2,step:.5,scopes:globalOnly},
-  researchOrangeY:{label:'研究橙版 · 错版 Y',group:'印刷墨层',type:'number',default:-1,min:-2,max:2,step:1,scopes:globalOnly},
 
   researchView:{label:'研究关系 · 树 / 叠印圆',group:'构图',type:'select',default:'circles',options:{tree:'树 · 对照',circles:'三色叠印圆'},scopes:globalOnly},
   researchRatio:{label:'研究圆 · 水平间距 / 半径',group:'构图',type:'number',default:1.33,min:.55,max:1.4,step:.01,scopes:globalOnly},
@@ -289,7 +285,7 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
   }
   // First-frame print: final geometry painted by CSS before any canvas or mask exists.
   const all={...shared,...settings} as Settings;
-  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius);
+  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius,(config?resolve(config).values:defaults).seed);
   if(settings.groundOpacity!==undefined)css['--ground-first']=groundFirstCoverage(all).toFixed(3);
   if(settings.blend)css['--ink-blend']=settings.blend;
   if(settings.itemStart!==undefined&&settings.itemSpan!==undefined)css['--item-start']=String(Math.min(settings.itemStart,13-settings.itemSpan));
