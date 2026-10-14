@@ -11,10 +11,12 @@ test('text tiers protect body and bound low-frequency ink variation',()=>{
  }
  assert.equal(textTier(71),'heading');assert.equal(textTier(72),'display');
 });
-test('complete display dots do not touch glyph boundary and ignore noise seed',()=>{
+test('uniform display dots clip to glyph boundaries and ignore noise seed',()=>{
  const w=96,h=64,mask=Float32Array.from({length:w*h},(_,i)=>i%w>12&&i%w<84&&Math.floor(i/w)>12&&Math.floor(i/w)<52?1:0);
- const recipe={size:128,dotted:true,radius:.3};
+ const recipe={size:128,dotted:true,radius:.37};
  const dots=printText(mask,w,h,1,123,8,75,recipe);
  assert.ok(dots.some(v=>v===1));assert.deepEqual(dots,printText(mask,w,h,1,987,8,75,recipe));
- for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(dots[y*w+x])assert.ok(mask[y*w+x]&&mask[y*w+x-1]&&mask[y*w+x+1]&&mask[(y-1)*w+x]&&mask[(y+1)*w+x]);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(dots[y*w+x])assert.ok(mask[y*w+x]);
+ assert.ok(dots.some((v,i)=>v&&i%w===13));
+ assert.ok(dots.every(v=>v===0||v===1));
 });

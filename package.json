@@ -10,7 +10,8 @@
     "check": "astro check",
     "media": "node --experimental-strip-types scripts/render-media.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "test:server": "node tests/server-smoke.mjs"
+    "test:server": "node tests/server-smoke.mjs",
+    "test:name-visual": "node scripts/verify-name-visual.mjs"
   },
   "engines": {
     "node": ">=22.19.0"

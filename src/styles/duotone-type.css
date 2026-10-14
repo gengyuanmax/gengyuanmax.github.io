@@ -65,3 +65,6 @@
 #personal-site .he-type-line>.he-type-a{transform:none!important;}
 #personal-site .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
 #personal-site .he-type-line[data-text-tier="body"]>.he-type-b{transform:none;mask-image:none!important;}
+
+/* Dotted glyphs use one half-pixel register; clipping retains partial edge dots. */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-.5px,var(--registration-x),.5px),clamp(-.5px,var(--registration-y),.5px));}

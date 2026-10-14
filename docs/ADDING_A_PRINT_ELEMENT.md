@@ -14,7 +14,7 @@
 
 ## 文字原稿
 
-真实文字保留 DOM，轮廓不侵蚀、不模糊。`sharp-type-v2` 的 `textRecipe`（size / dotted / radius）通过公共声明入口解析：固体字只输出有界低频墨量遮罩；≥72px的网点字用 `textCoverage` 原稿检查每个完整网点的容纳范围。文字不再经过图像 `paintMaterial` 二次转印。24px以下不用材质。
+真实文字保留 DOM，轮廓不侵蚀、不模糊。`sharp-type-v3` 的 `textRecipe`（size / dotted / radius）通过公共声明入口解析：固体字只输出有界低频墨量遮罩；≥72px的网点字用 `textCoverage` 原稿检查每个完整网点的容纳范围。文字不再经过图像 `paintMaterial` 二次转印。24px以下不用材质。
 
 ```ts
 import {screenOriginal,pressSettings,elementPress} from '../design/print-pipeline/index';
@@ -96,7 +96,7 @@ const src = screenPrintElement(definePrintElement({
 
 活动网页适配器在完成排版测量后调用 `onSheet(press, resolve(config).values.seed, paperOrigin(element,page), page.offsetHeight)`，并把同一 origin 用于加网。该绑定让共享材质采用矩形硬边路径，不再以元素ID改变纸张场。`paperOrigin` 会还原设计台的显示缩放。不要把此绑定用于需要复现旧指纹的迁移基准。
 
-文字的 `sharp-type-v2` 只读取这张场的低频项，仍受4%/5%上限保护；正文不加材质。研究圆的多边形配方通过可选 sheet 参数读取同一纸张场。滚筒场采用整页 Y 坐标上的20段平滑噪声；正文仍不参与。人像、研究圆、几何插图的静态后备使用相同核心和固定参考纸张坐标，响应式运行时按实际布局重新生成。全局纸纹与墨层的进一步物理交互仍未实现。原版对照的覆盖范围见 `tests/sheet-material.test.mjs`，不能把有限阶段一致扩大为完整渲染一致。
+文字的 `sharp-type-v3` 只读取这张场的低频项，仍受4%/5%上限保护；正文不加材质。研究圆的多边形配方通过可选 sheet 参数读取同一纸张场。滚筒场采用整页 Y 坐标上的20段平滑噪声；正文仍不参与。人像、研究圆、几何插图的静态后备使用相同核心和固定参考纸张坐标，响应式运行时按实际布局重新生成。全局纸纹与墨层的进一步物理交互仍未实现。原版对照的覆盖范围见 `tests/sheet-material.test.mjs`，不能把有限阶段一致扩大为完整渲染一致。
 
 ## 分色与静态输出
 
@@ -105,3 +105,9 @@ const src = screenPrintElement(definePrintElement({
 人像浏览器和构建端共用 `preparePortraitOriginals` / `paintPortraitOriginals`；几何插图共用 `renderFieldOriginals`；研究圆共用 polygon 配方。Canvas 与 sharp 只负责原稿采样和输出。静态参考纸张高度为1440 CSS px，尺寸与位置由构建适配器明确指定，不宣称与任意响应式页面逐像素一致。文字后备保留可读 DOM。SVG 墨纹滤镜及 InkDefs 已删除。
 
 测试覆盖完整四种原版分色的逐值比较、无噪声合成误差≤1、滚筒裁切连续性、关闭参数和构建/浏览器共用入口。整页新纸张噪声与原版局部随机域不同，不以整页零差作为验收。
+
+## 姓名视觉快照
+
+`tests/fixtures/name-v3.png` 是本轮0.37半径方案的候选浏览器快照，尚不代表用户已认可。1440×1000、DPR1、默认已保存配置、Home顶部、字体和材质完成后截图。执行 `npm run test:name-visual -- /absolute/path/to/home.png`；裁切姓名区域，单通道差异超过20的像素占比不得超过0.5%。失败保存实际裁切到 `/tmp/name-visual-actual.png`。不得自动更新基准；确认视觉变更后才手动替换 PNG 和配方说明。
+
+此命令消费真实浏览器截图，不会自行启动浏览器；每次改文字渲染或CSS都必须另行捕获当前页面再运行。`npm test` 保证网点无随机缺失、硬边、边缘裁切以及文字墨量上限，但不能替代浏览器快照。

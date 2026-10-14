@@ -27,7 +27,6 @@ if(root){
   let p=elementPress(pressSettings(s,level,fontSize),identity,ground?'field':'title',fontSize);
   const origin=paperOrigin(el,(el.closest('.he-page')||root!) as HTMLElement);
   p=onSheet(p,resolve(config).values.seed,origin,(el.closest<HTMLElement>('.he-page')||root!).offsetHeight);
-  if(letterScreen&&ink==='b'){origin.x-=Math.max(-.75,Math.min(.75,p.offset.x));origin.y-=Math.max(-.5,Math.min(.5,p.offset.y));}
   const style=getComputedStyle(el);
   const key=JSON.stringify([textTextureVersion,style.fontFamily,style.fontSize,style.fontWeight,style.fontVariationSettings,style.letterSpacing,el.textContent,document.fonts.status,w,h,p,ink,ground||letterScreen?origin:null,ground?s.groundOpacity:null,letterScreen,s.titleDotRadius]);let mount=inkMounts.get(el);if(!mount){mount=createPrintMount();inkMounts.set(el,mount);}const ticket=mount.begin(key);if(!ticket)return;
   let flat:Float32Array=new Float32Array(w*h).fill(ground?s.groundOpacity:1);

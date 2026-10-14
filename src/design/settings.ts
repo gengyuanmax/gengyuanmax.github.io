@@ -150,7 +150,7 @@ export const parameters = {
   bodyMeasure: {label:'正文行宽上限',group:'字体',type:'number',default:52,min:32,max:72,step:1,unit:'ch',scopes:['global','area'],css:'--body-measure'},
   titleTreatment: {label:'展示字处理',group:'印刷墨层',type:'select',default:'overprint',options:{solid:'实心墨色',overprint:'双色错位叠印',outline:'轮廓与实心',dotted:'实色字 + 字级 AM 网点'},scopes:all},
   titleDotPitch: {label:'字内装饰网距 · 相对字号',group:'印刷墨层',type:'number',default:screenScale.coarseEm,min:.015,max:.16,step:.005,unit:'em',scopes:all,css:'--title-dot-pitch'},
-  titleDotRadius: {label:'字内圆点半径 · 相对网距',group:'印刷墨层',type:'number',default:.30,min:.25,max:.30,step:.01,scopes:all,css:'--title-dot-radius'},
+  titleDotRadius: {label:'字内圆点半径 · 相对网距',group:'印刷墨层',type:'number',default:.37,min:.25,max:.38,step:.01,scopes:all,css:'--title-dot-radius'},
   titleLayerX: {label:'网点字形横向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.075,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-x'},
   titleLayerY: {label:'网点字形纵向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.06,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-y'},
   registrationY: {label:'套色错位 Y',group:'印刷墨层',type:'number',default:1,min:-12,max:12,step:.5,unit:'px',scopes:all,css:'--registration-y'},

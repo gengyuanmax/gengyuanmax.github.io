@@ -1,0 +1,21 @@
+{
+  "status": "candidate for user review",
+  "viewport": {
+    "width": 1440,
+    "height": 1000,
+    "dpr": 1
+  },
+  "crop": {
+    "left": 110,
+    "top": 170,
+    "width": 560,
+    "height": 275
+  },
+  "seed": 5,
+  "recipe": "sharp-type-v3",
+  "radius": 0.37,
+  "registration": {
+    "x": 0.5,
+    "y": 0.5
+  }
+}
