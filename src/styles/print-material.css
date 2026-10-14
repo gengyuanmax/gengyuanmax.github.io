@@ -33,3 +33,10 @@
 #personal-site [data-material-ready="true"]>.he-field-fallback{visibility:hidden;}
 /* Same rule for decorative print fields: the reference-layout fallback is for no-JS visitors. */
 #personal-site[data-enhanced] .he-field-fallback{visibility:hidden;}
+/* One sheet of paper under the whole viewport width and document height: the grain
+   no longer stops at the page box (right and bottom edges on wide screens). */
+html:has(#personal-site){overflow-x:clip;}
+#personal-site{position:relative;}
+#personal-site::after{content:"";position:absolute;top:calc(-1 * var(--sheet-margin,0px));bottom:calc(-1 * var(--sheet-margin,0px));left:calc(50% - 50vw);width:100vw;z-index:12;pointer-events:none;background-image:var(--paper-grain-image);opacity:var(--paper-texture);mix-blend-mode:multiply;}
+#personal-site .he-page::before{content:none;}
+@media print{#personal-site::after{content:none;}}

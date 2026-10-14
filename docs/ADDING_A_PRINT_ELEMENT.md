@@ -71,12 +71,12 @@ const screened = screenOriginal('example-photo', {
 import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
 const src = screenPrintElement(definePrintElement({
   id:'artifact-preview', profile:'insert',
-  source:{kind:'graphic', src:'/images/print-labs-overview.svg'},
+  source:{kind:'graphic', src:'/images/print-lab-layout.png'},
 }));
 // 作为真实 <img src={src} alt="..."> 挂载；原色、原文件和浏览器图片加载机制保留。
 ```
 
-纸边/胶带属于布局附件，继续使用共享 `insertTapes` 和已有 CSS，不修改图像像素。需要新图像分色算法时，在核心增添受测配方，不能把 Bayer/FM 当成颜色量化。
+插页的摆放（如 Print Labs 的样张叠放，`insert-stack.ts`）属于布局，不修改图像像素；胶带已移除。需要新图像分色算法时，在核心增添受测配方，不能把 Bayer/FM 当成颜色量化。
 
 ## 输出、缓存与失败
 
@@ -96,7 +96,7 @@ const src = screenPrintElement(definePrintElement({
 
 活动网页适配器在完成排版测量后调用 `onSheet(press, resolve(config).values.seed, paperOrigin(element,page), page.offsetHeight)`，并把同一 origin 用于加网。该绑定让共享材质采用矩形硬边路径，不再以元素ID改变纸张场。`paperOrigin` 会还原设计台的显示缩放。不要把此绑定用于需要复现旧指纹的迁移基准。
 
-文字的 `sharp-type-v3` 只读取这张场的低频项，仍受4%/5%上限保护；正文不加材质。研究圆的多边形配方通过可选 sheet 参数读取同一纸张场。滚筒场采用整页 Y 坐标上的20段平滑噪声；正文仍不参与。人像、研究圆、几何插图的静态后备使用相同核心和固定参考纸张坐标，响应式运行时按实际布局重新生成。全局纸纹与墨层的进一步物理交互仍未实现。原版对照的覆盖范围见 `tests/sheet-material.test.mjs`，不能把有限阶段一致扩大为完整渲染一致。
+文字的 `print-type-v4` 读取这张场上与图像相同的转印（低频缺墨、细颗粒减墨、滚筒），总减墨受 15%/12% 上限保护；正文不加材质。研究圆的多边形配方通过可选 sheet 参数读取同一纸张场。滚筒场是周长 1440 CSS px、20 段的固定滚筒，按纸面 Y 往返延续，与页面长度无关；正文仍不参与。人像、研究圆、几何插图的静态后备使用相同核心和固定参考纸张坐标，响应式运行时按实际布局重新生成。全局纸纹与墨层的进一步物理交互仍未实现。原版对照的覆盖范围见 `tests/sheet-material.test.mjs`，不能把有限阶段一致扩大为完整渲染一致。
 
 ## 分色与静态输出
 
@@ -108,6 +108,6 @@ const src = screenPrintElement(definePrintElement({
 
 ## 姓名视觉快照
 
-`tests/fixtures/name-v3.png` 是本轮0.37半径方案的候选浏览器快照，尚不代表用户已认可。1440×1000、DPR1、默认已保存配置、Home顶部、字体和材质完成后截图。执行 `npm run test:name-visual -- /absolute/path/to/home.png`；裁切姓名区域，单通道差异超过20的像素占比不得超过0.5%。失败保存实际裁切到 `/tmp/name-visual-actual.png`。不得自动更新基准；确认视觉变更后才手动替换 PNG 和配方说明。
+`tests/fixtures/name-v3.png` 是 0.37 半径、无网点噪声、.5px 套准方案的旧候选快照。2026-10-14 用户要求姓名网点加噪声和偏移后，当前页面与它不一致是预期结果；新快照须经用户认可后再替换。1440×1000、DPR1、默认已保存配置、Home顶部、字体和材质完成后截图。执行 `npm run test:name-visual -- /absolute/path/to/home.png`；裁切姓名区域，单通道差异超过20的像素占比不得超过0.5%。失败保存实际裁切到 `/tmp/name-visual-actual.png`。不得自动更新基准；确认视觉变更后才手动替换 PNG 和配方说明。
 
 此命令消费真实浏览器截图，不会自行启动浏览器；每次改文字渲染或CSS都必须另行捕获当前页面再运行。`npm test` 保证网点无随机缺失、硬边、边缘裁切以及文字墨量上限，但不能替代浏览器快照。

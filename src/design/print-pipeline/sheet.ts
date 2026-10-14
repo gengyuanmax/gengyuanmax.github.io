@@ -29,10 +29,16 @@ export function spreadRectangle(mask:Float32Array,w:number,h:number,r:number,fie
 /** Below this many device pixels per screen cell, a single binary sample per pixel
  * cannot represent the gaps between dots: they alias into flickering 1px holes. */
 export const minBinaryCell=6;
+/** The fine tier (2 CSS px) always resolves by area coverage, whatever the device pixel
+ * ratio: at DPR 3 its 6px cells would otherwise switch to binary dots plus random spread
+ * and read as glitter on phones while desktops show an even screen. Same CSS screen,
+ * same look on every device. */
+export const minBinaryPitch=3;
+export const binaryCell=(pitch:number,scale:number)=>pitch*scale>=minBinaryCell&&pitch>=minBinaryPitch;
 const subsamples=4;
 export function screenSheet<Id extends string>(tone:Float32Array,w:number,h:number,ink:Id,p:Press<Id>,scale:number,origin:{x:number;y:number},solid:boolean){
  const out=new Float32Array(w*h),angle=p.angles[ink]*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
- const shape=p.shapes[ink],fine=!solid&&p.pitch*scale<minBinaryCell,step=1/(subsamples*scale);
+ const shape=p.shapes[ink],fine=!solid&&!binaryCell(p.pitch,scale),step=1/(subsamples*scale);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const t=tone[y*w+x];if(!t)continue;const v=Math.min(1,t+within(p.gain,noiseBudget.dotGain)*.32*4*t*(1-t));
   if(solid){out[y*w+x]=t;continue;}

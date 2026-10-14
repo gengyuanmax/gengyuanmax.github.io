@@ -39,12 +39,12 @@ test('ink patches remain continuous across independently rendered rectangular el
  assert.notEqual(sheetInk(5,34,30),sheetInk(6,34,30));
 });
 test('sheet screening is binary from minBinaryCell device pixels, area coverage below, and keeps rectangular dimensions',async()=>{
- const {minBinaryCell}=await import('../src/design/print-pipeline/sheet.ts');
+ const {binaryCell}=await import('../src/design/print-pipeline/sheet.ts');
  for(const scale of [1,2]){const w=80*scale,h=12*scale,tone=new Float32Array(w*h).fill(.4),p=onSheet(pressSettings(defaults),5,{x:20,y:40});
   const screened=screenOriginal('field',{kind:'shape',mask:tone,tone},w,h,'a',p,scale,p.sheet.origin);
   assert.equal(screened.length,w*h);assert.ok(screened.every(v=>v>=0&&v<=1));
   // Medium is 4 CSS px: 8 device px at 2x stays the native binary screen; 4 at 1x cannot hold one.
-  if(p.pitch*scale>=minBinaryCell)assert.ok(screened.every(v=>v===0||v===1));else assert.ok(screened.some(v=>v>0&&v<1));
+  if(binaryCell(p.pitch,scale))assert.ok(screened.every(v=>v===0||v===1));else assert.ok(screened.some(v=>v>0&&v<1));
  }
 });
 

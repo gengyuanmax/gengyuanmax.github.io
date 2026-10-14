@@ -14,8 +14,11 @@ export const noiseBudget={
  tone:{amplitude:.08,minScale:80},
  /** Post-screen ink loss on images, grounds and geometry. */
  transfer:{starvation:.15,grainLoss:.12,grainArea:.04,roller:.05},
- /** Text keeps its own, tighter limits: sharp outlines, low-frequency ink only. */
- text:{display:.05,heading:.04},
+ /** Total ink loss on type (print-type-v4: the images' own transfer, title-capped). */
+ text:{display:.15,heading:.12,
+  /** Display-name dots (user, 2026-10-14): size ± fraction, centre shift as a fraction of
+   * the pitch, and the blue plate's register against the red letter in CSS px. */
+  dots:{radius:.18,shift:.06,registration:1.25}},
  /** Midtone dot gain added to the tone curve before screening. */
  dotGain:.4,
  /** Shared paper texture strength. */

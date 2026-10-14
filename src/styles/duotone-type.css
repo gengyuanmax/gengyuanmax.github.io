@@ -69,8 +69,8 @@
 #personal-site .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
 #personal-site .he-type-line[data-text-tier="body"]>.he-type-b{transform:none;mask-image:none!important;}
 
-/* Dotted glyphs use one half-pixel register; clipping retains partial edge dots. */
-#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-.5px,var(--registration-x),.5px),clamp(-.5px,var(--registration-y),.5px));}
+/* Dotted name: one register against the red letter, inside noiseBudget.text.dots.registration (1.25px). */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-1.25px,var(--registration-x),1.25px),clamp(-1.25px,var(--registration-y),1.25px));}
 
 /* Dotted display name: the blue plate is the final AM lattice from the first frame,
    painted by CSS (--dot-plate from first-frame.ts), clipped by the real glyphs.
@@ -81,8 +81,3 @@
 #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{-webkit-mask-image:var(--dot-plate);mask-image:var(--dot-plate);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);}
 #personal-site [data-treatment="dotted"]>.he-type-line:is([data-text-tier="heading"],[data-text-tier="body"])>.he-type-b{-webkit-mask-image:none;mask-image:none;}
 
-/* Misregistration belongs to display type only (>=72px). Below that a .75px shift is a large
-   share of the stroke and reads as colour fringing, worst on phones; headings print in exact
-   register and keep the two-ink overprint colour. The gate is computed from 1em, so it holds
-   from the first frame. The dotted name keeps its own .5px rule above. */
-#personal-site :not([data-treatment="dotted"])>.print-2ink.he-type-line>.he-type-b{--type-reg:clamp(0px,calc((1em - 71.5px) * 1000),.75px);transform:translate(clamp(calc(-1 * var(--type-reg)),var(--press-reg-x),var(--type-reg)),clamp(calc(-1 * var(--type-reg)),var(--press-reg-y),var(--type-reg)));}

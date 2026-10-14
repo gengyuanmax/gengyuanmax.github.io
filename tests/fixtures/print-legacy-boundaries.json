@@ -10,8 +10,5 @@
   },
   "src/design/composition-canvas.ts": {
     "canvas-context": 1
-  },
-  "src/design/insert-tape.ts": {
-    "seed-arithmetic": 2
   }
 }

@@ -1,7 +1,7 @@
 import {paperOrigin,drawAnchorProof,polygonSurface,pixelSurface,compositeCanvas,createPrintMount,type CanvasPlate} from '../design/print-pipeline/browser';
 import {design} from '../config/design';
 import {getPalette,resolve,type DesignConfig} from '../design/settings';
-import {researchRecipe,paperPixels,type ResearchRecipe,type ResearchState} from '../design/research-render';
+import {researchRecipe,type ResearchRecipe,type ResearchState} from '../design/research-render';
 import {researchPrintOrder,researchTransfer,type PlateId} from '../design/research-plates';
 import {directions,type DirectionId} from '../data/research-map';
 import {researchLabelArc} from '../design/research-geometry';
@@ -48,7 +48,8 @@ if(root&&map){
   const sheet={seed:resolve(config).values.seed,origin:paperOrigin(diagram,map!.closest<HTMLElement>('.he-page')!),height:map!.closest<HTMLElement>('.he-page')!.offsetHeight};
   const next=researchRecipe(s,config,width,undefined,sheet),key=JSON.stringify([s,sheet,next.plates,next.seed,width,dpr]);const ticket=mount.begin(key);if(!ticket){placeLabels();return;}
   cancelAnimationFrame(animation);transitionFrom=null;transitionProgress=1;map!.classList.remove('rm-entering');
-  const pixels=paperPixels(next,dpr);const nextPaper=pixelSurface(pixels.rgba,pixels.width,pixels.height);
+  // The circles print on the page's own sheet: the canvas carries ink only, never a paper box.
+  const nextPaper=pixelSurface(new Uint8ClampedArray(Math.round(width*dpr)*Math.round(next.height*dpr)*4),Math.round(width*dpr),Math.round(next.height*dpr));
   const nextStates={} as typeof states;
   const counts:Record<string,number>={};
   for(const d of directions){
