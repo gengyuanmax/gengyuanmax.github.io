@@ -23,7 +23,7 @@ test('all tiers share each ink angle and shape while each ink retains its own se
  }
 });
 test('legacy local palette and registration overrides cannot split the page into different presses',()=>{
- const c={version:1,global:{palette:'blueVermilion',registration:2,registrationY:1,primaryAngle:75,secondaryAngle:15},areas:{home:{palette:'pinkBlue',registration:6}},elements:{'home-name':{palette:'blackRed',registration:-5,registrationY:-4}}};
+ const c={version:1,global:{palette:'blueVermilion',registration:2,registrationY:1,primaryAngle:75,secondaryAngle:15},areas:{home:{palette:'pinkBlue',registration:3}},elements:{'home-name':{palette:'blackRed',registration:-3,registrationY:-2.5}}};
  validateConfig(c);
  const s=resolve(c,'home','home-name').values;
  assert.equal(s.palette,'blueVermilion');assert.equal(s.registration,2);assert.equal(s.registrationY,1);

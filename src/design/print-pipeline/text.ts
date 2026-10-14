@@ -1,5 +1,6 @@
 import {sheetInk,sheetRoller,type Sheet} from './sheet.ts';
 import {valueNoise,salt} from './noise.ts';
+import {noiseBudget} from './budget.ts';
 export const textTextureVersion='sharp-type-v3';
 export type TextRecipe={size:number;dotted:boolean;radius:number};
 export function textTier(size:number){return size>=72?'display':size>=24?'heading':'body';}
@@ -7,7 +8,7 @@ export function textTier(size:number){return size>=72?'display':size>=24?'headin
 export function printText(mask:Float32Array,w:number,h:number,scale:number,seed:number,pitch:number,angle:number,recipe:TextRecipe,sheet?:Sheet){
  const tier=textTier(recipe.size),out=new Float32Array(w*h);
  if(!recipe.dotted||tier!=='display'){
-  const loss=tier==='display'?.05:tier==='heading'?.04:0,noise=valueNoise(salt(seed,'type-ink'),32);
+  const loss=tier==='display'?noiseBudget.text.display:tier==='heading'?noiseBudget.text.heading:0,noise=valueNoise(salt(seed,'type-ink'),32);
   for(let y=0;y<h;y++)for(let x=0;x<w;x++)out[y*w+x]=1-loss*(sheet?((1-(sheet.band||0))*sheetInk(sheet.seed,x/scale+sheet.origin.x,y/scale+sheet.origin.y)+(sheet.band||0)*sheetRoller(sheet,y/scale+sheet.origin.y)):noise(x/scale,y/scale));
   return out; // DOM alone supplies the sharp outline of solid letters.
  }
