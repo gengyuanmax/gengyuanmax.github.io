@@ -36,3 +36,10 @@ test('printed rules keep their weight, wander only within the budget, and carry 
  assert.ok(Math.min(...core)<.97,'no ink variation: still a digital line');
  assert.ok(Math.min(...core)>=(1-noiseBudget.transfer.grainLoss)*(1-noiseBudget.transfer.starvation)*(1-noiseBudget.transfer.roller)-1e-6,'ink loss beyond the transfer budget');
 });
+test('printed blocks (pad 0) keep their exact box and only lose ink inside the transfer budget',async()=>{
+ const {printRule}=await import('../src/design/print-pipeline/index.ts');
+ const {alpha,width,height}=printRule(40,4,2,{seed:23,origin:{x:500,y:80}},{grain:.08,starve:.08,holes:.04,band:.1},0);
+ assert.equal(width,80);assert.equal(height,8);
+ const mid=[...Array(width).keys()].map(x=>alpha[3*width+x]);
+ assert.ok(Math.min(...mid)>=.7&&Math.max(...mid)<=1);
+});

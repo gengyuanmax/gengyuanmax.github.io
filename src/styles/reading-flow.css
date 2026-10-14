@@ -3,7 +3,7 @@
 #personal-site [data-reading-host] {position:relative;isolation:isolate;padding-top:30px;}
 #personal-site .he-reading-route {position:absolute;inset:0;overflow:visible;z-index:-1;pointer-events:none;color:var(--blue-ink);}
 /* Guide lines (print-guides.ts, rule-v1): ink-coloured blocks masked by their printed rule. */
-#personal-site .he-guide {position:absolute;display:block;background:currentColor;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;pointer-events:none;}
+#personal-site .he-guide {position:absolute;display:block;pointer-events:none;}
 #personal-site .he-timeline > li.he-timeline-guides {position:absolute;inset:0;display:block;padding:0;margin:0;border:0;pointer-events:none;color:var(--blue-ink);}
 #personal-site .he-timeline > li.he-timeline-guides::before,
 #personal-site .he-about-body .he-timeline[data-guides="print"]::before,
