@@ -20,6 +20,7 @@ test('the ragged frame is seeded, bounded by its inset and depth, and never a st
  assert.ok(Math.max(...firstInk)-Math.min(...firstInk)>=3,'left edge is a straight line');
 });
 test('the About photograph is printed from the kept source on the shared screen tiers',()=>{
- assert.ok(['fine','medium'].includes(aboutPhoto.screen));
+ assert.ok(['fine','medium','coarse'].includes(aboutPhoto.screen));
+ if(aboutPhoto.screen==='coarse')assert.ok(aboutPhoto.displaySize>=72,'coarse is the display tier');
  assert.ok(!aboutPhoto.source.startsWith('public/'),'the unprinted original must not be published');
 });
