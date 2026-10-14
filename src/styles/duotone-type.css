@@ -68,3 +68,12 @@
 
 /* Dotted glyphs use one half-pixel register; clipping retains partial edge dots. */
 #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-.5px,var(--registration-x),.5px),clamp(-.5px,var(--registration-y),.5px));}
+
+/* Dotted display name: the blue plate is the final AM lattice from the first frame,
+   painted by CSS (--dot-plate from first-frame.ts), clipped by the real glyphs.
+   --dot-pitch and data-text-tier are set by an inline script right after the name and
+   kept current by print-material.ts; the fallback is the same em rule without rounding. */
+#personal-site [data-treatment="dotted"]>.he-type-line{--dot-pitch:calc(1em / 16);}
+@supports (width:round(nearest,1px,1px)){#personal-site [data-treatment="dotted"]>.he-type-line{--dot-pitch:max(2px,round(nearest,1em / 16,1px));}}
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{-webkit-mask-image:var(--dot-plate);mask-image:var(--dot-plate);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);}
+#personal-site [data-treatment="dotted"]>.he-type-line:is([data-text-tier="heading"],[data-text-tier="body"])>.he-type-b{-webkit-mask-image:none;mask-image:none;}

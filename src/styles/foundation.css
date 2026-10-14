@@ -46,6 +46,19 @@ body { margin: 0; background: var(--paper); padding: 24px; }
 #personal-site .he-page { scroll-margin-top: calc(var(--he-header-height, 145px) + 20px); }
 #personal-site[data-enhanced] .he-track { display: flex; align-items: flex-start; transition: transform var(--transition); }
 #personal-site[data-enhanced] .he-page { flex: 0 0 100%; }
+/* navigation.ts scrolls the site root under the sticky header; native fragment scrolling in the
+   boot frame must land on the same position, so the margin is exactly the header height. */
+#personal-site[data-enhanced] .he-page { scroll-margin-top: var(--he-header-height, 150px); }
+/* Boot state (set by the inline script in Base.astro, cleared by navigation.ts):
+   show the URL's area from the first frame, with no slide and no stacked pages below it. */
+#personal-site[data-booting] .he-track { transition: none; }
+#personal-site[data-booting][data-boot-area="research"] .he-track { transform: translateX(-100%); }
+#personal-site[data-booting][data-boot-area="artifacts"] .he-track { transform: translateX(-200%); }
+#personal-site[data-booting][data-boot-area="about"] .he-track { transform: translateX(-300%); }
+#personal-site[data-booting][data-boot-area="home"] .he-page:not(#home),
+#personal-site[data-booting][data-boot-area="research"] .he-page:not(#research),
+#personal-site[data-booting][data-boot-area="artifacts"] .he-page:not(#artifacts),
+#personal-site[data-booting][data-boot-area="about"] .he-page:not(#about) { height: 0; overflow: hidden; }
 
 #personal-site .author-entry { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; padding:20px 0; font:400 12px/1.5 var(--reading-face); }
 @media(max-width:600px) { body { padding: 8px; } }

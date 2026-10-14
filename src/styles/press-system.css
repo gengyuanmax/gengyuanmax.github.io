@@ -161,3 +161,6 @@
 #personal-site .he-project-imprint .he-item-meta > span{display:inline-block;}
 #personal-site .he-project-imprint .he-meta-unit{display:inline-block;white-space:nowrap;overflow-wrap:normal;}
 #personal-site :is(.he-project-feature,.he-machine-feature) .he-project-imprint .he-item-meta{max-width:100%;}
+/* Until its screen mask exists, a ground prints its final mean ink as a flat tint
+   (--ground-first from first-frame.ts), so the screen only adds texture when it lands. */
+#personal-site .he-project-ground:not([data-material-mask="true"])::before {background:color-mix(in srgb,currentColor calc(var(--ground-first,1) * 100%),transparent);}

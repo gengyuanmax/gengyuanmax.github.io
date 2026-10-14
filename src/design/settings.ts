@@ -5,6 +5,7 @@ import {printObjects,printWords,printGrounds} from '../config/print-objects.ts';
 import {selectedComposition} from '../config/portrait-composition.ts';
 import {operations} from './element-composition.ts';
 import {emphasisMaterial} from './emphasis.ts';
+import {dotPlateImage,groundFirstCoverage} from './print-pipeline/first-frame.ts';
 export type Scope = 'global' | 'area' | 'element';
 export type Parameter = { label: string; group: string; scopes: readonly Scope[]; css?: string } & (
   { type: 'number'; default: number; min: number; max: number; step: number; unit?: string } |
@@ -286,6 +287,10 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
     const material=emphasisMaterial(getPalette(config,settings.palette||global.palette),settings.emphasisPitch??global.emphasisPitch,settings.emphasisCoverage??global.emphasisCoverage);
     css['--emphasis-dots']=material.image;css['--emphasis-tile']=`${material.tile}px`;
   }
+  // First-frame print: final geometry painted by CSS before any canvas or mask exists.
+  const all={...shared,...settings} as Settings;
+  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius);
+  if(settings.groundOpacity!==undefined)css['--ground-first']=groundFirstCoverage(all).toFixed(3);
   if(settings.blend)css['--ink-blend']=settings.blend;
   if(settings.itemStart!==undefined&&settings.itemSpan!==undefined)css['--item-start']=String(Math.min(settings.itemStart,13-settings.itemSpan));
   for (const [key, cssName] of [['displayFont','--display-face'],['bodyFont','--reading-face'],['emphasisFont','--emphasis-face'],['metadataFont','--metadata-face']] as const) if (settings[key]) css[cssName] = fontFamilies[settings[key] as keyof typeof fontFamilies];
