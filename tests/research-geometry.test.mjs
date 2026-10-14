@@ -4,7 +4,7 @@ import {researchGeometry,researchLabelArc,regionOrder,regionKey} from '../src/de
 import {researchMemberships} from '../src/data/research-memberships.ts';
 test('horizontal circle controls preserve overlap, canvas bounds and readable label separation',()=>{
  for(const ratio of [.55,.95,4/3,1.4])for(const stagger of [-30,0,30]){
-  const g=researchGeometry(ratio,stagger),c=Object.values(g.circles);
+  const g=researchGeometry(ratio,stagger),c=['machines','benchmarking','domain'].map(id=>g.circles[id]);
   assert(c[0].x<c[1].x&&c[1].x<c[2].x);
   assert.equal(c[0].y,c[2].y);
   for(const p of c){assert(p.x-g.r>=0&&p.x+g.r<=g.width);assert(p.y-g.r>=0&&p.y+g.r<=g.height);}

@@ -47,3 +47,18 @@
    reference layout and the build day's seed, so it would be a different print: no-JS only. */
 #personal-site[data-enhanced] .rm-fallback{visibility:hidden;}
 #personal-site .rm-inks{mix-blend-mode:multiply;}
+
+/* Solid display labels share the site's two ink roles and bounded type register.
+   Explicit 18px label exception; no screening, noise, or layout displacement. */
+#personal-site .rm-label-plates .rm-label-a{fill:var(--red-ink);pointer-events:none;}
+#personal-site .rm-label-plates .rm-label-b{fill:var(--blue-ink);mix-blend-mode:multiply;transform:translate(var(--press-reg-x),var(--press-reg-y));}
+#personal-site .rm-label-flat .he-type-line>.he-type-a{visibility:visible;}
+#personal-site .rm-label-flat .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
+#personal-site[data-type-proof="blue"] :is(.rm-label-a,.rm-label-flat .he-type-a),
+#personal-site[data-type-proof="red"] :is(.rm-label-b,.rm-label-flat .he-type-b),
+#personal-site[data-type-proof="yellow"] :is(.rm-label-plates,.rm-label-flat){visibility:hidden;}
+@media(forced-colors:active){
+ #personal-site .rm-label-plates .rm-label-a,#personal-site .rm-label-flat .he-type-line>.he-type-a{visibility:hidden;}
+ #personal-site .rm-label-plates .rm-label-b{fill:LinkText;transform:none;mix-blend-mode:normal;}
+ #personal-site .rm-label-flat .he-type-line>.he-type-b{transform:none;}
+}

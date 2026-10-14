@@ -53,7 +53,11 @@ if(root){
    if(!ticket.commit(()=>{const previous=el.dataset.maskUrl;el.style.maskImage=`url(${url})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';el.dataset.maskUrl=url;if(previous)URL.revokeObjectURL(previous);}))URL.revokeObjectURL(url);
   });
  }
- function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>void render());}
+ function schedule(){
+  ++generation;cancelAnimationFrame(frame);
+  if(root!.dataset.navigating)return;
+  frame=requestAnimationFrame(()=>void render());
+ }
  /** Each element is its own task so input can interleave; areas that are not on screen are
   * prepared in idle time afterwards, so opening them later finds finished prints. */
  const yieldToMain=()=>new Promise<void>(done=>setTimeout(done,0));
@@ -132,6 +136,6 @@ if(root){
  root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
  root.addEventListener('design:type-updated',()=>{root!.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>observer.observe(el));schedule();});
  root.addEventListener('design:proof-updated',schedule);
- root.addEventListener('transitionend',schedule);window.addEventListener('resize',schedule);void document.fonts.ready.then(schedule);schedule();
+ root.addEventListener('navigation:settled',schedule);window.addEventListener('resize',schedule);void document.fonts.ready.then(schedule);schedule();
  const pageObserver=new MutationObserver(schedule);root.querySelectorAll('.he-page').forEach(page=>pageObserver.observe(page,{attributes:true,attributeFilter:['aria-hidden']}));
 }

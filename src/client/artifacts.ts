@@ -27,10 +27,10 @@ if(root&&host&&controls){
    });
    section.append(spread);sections.append(section);
   }
-  if(!count){const empty=document.createElement('p');empty.textContent='[此类别暂无作品]';sections.append(empty);}
+  if(!count){const empty=document.createElement('p');empty.textContent='No artifacts in this category.';sections.append(empty);}
   host!.replaceChildren(sections);root!.dispatchEvent(new CustomEvent('reading:layout'));
   controls!.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.artifactMode===mode)));
-  controls!.querySelector<HTMLElement>('[data-artifact-status]')!.textContent=`${count} 件作品`;
+  controls!.querySelector<HTMLElement>('[data-artifact-status]')!.textContent=`${count} ${count===1?'artifact':'artifacts'}`;
  }
  controls.hidden=false;
  controls.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.artifactMode as ArtifactMode;render();}));

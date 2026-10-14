@@ -99,7 +99,7 @@
 ## 8. 文案与素材边界
 
 - **公开文案仍需逐项定稿。** 用户于 2026-10-14 明确授权当前快照先上线；仅有布局确认仍不能单独推断新文案获批，后续不要自行扩写事实或经历。
-- `Research on building / visual intelligence` 是候选 slogan；维护在 `src/config/main-version.ts` 并同步文案确认页。不要用无关的新文案填布局。
+- 首页 slogan 为 `Vision, Intelligence, Human & Machine`；身份为 `AI researcher, Based in Europe (Germany/UK)`。研究区共享小标题为 `Building, Evaluating, Leveraging`，共享主标题为 `visual intelligence`，维护在 `src/config/main-version.ts` 并同步文案确认页。这些文案由用户明确确认；身份和 slogan 不额外插入破折号、中点或竖线，使用用户指定的逗号、& 和括号。PhD 与 LMU 信息保留在 About。
 - 不编造项目、论文链接、日期、身份或经历。Oxford 访问已经结束，不能未经确认写成当前 Visiting 身份。
 - 保留原素材与来源记录。姓名、人像/圆、WikiTiLo 地球沿用已选方向；局部调整不要顺带替换素材或改造 Artifacts。
 - 不动上级项目的 `sources/` 同步参考文件，CV 维护不属于此网站任务。
@@ -227,16 +227,11 @@
 - **研究圆已并入全页版（用户决定，2026-10-14）**：蓝、橙（=朱红参考版）、黄三块版的网角与偏移全部取自本表，蓝 75°、朱红 15°、黄 0°；不再有模块自己的旋转、缩放或 seed 扰动，整页只有一台“印刷机”。原研究专用参数 `researchBlueAngle`、`researchOrangeAngle`、`researchOrangeX/Y` 已移除。迁移基准中只有研究圆蓝/橙版相关的 18 项输出按此重新生成，其余全部保持 a7a7483 原值。
 - 已失效但移动朱红版的旧规则（`.he-bridge-a`、未使用的 `NavMark`、未选用的 Riso 导航底版、被覆盖的 `PrintWord` 朱红层）随第 6 项旧路径一起清理；重新启用前须改为按版列表偏移。
 
-## 21. 手机与桌面一致（2026-10-14）
+## Research pillar 文案（2026-10-14 用户确认）
 
-- 同一配置下手机与桌面显示同一种状态，不因输入方式或页面长度改变印刷效果。
-- 当前导航项在所有宽度都是精确套准的双墨叠印（手机上导航字号落在 <24px 单墨档，此项为唯一例外，见 `duotone-type.css`、`print-material.css`）。
-- 悬停效果（下划线、红版显示）只在 `@media (hover:hover)` 中生效；触屏点击后不留下粘滞的悬停态。键盘 `:focus-visible` 不受影响。
-- 滚筒条纹属于印刷机而不属于页面：一个滚筒 20 段、周长 1440 CSS px（设计画布），超出后往返延续（`rollerDrum`，`sheet.ts`）。此前条纹按页面高度拉伸，手机长页面的条纹比桌面宽一倍以上；现在任意页面、任意宽度在同一纸面 Y 处条纹相同。1440 内与原值完全一致，迁移基准不变。`tests/roller-drum.test.mjs` 保证与页面长度无关且无接缝。
-- 纸纹是一整张纸：纸纹层挂在整页（`#personal-site::after`，宽度为视口、高度含页边），不再止于 1280px 版心，桌面右侧与底部不再出现纸纹边界。各分区自己的纸纹层已去掉，切换分区时纸纹不随版面滑动。
-- 研究圆画布只承载墨，不再自带纸色矩形；画布以 multiply 印在页面纸上，手机图例处不再出现方框。（无 JS 的构建期后备图仍含纸色，未改。）
+主标题有意保持不对称：`Machines can see`、`Benchmarking visual intelligence`、`Domain applications`；分别对应 `Building`、`Evaluating`、`Leveraging`。首页圆标签、研究页章节、子导航和跨方向链接共用这些标题。保持已有布局顺序、项目归属和锚点，文案调整不意味着重分类。
 
-## 22. 研究页阅读树（2026-10-14 用户修订）
+## 交互布局稳定性（2026-10-14）
 
 - 树是有层级的线：主干（阅读线宽 ×1）> 行线（×.67）> 支线（×.4），每级至少细 1 个设备像素；所有边对齐设备像素，交接处精确相接（`readingTree`，`src/design/reading-route.ts`）。
 - 主干与章节色带重叠处做取空运算：色带在主干位置被挖出纸色通道，线不再叠印在色带上。只切真正横跨主干的色带；主干若离色带左缘不足 16px，则内移，避免在色带边缘留下一条细墨条。

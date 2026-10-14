@@ -4,7 +4,7 @@ export const regionKey=(ids:readonly DirectionId[])=>['benchmarking','domain','m
 export function researchGeometry(ratio=1.33,stagger=18){
  // Leave room at the sheet edge as the circles move apart.
  const r=Math.min(165,368/(1+ratio)),d=r*ratio,center={x:400,y:240};
- const circles={benchmarking:{x:400-d,y:240},domain:{x:400,y:240+stagger},machines:{x:400+d,y:240}};
+ const circles={machines:{x:400-d,y:240},benchmarking:{x:400,y:240+stagger},domain:{x:400+d,y:240}};
  // Debug anchors only represent regions actually present in this geometry.
  const samples:Record<string,{x:number;y:number;n:number;points:{x:number;y:number}[]}>={};
  for(let y=70;y<440;y+=6)for(let x=90;x<710;x+=6){const ids=Object.entries(circles).filter(([,c])=>Math.hypot(x-c.x,y-c.y)<r).map(([id])=>id as DirectionId);if(!ids.length)continue;const key=regionKey(ids),p=samples[key]??={x:0,y:0,n:0,points:[]};p.x+=x;p.y+=y;p.n++;p.points.push({x,y});}
@@ -15,7 +15,11 @@ export function researchGeometry(ratio=1.33,stagger=18){
 /** Letter baselines share the ink circle's center. The lower arc needs an
  * extra cap height because upright letters extend inward from its baseline. */
 export function researchLabelArc(g:ReturnType<typeof researchGeometry>,id:DirectionId,scale=.8){
- const c=g.circles[id],bottom=id==='domain',radius=g.r+(bottom?32:14)/scale;
+ const c=g.circles[id],bottom=id==='benchmarking',radius=g.r+(bottom?36:20)/scale;
+ // Turn the outside labels away from the neighbouring circles, keeping both
+ // ink copies on exactly the same concentric path.
+ const rotation=id==='machines'?-12:id==='domain'?12:0,angle=rotation*Math.PI/180;
+ const dx=radius*Math.cos(angle),dy=radius*Math.sin(angle);
  return {radius,cx:c.x,cy:c.y,fontSize:18/scale,
-  path:`M ${c.x-radius} ${c.y} A ${radius} ${radius} 0 0 ${bottom?0:1} ${c.x+radius} ${c.y}`};
+  path:`M ${c.x-dx} ${c.y-dy} A ${radius} ${radius} 0 0 ${bottom?0:1} ${c.x+dx} ${c.y+dy}`};
 }

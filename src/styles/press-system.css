@@ -10,8 +10,9 @@
 #personal-site .he-print-word .he-type-a {transform:translate(calc(-1 * clamp(-.025em,var(--registration-x),.025em)),calc(-1 * clamp(-.015em,var(--registration-y),.015em)));}
 #personal-site :is(.he-project h3,.he-artifact h2) a {text-decoration:none;display:inline;}
 @media (hover:hover){#personal-site :is(.he-project h3,.he-artifact h2) a:hover {text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:8px;}}
-#personal-site .he-project-resources a,#personal-site .he-contact a {text-decoration:none;border-bottom:1.5px solid var(--ink);padding-block:4px;}
-@media (hover:hover){#personal-site .he-project-resources a:hover,#personal-site .he-contact a:hover {border-bottom-width:3px;}}
+#personal-site .he-project-resources a,#personal-site .he-contact a {text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px;border-bottom:1.5px solid transparent;padding-block:4px;}
+@media (hover:hover){#personal-site .he-project-resources a:hover,#personal-site .he-contact a:hover {text-decoration-thickness:3px;}}
+#personal-site .he-project-resources a:focus-visible,#personal-site .he-contact a:focus-visible {text-decoration-thickness:3px;}
 #personal-site .he-item-meta {font:500 11px/1.7 var(--metadata-face);letter-spacing:.025em;color:var(--ink);}
 #personal-site .he-item-meta strong {font-weight:500;background:var(--ink);color:var(--paper);padding:4px 6px;margin-right:8px;box-decoration-break:clone;}
 #personal-site .he-theme-tags {gap:8px 18px;}

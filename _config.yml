@@ -204,6 +204,7 @@ exclude:
   - bin
   - Gemfile
   - Gemfile.lock
+  - design-lab/archive
   - vendor
 keep_files:
   - CNAME

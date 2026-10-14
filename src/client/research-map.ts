@@ -18,8 +18,8 @@ if(root&&map){
   if(!recipe)return;
   links.forEach(link=>{
    const arc=researchLabelArc(recipe.geometry,link.dataset.memberships as DirectionId,recipe.scale);
-   const path=link.querySelector<SVGPathElement>('.rm-label-hit')!,text=link.querySelector<SVGTextElement>('text')!;
-   path.setAttribute('d',arc.path);path.setAttribute('stroke-width',String(28/recipe.scale));text.style.fontSize=`${arc.fontSize}px`;
+   const path=link.querySelector<SVGPathElement>('.rm-label-hit')!;
+   path.setAttribute('d',arc.path);path.setAttribute('stroke-width',String(28/recipe.scale));link.querySelectorAll<SVGTextElement>('text').forEach(text=>text.style.fontSize=`${arc.fontSize}px`);
   });
  }
  function composite(entryElapsed?:number){

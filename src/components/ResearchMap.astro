@@ -1,4 +1,5 @@
 ---
+import InkText from './InkText.astro';
 import {staticResearchPreview} from '../design/research-static.mjs';
 import {directions} from '../data/research-map';
 import {researchRecipe} from '../design/research-render';
@@ -10,14 +11,16 @@ const s=resolve(design,'home').values,recipe=researchRecipe(s,design,640,undefin
 const fallback=await staticResearchPreview(recipe);
 ---
 <div class="research-map" data-view={s.researchView} aria-describedby="research-map-description">
- <p id="research-map-description" class="rm-sr">Three horizontally overlapping ink circles represent research directions. Blue: Benchmarking; orange: Domain application; yellow: Machines. Follow a direction to explore its projects.</p>
+ <p id="research-map-description" class="rm-sr">Three horizontally overlapping ink circles represent research directions. Blue: {directions.find(d=>d.plate==='blue')!.label}; orange: {directions.find(d=>d.plate==='orange')!.label}; yellow: {directions.find(d=>d.plate==='yellow')!.label}. Follow a direction to explore its projects.</p>
  <div class="rm-diagram" aria-hidden="true"><img class="rm-fallback" src={fallback} width="640" height="400" alt=""/><canvas class="rm-inks" width="640" height="400" aria-hidden="true"></canvas></div>
  <ol class="rm-directions">{directions.map(d=>{const arc=researchLabelArc(g,d.id,recipe.scale);return <li>
   <a data-memberships={d.id} href={d.href} aria-label={d.label}>
-   <span class="rm-label-flat" aria-hidden="true">{d.label}</span>
+   <span class="rm-label-flat" aria-hidden="true"><InkText text={d.label}/></span>
    <svg class="rm-label-arc" viewBox="0 0 800 500" aria-hidden="true" focusable="false">
     <path id={`rm-label-${d.id}`} class="rm-label-hit" d={arc.path} stroke-width={28/recipe.scale}/>
-    <text style={`font-size:${arc.fontSize}px`}><textPath href={`#rm-label-${d.id}`} startOffset="50%" text-anchor="middle">{d.label}</textPath></text>
+    <g class="print-2ink rm-label-plates">
+     {(['a','b'] as const).map(ink=><text class={`rm-label-${ink}`} aria-hidden="true" style={`font-size:${arc.fontSize}px`}><textPath href={`#rm-label-${d.id}`} startOffset="50%" text-anchor="middle">{d.label}</textPath></text>)}
+    </g>
    </svg>
   </a>
  </li>})}</ol>
