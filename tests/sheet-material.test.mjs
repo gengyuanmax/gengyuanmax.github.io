@@ -17,7 +17,7 @@ test('native AM screen and ink transfer match the reference render for mono, duo
   reference.render(canvas,params,{});
   // Same RGBA original enters independent production and reference separation.
   const originals=separatePrintLab(rgba,{...params,mode}).tones,ids=['a','b','c'];
-  const press=onSheet({...pressSettings({...defaults,dotGain:0,grain:0,starvation:0,pressGrain:0,inkEdge:0}),band:0,pitch:6,angles:{a:15,b:45,c:75},shapes:{a:'round',b:'round',c:'round'},offset:{x:0,y:0}},1337,{x:0,y:0});
+  const press=onSheet({...pressSettings({...defaults,dotGain:0,grain:0,starvation:0,pressGrain:0,inkEdge:0}),band:0,pitch:6,angles:{a:15,b:45,c:75},shapes:{a:'round',b:'round',c:'round'},offset:{x:0,y:0},registration:{}},1337,{x:0,y:0});
   const layers=originals.flatMap((tone,i)=>tone?[{ink:ids[i],opaque:blend==='opaque',coverage:screenOriginal('reference-image',{kind:'photo',mask:new Float32Array(n*n).fill(1),tone},n,n,ids[i],press)}]:[]);
   const actual=paintMaterial(layers,n,n,colors,press);
   let max=0;for(let i=0;i<actual.length;i++)max=Math.max(max,Math.abs(actual[i]-expected[i]));

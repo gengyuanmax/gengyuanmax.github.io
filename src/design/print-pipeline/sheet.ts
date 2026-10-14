@@ -45,13 +45,15 @@ export function screenSheet<Id extends string>(tone:Float32Array,w:number,h:numb
 }
 export function paintSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,h:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale:number){
  const {seed,origin}=p.sheet!,f=sheetFields(seed),out=new Uint8ClampedArray(w*h*4),budget=noiseBudget.transfer;
- const two=plates.some(v=>v.ink==='a')&&plates.some(v=>v.ink==='b');
+ // Plates shift relative to the reference only where an element prints more than one
+ // of them; a single-plate element is its own reference (the approved look).
+ const multi=new Set(plates.map(v=>v.ink)).size>1;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const xx=x/scale+origin.x,yy=y/scale+origin.y,low=sheetInk(seed,xx,yy),m=Math.max(0,Math.min(1,(low-.42)/.38));
   // Absolute threshold, not a per-element histogram: cropping cannot change ink.
   const fraction=within(p.holes,budget.grainArea),fine=f.fine(xx,yy),grain=fraction?Math.max(0,(fraction-fine)/fraction):0;
   const strength=.96*(1-within(p.grain,budget.grainLoss)*grain)*(1-within(p.starve,budget.starvation)*m*m)*(1-within((p.band||0)*.5,budget.roller)*sheetRoller(p.sheet!,yy)),col=[...inks.paper];
-  for(const plate of plates){const reg=p.registration?.[plate.ink]||(two&&plate.ink==='b'?p.offset:{x:0,y:0}),sx=x-Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),sy=y-Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale);if(sx<0||sy<0||sx>=w||sy>=h)continue;
+  for(const plate of plates){const reg=multi?(plate.ink==='b'?p.offset:p.registration?.[plate.ink]??{x:0,y:0}):{x:0,y:0},sx=x-Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),sy=y-Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale);if(sx<0||sy<0||sx>=w||sy>=h)continue;
    const t=plate.coverage[sy*w+sx]*strength,k=inks[plate.ink];for(let channel=0;channel<3;channel++)col[channel]=plate.opaque?col[channel]+(k[channel]-col[channel])*t:col[channel]*(1-t*(1-k[channel]/255));
   }
   const i=(y*w+x)*4;out[i]=col[0];out[i+1]=col[1];out[i+2]=col[2];out[i+3]=col.every(v=>v===255)?0:255;
