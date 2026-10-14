@@ -1,0 +1,13 @@
+/* Measured print field for the source-native portrait and blue backing.
+   News retains its own vector geometry and finer, locally scaled screen. */
+#personal-site .he-portrait-flow {position:absolute;display:none;z-index:1;pointer-events:none;mix-blend-mode:multiply;}
+#personal-site .he-home[data-portrait-flow="ready"] .he-portrait-flow {display:block;}
+#personal-site .he-home[data-portrait-flow="ready"] .he-portrait img {opacity:0;mask-image:none;}
+#personal-site .he-home[data-portrait-flow="ready"] :is(.he-bridge-print,[data-style-element="plate-home"]) {visibility:hidden;}
+#personal-site .he-bridge[data-cue="portrait"] .he-cue-ink {display:none;}
+/* Bring the receiving ornament inward by two columns, shortening the print
+   transition without moving the news text or changing the reading order. */
+@container(min-width:1001px){
+ #personal-site .he-home[data-cue="portrait"] .he-news h2 {grid-column:3/5;top:-56px;font-size:clamp(48px,5cqw,64px);}
+ #personal-site .he-home[data-cue="portrait"] .he-news h2>.he-print-object {left:-28px;}
+}

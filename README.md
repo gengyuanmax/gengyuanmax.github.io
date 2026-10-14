@@ -1,21 +1,30 @@
-### Hi there 👋
-👨‍🎓 I am currently a PhD student at Ludwig-Maximilian University of Munich, aka LMU, aka University of Munich
+# Gengyuan Zhang · personal website
 
-📫 How to reach me:
-- zhang@dbs.ifi.lmu.de (work)
-- gengyuanmax@gmail.com (personal)
+https://gengyuanmax.github.io/
 
-<!--
-**gengyuanmax/gengyuanmax** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+An Astro site with a shared two-ink print system and a local design desk. The main composition is designed at 1440px and adapts to smaller screens.
 
-Here are some ideas to get you started:
+## Development
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+Use Node 22.19 or newer (CI uses 22.23.3).
+
+```sh
+npm ci
+npm run dev -- --port 4321
+```
+
+The site is at `/`; the local editor is at `/design/`.
+
+```sh
+npm test
+npm run check
+npm run build
+```
+
+## Maintenance
+
+- [Design constraints](docs/DESIGN_CONSTRAINTS.md)
+- [Architecture and editing](FRAMEWORK.md)
+- [Deployment and compatibility](docs/DEPLOYMENT.md)
+
+The initial Astro release is published from verified `dist/` files to the existing `gh-pages` branch. This source is kept on `codex/personal-brand-rebuild`. Automatic deployment is pending: `docs/deployment/deploy-astro.yml` is the ready template; the current main-branch workflow still builds Jekyll. Editor routes and local configuration APIs never enter the published bundle. The old `bin/deploy` script is not used.

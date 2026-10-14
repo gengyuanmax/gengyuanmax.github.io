@@ -1,0 +1,11 @@
+---
+import InkDefs from './InkDefs.astro';
+import {design} from '../config/design';
+import {resolve,styleText,designAttributes,type Area} from '../design/settings';
+const {id,area,text}=Astro.props as {id:string;area:Area;text:string};
+const s=resolve(design,area,id).values;
+---
+<span class="he-print-word" data-style-element={id} data-style-area-owner={area} {...designAttributes(s)} style={styleText(s,design)}>
+ <InkDefs element={id} area={area}/>
+ <span class="print-2ink he-type-line" style={`--letter-filter:url(#ink-${id})`}><span class="he-type-a" aria-hidden="true" data-ink-copy={text}></span><span class="he-type-b">{text}</span></span>
+</span>

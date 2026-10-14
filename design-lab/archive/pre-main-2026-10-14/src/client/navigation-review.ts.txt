@@ -1,0 +1,11 @@
+import {design} from '../config/design';
+import {getPalette,resolve} from '../design/settings';
+const frame=document.querySelector<HTMLIFrameElement>('#review-frame')!;
+const buttons=[...document.querySelectorAll<HTMLButtonElement>('[data-variant]')];
+let variant='swiss';
+const paper=getPalette(design,resolve(design).values.palette).paper;
+document.body.style.background=paper;document.body.style.setProperty('--review-paper',paper);
+function send(){const config=structuredClone(design);config.global.navigationStyle=variant;frame.contentWindow?.postMessage({type:'design:apply',config,grid:false},location.origin);}
+buttons.forEach(button=>button.addEventListener('click',()=>{variant=button.dataset.variant!;buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelector('#review-status')!.textContent=button.textContent;send();}));
+window.addEventListener('message',event=>{if(event.source===frame.contentWindow&&event.origin===location.origin&&event.data?.type==='design:ready')send();});
+document.querySelector<HTMLSelectElement>('#review-width')!.addEventListener('change',event=>{const value=(event.target as HTMLSelectElement).value;frame.style.width=value==='full'?'100%':`${value}px`;});

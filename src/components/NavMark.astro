@@ -1,0 +1,15 @@
+---
+import InkDefs from './InkDefs.astro';
+import type {Area} from '../design/settings';
+const {area,index}=Astro.props as {area:Area;index:number};
+const id=`nav-${area}`;
+---
+<span class="he-nav-shape" aria-hidden="true">
+ <InkDefs element={id} area={area}/>
+ <svg viewBox="0 0 40 40" class="he-mark" style={`filter:url(#ink-${id})`}>
+  <g class="he-mark-a"><circle cx="19" cy="19" r="13"/></g>
+  <g class="he-mark-b">
+  {index===0?<circle cx="19" cy="19" r="13"/>:index===1?<><circle cx="12" cy="12" r="7"/><circle cx="26" cy="26" r="7"/></>:index===2?<><path d="M4 10h30M4 20h30M4 30h20" fill="none" stroke="currentColor" stroke-width="4"/></>:<circle cx="24" cy="19" r="13" fill="none" stroke="currentColor" stroke-width="2"/>}
+  </g>
+ </svg>
+</span>

@@ -1,0 +1,29 @@
+{
+  "name": "gengyuan-zhang-personal-site",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "npm run media && astro build && node scripts/prepare-release.mjs && node scripts/verify-build.mjs",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "media": "node --experimental-strip-types scripts/render-media.mjs",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:server": "node tests/server-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.2.0",
+    "@fontsource/instrument-serif": "^5.2.0",
+    "astro": "^7.3.8",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "node": "^22.23.3",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,0 +1,36 @@
+---
+import '../styles/foundation.css';
+import '../styles/home.css';
+import '../styles/sections.css';
+import '../styles/editorial.css';
+import '../styles/navigation.css'; // Shared paper-and-ink index navigation.
+import '../styles/press-system.css'; // Shared printed objects, text, rules and compositions.
+import '../styles/quiet-modules.css';
+import '../styles/reading-flow.css';
+import '../styles/body-emphasis.css';
+import '../styles/editorial-tension.css';
+import '../styles/portrait-flow.css';
+import '../styles/portrait-composition.css';
+import '../styles/print-material.css';
+import '../styles/duotone-type.css';
+import {design} from '../config/design';
+import {resolve,styleText,designAttributes} from '../design/settings';
+const values=resolve(design).values;
+---
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>Gengyuan Zhang — 排版与风格草案</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=Newsreader:opsz,wght@6..72,400..600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Instrument+Serif&amp;display=swap"/>
+ </head>
+ <body style={styleText({palette:values.palette},design)}>
+  <div id="personal-site" style={styleText(values,design)} {...designAttributes(values)}>
+   <a class="skip-link" href="#site-content">跳到内容</a>
+   <slot/>
+   <span class="he-announcement" data-navigation-status aria-live="polite"/>
+  </div>
+  <script>import '../client/navigation';import '../client/cue';import '../client/artifacts';import '../client/reading-flow';import '../client/portrait-flow';import '../client/portrait-composition';import '../client/print-material';</script>
+ </body>
+</html>

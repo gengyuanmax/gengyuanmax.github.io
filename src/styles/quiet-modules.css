@@ -1,0 +1,95 @@
+/* Quiet editorial modules: same paper/inks as the work pages, smaller gestures.
+   Grounds stay attached to semantic modules; no content order or copy changes. */
+#personal-site .he-home .he-role {position:relative;isolation:isolate;padding:9px 10px 10px 12px;max-width:25ch;}
+#personal-site .he-home .he-role > .he-project-ground {top:0;bottom:0;}
+#personal-site .he-home .he-research-overview {isolation:isolate;}
+#personal-site .he-home .he-research-overview > .he-project-ground {top:-8px;bottom:20px;}
+#personal-site .he-home .he-pillars {gap:22px;}
+#personal-site .he-home .he-pillars .he-number {background:var(--paper);}
+#personal-site .he-home .he-pillars a {border-bottom:0;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;}
+#personal-site .he-home .he-contact {gap:10px 12px;}
+#personal-site .he-contact .he-contact-arrow {display:inline-block;margin-left:5px;padding:0;color:var(--ink);font:12px/1 var(--metadata-face);}
+#personal-site .he-home .he-news h2 {font-size:clamp(34px,4cqw,48px);padding-top:12px;}
+#personal-site .he-home .he-news h2 > .he-print-object {width:145px;height:88px;left:-10px;top:-8px;}
+#personal-site .he-home .he-date {border-left:0;border-top:2px solid var(--blue-ink);padding:5px 0 0;max-width:64px;}
+#personal-site .he-home .he-news li {gap:18px;padding-block:18px;}
+#personal-site .he-home .he-news li:first-child {padding-top:0;}
+
+/* Intro and headings read as short printed running heads, not containers. */
+#personal-site .he-quiet-heading {position:relative;isolation:isolate;display:flex;align-items:baseline;gap:14px;min-width:0;padding:12px 0 14px;margin-bottom:12px;}
+#personal-site .he-quiet-heading h2 {font:700 28px/1.15 var(--display-face);letter-spacing:-.035em;margin:0;min-width:0;}
+#personal-site .he-module-index {font:500 11px/1.4 var(--metadata-face);color:var(--blue-ink);flex:0 0 26px;border-bottom:2px solid currentColor;padding-bottom:4px;align-self:center;}
+#personal-site .he-heading-tick {width:30px;height:3px;flex:0 0 30px;background:var(--red-ink);align-self:center;margin-left:auto;}
+#personal-site .he-quiet-heading > .he-project-ground {top:4px;bottom:6px;}
+#personal-site .he-about-body {margin-top:36px;}
+#personal-site .he-about-body .he-secondary-list {gap:42px;}
+#personal-site .he-about-body .he-secondary-list > section {border:0;padding:0;}
+#personal-site .he-about-intro .he-quiet-heading h2 {font-size:32px;}
+#personal-site .he-about-intro .he-heading-tick {width:18px;flex-basis:18px;}
+#personal-site .he-about-intro > p {font-size:18px;line-height:1.7;max-width:54ch;margin-top:8px;}
+
+/* Date margin, ink ticks, and a continuous chronological thread. */
+#personal-site .he-about-body .he-timeline {--date-margin:128px;--date-gap:28px;position:relative;}
+#personal-site .he-about-body .he-timeline::before {content:"";position:absolute;left:calc(var(--date-margin) + var(--date-gap) / 2);top:26px;bottom:30px;width:1.5px;background:var(--blue-ink);pointer-events:none;}
+#personal-site .he-about-body .he-timeline li {position:relative;display:grid;grid-template-columns:var(--date-margin) minmax(0,1fr);column-gap:var(--date-gap);padding:20px 0 24px;border:0;}
+#personal-site .he-about-body .he-timeline li::before {content:"";position:absolute;width:7px;height:7px;border:1.5px solid var(--blue-ink);background:var(--paper);left:calc(var(--date-margin) + var(--date-gap) / 2 - 3px);top:28px;pointer-events:none;}
+#personal-site .he-about-body .he-timeline .he-item-meta {grid-column:1;margin:5px 0 0;padding:0;border:0;color:var(--ink);font:500 11px/1.7 var(--metadata-face);}
+#personal-site .he-timeline-content {min-width:0;}
+#personal-site .he-about-body .he-timeline h3 {font:600 19px/1.4 var(--reading-face);margin:0;}
+#personal-site .he-timeline-content p {font-size:var(--body-size);line-height:1.65;margin-top:8px;}
+#personal-site .he-timeline-content p + p {margin-top:10px;}
+#personal-site .he-about-contact {position:relative;margin-top:4px;padding-top:12px!important;border-top:2px solid var(--ink)!important;}
+#personal-site .he-about-contact .he-contact {margin-top:4px;gap:14px 24px;}
+
+/* Quiet side notes. The small closing motif belongs to Outside research. */
+#personal-site .he-about-personal {padding-top:0;}
+#personal-site .he-about-personal section + section {margin-top:44px;}
+#personal-site .he-about-personal .he-quiet-heading {padding-block:12px 10px;margin-bottom:10px;}
+#personal-site .he-about-personal .he-quiet-heading h2 {font-size:24px;}
+#personal-site .he-about-personal .he-heading-tick {width:18px;flex-basis:18px;height:2px;}
+#personal-site .he-about-personal p {font-size:14px;line-height:1.75;max-width:38ch;}
+#personal-site .he-about-funding > .he-item-meta {font:500 13px/1.8 var(--metadata-face);color:var(--ink);margin-top:6px;}
+#personal-site .he-about-reviewing {margin-left:24px;border-left:2px solid var(--blue-ink);padding-left:16px;}
+#personal-site .he-about-reviewing .he-heading-tick {display:none;}
+#personal-site .he-personal-heading {display:flex;align-items:center;gap:12px;}
+#personal-site .he-personal-heading .he-quiet-heading {flex:1;}
+#personal-site .he-personal-heading .he-heading-tick {display:none;}
+#personal-site .he-personal-heading > .he-print-object {width:78px;height:54px;flex:0 0 78px;}
+#personal-site .he-about-outside > p {margin-top:4px;}
+
+@container(min-width:721px) and (max-width:1000px){
+ #personal-site .he-home[data-home-composition="interlock"] .he-intro {grid-column:1/5;max-width:none;}
+ #personal-site .he-home[data-home-composition="interlock"] .he-research-overview {grid-column:5/9;padding-left:0;}
+}
+@container(max-width:1000px){
+ #personal-site .he-about-body .he-secondary-list {grid-column:1/-1;}
+ #personal-site .he-about-personal {grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 28px;margin-top:24px;}
+ #personal-site .he-about-personal section + section {margin-top:0;}
+ #personal-site .he-about-reviewing {margin-left:0;align-self:start;}
+ #personal-site .he-about-outside {grid-column:1/-1;max-width:56ch;}
+ #personal-site .he-about-outside p {max-width:56ch;}
+}
+@container(max-width:720px){
+ #personal-site .he-home .he-news h2 {min-height:72px;}
+ #personal-site .he-home .he-news h2 > .he-print-object {width:128px;height:78px;}
+ #personal-site .he-home .he-research-overview > .he-project-ground {bottom:24px;}
+}
+@container(max-width:600px){
+ #personal-site .he-about-body .he-timeline::before {left:3px;}
+ #personal-site .he-about-body .he-timeline li {display:block;padding:18px 0 24px 24px;}
+ #personal-site .he-about-body .he-timeline li::before {left:0;top:26px;}
+ #personal-site .he-about-body .he-timeline .he-item-meta {margin:0 0 10px;}
+ #personal-site .he-quiet-heading {gap:10px;}
+ #personal-site .he-quiet-heading h2 {font-size:26px;}
+ #personal-site .he-heading-tick {width:20px;flex-basis:20px;}
+ #personal-site .he-about-intro .he-quiet-heading h2 {font-size:28px;}
+ #personal-site .he-about-intro > p {font-size:var(--body-size);}
+ #personal-site .he-about-body .he-secondary-list {gap:32px;}
+}
+@container(max-width:500px){
+ #personal-site .he-about-personal {display:block;margin-top:30px;}
+ #personal-site .he-about-personal section + section {margin-top:32px;}
+ #personal-site .he-about-reviewing {margin-left:16px;}
+ #personal-site .he-home .he-news li {gap:12px;}
+ #personal-site .he-about-contact .he-contact {gap:12px 18px;}
+}

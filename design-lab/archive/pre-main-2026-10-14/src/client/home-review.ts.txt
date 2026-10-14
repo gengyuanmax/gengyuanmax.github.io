@@ -1,0 +1,34 @@
+import {design} from '../config/design';
+import {getPalette,resolve} from '../design/settings';
+const frame=document.querySelector<HTMLIFrameElement>('#review-frame')!;
+const buttons=[...document.querySelectorAll<HTMLButtonElement>('[data-variant]')];
+const grid=document.querySelector<HTMLInputElement>('#review-grid')!;
+let variant='interlock';
+const descriptions:Record<string,string>={open:'01：舒展留白备选。此处切换仅供对比，不改动已保存的首页。',interlock:'02：轻微叠压，已选用并保存。桌面姓名与人像已缩至原比例的 78%，保留字尾与肩部的轻微叠压。'};
+const paper=getPalette(design,resolve(design).values.palette).paper;
+document.body.style.background=paper;document.body.style.setProperty('--review-paper',paper);
+function send(){
+ const config=structuredClone(design);
+ config.global.navigationStyle='swiss';
+ config.areas.home={...config.areas.home,homeComposition:variant,portraitSpan:variant==='interlock'?5:4,nameIndent:1};
+ frame.contentWindow?.postMessage({type:'design:apply',config,grid:grid.checked},location.origin);
+}
+buttons.forEach(button=>button.addEventListener('click',()=>{variant=button.dataset.variant!;buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelector('#review-status')!.textContent=descriptions[variant];send();}));
+grid.addEventListener('change',send);
+window.addEventListener('message',event=>{if(event.source===frame.contentWindow&&event.origin===location.origin&&event.data?.type==='design:ready')send();});
+const widthControl=document.querySelector<HTMLSelectElement>('#review-width')!;
+const viewport=document.querySelector<HTMLElement>('.review-viewport')!;
+function sizeFrame(){
+ const value=widthControl.value,fit=value==='fit';
+ const scale=fit?Math.min(1,viewport.clientWidth/1440):1;
+ frame.style.width=fit?'1440px':value==='full'?'100%':`${value}px`;
+ frame.style.height=fit?'1300px':'';
+ frame.style.transformOrigin='top left';
+ frame.style.transform=fit?`scale(${scale})`:'';
+ frame.style.marginInline=fit?'0':'auto';
+ viewport.style.height=fit?`${1300*scale}px`:'';
+ viewport.style.overflow=fit?'hidden':'auto';
+}
+widthControl.addEventListener('change',sizeFrame);
+new ResizeObserver(sizeFrame).observe(viewport);
+sizeFrame();

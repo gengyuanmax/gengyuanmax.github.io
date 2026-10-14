@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "global": {
+    "palette": "blueVermilion",
+    "displayFont": "bricolage",
+    "bodyFont": "newsreader",
+    "bodySize": 18,
+    "emphasisFont": "bricolage",
+    "paperTexture": 0.08,
+    "toneLight": 225,
+    "toneNoise": 0.065,
+    "toneNoiseScale": 140,
+    "toneDirection": 0.45,
+    "tonePlaneMin": 0.7,
+    "tonePlaneMax": 0.95,
+    "toneSphereMin": 0.3,
+    "toneSphereMax": 0.95,
+    "readingWeight": 3,
+    "screenPitch": 4,
+    "primaryAngle": 75,
+    "secondaryAngle": 15,
+    "registration": 2,
+    "registrationY": 1,
+    "grain": 0.12,
+    "starvation": 0.12,
+    "dotGain": 0.2,
+    "grainSize": 1.5,
+    "inkEdge": 0.15,
+    "pressGrain": 0.03,
+    "seed": 5,
+    "primaryDotShape": "round",
+    "secondaryDotShape": "round",
+    "homeSectionGap": 56,
+    "homeBrandSize": 56,
+    "navigationStyle": "swiss",
+    "homeComposition": "interlock",
+    "portraitMaterial": "composition",
+    "compositionOperation": "over",
+    "compositionShape": "circle",
+    "rhythm": "editorial"
+  },
+  "areas": {
+    "home": {
+      "homeScale": 0.78
+    }
+  },
+  "elements": {
+    "home-name": {
+      "titleTreatment": "dotted",
+      "titleDotPitch": 0.0625,
+      "titleDotRadius": 0.34,
+      "titleLayerX": 0,
+      "titleLayerY": 0
+    },
+    "home-portrait": {
+      "imageMask": "source",
+      "compositionPitch": 4,
+      "compositionMis": 0.5,
+      "contrast": 1.3,
+      "printPitch": 4.5,
+      "printAngle": 15
+    },
+    "mark-benchmarking": {
+      "fieldCoverage": 0.28
+    },
+    "mark-applications": {
+      "fieldCoverage": 0.28
+    },
+    "mark-machines": {
+      "fieldCoverage": 0.28
+    },
+    "mark-mosaic": {
+      "fieldCoverage": 0.5
+    },
+    "mark-avila": {
+      "fieldCoverage": 0.32
+    },
+    "mark-printlab": {
+      "fieldCoverage": 0.25,
+      "fieldScale": 0.85
+    },
+    "mark-about": {
+      "fieldCoverage": 0.18,
+      "fieldOverlap": 0.7,
+      "fieldScale": 0.85
+    },
+    "ground-mosaic": {
+      "groundInk": "primary",
+      "groundOpacity": 0,
+      "groundWidth": 96
+    },
+    "ground-avila": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 91
+    },
+    "ground-about-intro": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 76,
+      "groundBleed": 8
+    },
+    "ground-about-education": {
+      "groundOpacity": 0,
+      "groundWidth": 64,
+      "groundBleed": 8,
+      "groundEdge": "cut"
+    },
+    "ground-about-funding": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 92,
+      "groundBleed": 8
+    },
+    "plate-about": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-benchmarking": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-applications": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-machines": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    }
+  }
+}

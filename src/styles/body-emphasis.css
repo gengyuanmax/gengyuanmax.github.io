@@ -1,0 +1,23 @@
+/* Clone the ink decoration per line when a phrase wraps. */
+#personal-site :is(.em-ink,.em-knock){font:inherit;letter-spacing:inherit;text-decoration:none;border-radius:0;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+#personal-site .em-ink{
+ color:var(--blue-ink);padding-inline:.08em;margin-inline:-.08em;
+ background-image:var(--emphasis-dots);background-repeat:repeat-x;
+ background-size:var(--emphasis-tile) .45em;
+ /* Discount the typeface's descender space, then offset the ink down 1–2px. */
+ background-position:var(--emphasis-offset) calc(100% - .2em + var(--emphasis-offset));
+}
+#personal-site .em-knock{
+ color:var(--paper);padding-inline:.15em;
+ /* A flat rectangle, shifted 1px; identical stops do not shade it. */
+ background-image:linear-gradient(var(--blue-ink),var(--blue-ink));background-repeat:no-repeat;
+ background-size:calc(100% - 1px) calc(100% - 1px);background-position:1px 1px;
+}
+/* Links win in either nesting order. No emphasis in headings or metadata. */
+#personal-site :is(a,h1,h2,h3,h4,nav,.he-item-meta,.he-meta,.he-theme-tags) :is(.em-ink,.em-knock),
+#personal-site :is(.em-ink,.em-knock):is(a,:has(a)){color:inherit;background:none;padding:0;margin:0;font:inherit;}
+#personal-site a:is(.em-ink,.em-knock),#personal-site :is(.em-ink,.em-knock) a{text-decoration:underline;}
+@media print,(forced-colors:active){
+ #personal-site :is(.em-ink,.em-knock){background:none;color:inherit;font-family:"Newsreader","Songti SC",Georgia,serif;font-weight:600;padding:0;margin:0;}
+ #personal-site a:is(.em-ink,.em-knock),#personal-site a :is(.em-ink,.em-knock),#personal-site :is(.em-ink,.em-knock):has(a){font-weight:inherit;}
+}

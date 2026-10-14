@@ -1,0 +1,96 @@
+import {initScreenAudit} from './screen-audit';
+import '../styles/layout-study.css';
+import {projects} from '../data/content';
+import {preferredResource} from '../data/catalog';
+type Recipe={variant:'fan'|'side';prefix:string;core:string;gap:number;size:number;guide:boolean;flow:boolean;proof?:'overprint'|'red'|'blue';name?:'screened'|'solid';screenAudit?:boolean};
+const root=document.querySelector<HTMLElement>('#personal-site')!;
+const home=root.querySelector<HTMLElement>('.he-home')!;
+initScreenAudit(root);
+let mounted=false,raf=0,lastHeight=0;
+let brand:HTMLElement,overview:HTMLElement,research:HTMLElement,svg:SVGSVGElement;
+const ns='http://www.w3.org/2000/svg';
+function mount(){
+ const name=home.querySelector<HTMLElement>('.he-name')!;
+ const intro=home.querySelector<HTMLElement>('.he-intro')!;
+ const portrait=home.querySelector<HTMLElement>('.he-portrait')!;
+ brand=home.querySelector<HTMLElement>('.he-brand')!;
+ overview=home.querySelector<HTMLElement>('.he-research-overview')!;
+ const profile=document.createElement('div');profile.className='he-layout-profile';
+ research=document.createElement('section');research.className='he-layout-research';research.setAttribute('aria-labelledby','research-core');
+ profile.append(name,intro,portrait);research.append(brand,overview);home.prepend(profile,research);
+ // One heading labels the entire research group; its ordered list is the breakdown.
+ overview.removeAttribute('aria-labelledby');
+ // Paper links reuse existing project records; no new publication claims.
+ for(const item of overview.querySelectorAll<HTMLElement>('.he-pillars>li')){
+  const id=item.querySelector('h3 a')?.getAttribute('href')?.slice(1);
+  const list=document.createElement('ul');list.className='he-branch-papers';
+  for(const project of Object.values(projects).filter(p=>p.primaryTheme===id)){
+   const resource=preferredResource(project.links);if(!resource)continue;
+   const li=document.createElement('li'),a=document.createElement('a');a.href=resource.href;a.textContent=project.title;li.append(a);list.append(li);
+  }
+  item.querySelector('div')!.append(list);
+ }
+ for(const date of home.querySelectorAll('.he-date'))date.textContent=date.textContent!.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1');
+ const guides=home.querySelector('.he-grid-guides')!.cloneNode(true);root.querySelector('.he-nav-shell')!.append(guides);
+ const heading=brand.querySelector('h2')!;
+ heading.replaceChildren();
+ for(const className of ['he-slogan-prefix','he-slogan-core']){const span=document.createElement('span');span.className=className;heading.append(span);}
+ svg=document.createElementNS(ns,'svg');svg.classList.add('he-layout-branches');svg.setAttribute('aria-hidden','true');research.prepend(svg);
+ [name,intro,research,home.querySelector<HTMLElement>('.he-news')!].forEach((node,i)=>{node.dataset.layoutNode=['01 · 姓名','02 · 介绍与联系','03 · 品牌 → 三个方面','04 · News'][i];});
+ const observer=new ResizeObserver(schedule);[home,research,brand,overview,...overview.querySelectorAll('.he-pillars>li')].forEach(el=>observer.observe(el));
+ document.fonts.ready.then(schedule);window.addEventListener('resize',schedule);root.addEventListener('design:updated',schedule);
+ // Extra document height must follow navigation too, since the iframe shows real links.
+ new ResizeObserver(schedule).observe(root.querySelector('.he-window')!);
+ mounted=true;
+}
+function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}
+function draw(){
+ if(!mounted)return;
+ const box=research.getBoundingClientRect(),heading=brand.querySelector('h2')!.getBoundingClientRect();
+ const items=[...overview.querySelectorAll<HTMLElement>('.he-pillars>li')].map(el=>el.getBoundingClientRect());
+ const side=home.dataset.layoutStudy==='side'&&root.clientWidth>900;
+ const stacked=root.clientWidth<=720;
+ svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);svg.replaceChildren();
+ const xy=(x:number,y:number)=>`${(x-box.left).toFixed(1)} ${(y-box.top).toFixed(1)}`;
+ let start:{x:number;y:number},paths:string[]=[];
+ if(side){
+  start={x:heading.right+12,y:heading.top+heading.height*.5};
+  const endX=items[0].left-12,trunk=start.x+Math.max(12,(endX-start.x)*.3);
+  paths=items.map(r=>`M ${xy(start.x,start.y)} H ${(trunk-box.left).toFixed(1)} V ${(r.top+16-box.top).toFixed(1)} H ${(endX-box.left).toFixed(1)}`);
+ }else if(stacked){
+  start={x:items[0].left-18,y:heading.bottom+14};
+  paths=items.map(r=>`M ${xy(start.x,start.y)} V ${(r.top+13-box.top).toFixed(1)} H ${(r.left-5-box.left).toFixed(1)}`);
+ }else{
+  start={x:items[0].left+14,y:heading.bottom+14};
+  const bus=items[0].top-24;
+  paths=items.map(r=>`M ${xy(start.x,start.y)} V ${(bus-box.top).toFixed(1)} H ${(r.left+14-box.left).toFixed(1)} V ${(r.top-8-box.top).toFixed(1)}`);
+ }
+ // A single path prevents shared sections becoming darker through repeated blending.
+ for(const ink of ['a','b']){const path=document.createElementNS(ns,'path');path.setAttribute('d',paths.join(' '));path.classList.add(`he-branch-${ink}`);svg.append(path);}
+ const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',String(start.x-box.left));dot.setAttribute('cy',String(start.y-box.top));dot.setAttribute('r','4');svg.append(dot);
+ const height=Math.ceil(root.offsetTop+root.offsetHeight+24);
+ if(height!==lastHeight){lastHeight=height;parent.postMessage({type:'design:layout-ready',height},location.origin);}
+}
+export function applyLayoutStudy(input:unknown){
+ if(!input||typeof input!=='object')return;
+ const r=input as Recipe;
+ if(!['fan','side'].includes(r.variant)||typeof r.prefix!=='string'||typeof r.core!=='string')return;
+ if(!Number.isFinite(r.gap)||!Number.isFinite(r.size))return;
+ if(!mounted)mount();
+ home.dataset.nameStudy=r.name==='solid'?'solid':'screened';
+ root.dataset.screenAudit=String(r.screenAudit===true);
+ home.dataset.layoutStudy=r.variant;home.dataset.layoutGuide=String(r.guide===true);home.dataset.layoutFlow=String(r.flow===true);
+ home.style.setProperty('--layout-section-gap',`${Math.max(32,Math.min(104,r.gap))}px`);
+ home.style.setProperty('--layout-brand-size',`${Math.max(36,Math.min(68,r.size))}px`);
+ brand.querySelector('.he-slogan-prefix')!.textContent=r.prefix.slice(0,72);
+ const core=brand.querySelector('.he-slogan-core')!;
+ let title=core.querySelector<HTMLElement>('.he-type-line');
+ if(!title){title=document.createElement('span');title.className='print-2ink he-type-line he-type-shared';for(const ink of ['a','b']){const layer=document.createElement('span');layer.className=`he-type-${ink}`;if(ink==='a')layer.setAttribute('aria-hidden','true');title.append(layer);}core.replaceChildren(title);}
+ for(const layer of title.children){if(layer.classList.contains('he-type-a'))layer.setAttribute('data-ink-copy',r.core.slice(0,100));else if(layer.textContent!==r.core.slice(0,100))layer.textContent=r.core.slice(0,100);}
+ root.dataset.typeProof=['red','blue'].includes(r.proof||'')?r.proof!:'overprint';
+ root.dispatchEvent(new CustomEvent('design:type-updated'));
+ root.dispatchEvent(new CustomEvent('design:proof-updated'));
+ // Only this embedded lab hides author shortcuts; the site preview stays untouched.
+ root.dataset.layoutPreview='true';
+ root.dispatchEvent(new CustomEvent('design:navigate',{detail:'home'}));schedule();
+}

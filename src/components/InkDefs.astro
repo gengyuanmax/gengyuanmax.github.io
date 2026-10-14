@@ -1,0 +1,7 @@
+---
+import {design} from '../config/design';
+import {resolve,type Area} from '../design/settings';
+import {inkFilter} from '../design/ink';
+const {element,area}=Astro.props as {element:string;area:Area};
+---
+<svg class="he-ink-defs" aria-hidden="true" width="0" height="0"><defs data-ink-filter={element} data-ink-area={area} set:html={inkFilter(resolve(design,area,element).values,`ink-${element}`)}/></svg>

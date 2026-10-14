@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="design-token" content="__DESIGN_TOKEN__"><title>个人主页 · 1440 主版设计台</title><link rel="stylesheet" href="/src/styles/studio.css"></head>
+<body data-studio-view="__STUDIO_VIEW__"><header class="studio-bar"><strong>个人主页 · 1440 主版</strong><span id="view-state">阅读动线已确认 · 公开文案待确认</span><span id="standalone-scale" class="preview-only"></span><nav aria-label="设计工作入口"><a id="standalone-preview" class="desk-only" href="/design/?view=preview">独立预览 1440 主版 ↗</a><a class="preview-only" href="/design/">返回设计台</a><button id="preview-zoom" class="preview-only" type="button" aria-pressed="false">原尺寸检查</button><a href="/design/content/">文案确认 ↗</a></nav></header>
+<main class="studio-layout"><aside class="studio-controls" aria-label="主版本设计参数">
+ <p class="studio-help">姓名 → 介绍与联系 → 研究品牌与三个方向 → News。以 1440 为主版；其他宽度仅检查适配。</p>
+ <label>调整范围<select id="scope"><option value="global">全局</option><option value="area">页面</option><option value="element">单个元素</option></select></label>
+ <label id="target-label" hidden>选择对象<select id="target"></select></label>
+ <details class="studio-inspection"><summary>检查视图</summary>
+  <div class="studio-options"><label><input type="checkbox" id="grid">网格</label><label><input type="checkbox" id="flow">阅读顺序</label><label><input type="checkbox" id="screen-audit">网点图层</label></div>
+  <label>分版<select id="proof"><option value="overprint">双墨叠印</option><option value="red">朱红墨版</option><option value="blue">蓝墨版</option></select></label>
+  <div id="screen-legend" hidden><span data-level="coarse">字级 · 1/16em</span><span data-level="medium">图像 / 几何 · 4px</span><span data-level="fine">平网 · 2px</span><p id="screen-report" role="status" aria-live="polite"></p><p>标记色仅用于检查。原尺寸更适合检查网点。</p></div>
+ </details>
+ <label>预览宽度<select id="width"><optgroup label="1440 主版"><option value="fit" selected>1440 主版 · 整幅</option><option value="1440">1440 主版 · 原尺寸</option></optgroup><optgroup label="适配检查"><option value="window">当前窗口 · 适配检查</option><option value="768">768 · 平板适配</option><option value="375">375 · 手机适配</option><option value="320">320 · 窄屏适配</option></optgroup></select></label><p id="preview-scale" class="studio-help" role="status"></p>
+ <nav class="studio-modes" aria-label="调整内容"><button type="button" data-panel="layout" aria-pressed="true">排版与构图</button><button type="button" data-panel="press" aria-pressed="false">印刷与素材</button></nav>
+ <form id="parameters"></form>
+ <div class="studio-actions"><button id="save" type="button">保存主版本</button><button id="revert" type="button">恢复已保存配置</button><button id="export" type="button">导出配置</button></div>
+ <p id="status" role="status" aria-live="polite">加载主版本…</p>
+ </aside><section class="studio-preview" aria-label="主版本预览"><div class="studio-stage"><iframe id="preview" src="/" title="个人主页主版本预览"></iframe></div></section></main>
+<script type="module" src="/src/client/studio.ts"></script></body></html>

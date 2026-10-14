@@ -1,0 +1,30 @@
+---
+import EmphasisText from '../EmphasisText.astro';
+import {bodyEmphasis} from '../../config/body-emphasis';
+import GridGuides from '../GridGuides.astro';
+import Styled from '../Styled.astro';
+import PrintTitle from '../PrintTitle.astro';
+import PrintMotif from '../PrintMotif.astro';
+import PrintWord from '../PrintWord.astro';
+import MediaPlaceholder from '../MediaPlaceholder.astro';
+import {artifacts,artifactCategories,sectionCopy,printLabModules} from '../../data/content';
+import {artifactGroups,preferredResource,resourceEntries} from '../../data/catalog';
+import {artifactComposition,placements} from '../../config/compositions';
+const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-icq',d:'word-wikitilo',e:'word-mevtr'};
+---
+<GridGuides/>
+<header class="he-artifacts-masthead"><PrintTitle id="artifacts-title" area="artifacts" lines={["Artifacts"]}/><p>{sectionCopy.artifacts}</p></header>
+<div class="he-artifact-controls" hidden>
+ <div role="group" aria-label="作品编排"><button type="button" data-artifact-mode="date" aria-pressed="true">按时间</button><button type="button" data-artifact-mode="category" aria-pressed="false">按类别</button></div>
+ <label>类别 <select data-artifact-filter><option value="all">全部</option>{Object.entries(artifactCategories).map(([id,label])=><option value={id}>{label}</option>)}</select></label>
+ <span class="he-announcement" data-artifact-status role="status"/>
+</div>
+<div class="he-artifact-groups">{<div class="he-artifact-spread" data-reading-host>{artifactGroups(Object.values(artifacts),'date')[0].entries.map((item,index)=>{
+ const placement=artifactComposition[index%artifactComposition.length];const id=`artifact-${placement.id}`;const position=placements[id as keyof typeof placements];const resource=preferredResource(item.links);
+ return <Styled as="article" id={id} area="artifacts" style={`--item-row:${position.row+Math.floor(index/artifactComposition.length)*3}`} data-flow-label={item.title} class={`he-artifact he-artifact-${placement.slot}`} data-content-id={`artifact-${item.id}`}>
+ <span class="he-reading-marker" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
+ {item.id==='a'&&<div class="he-print-lab-spread"><PrintMotif id="mark-printlab"/>{printLabModules.map((lab,i)=><a href={lab.href}><img src={lab.image} width="250" height="320" alt={`${lab.name} — Print Lab preview`} loading="lazy"/><span>{String(i+1).padStart(2,'0')} / {lab.name}</span></a>)}</div>}
+ {item.id==='b'&&<PrintMotif id="mark-paper"/>}{item.id==='d'&&<PrintMotif id="mark-wikitilo"/>}{item.id==='e'&&<PrintMotif id="mark-mevtr"/>}
+ {item.previewRatio&&<MediaPlaceholder ratio={item.previewRatio} label="[作品展示素材]"/>}<p class="he-item-meta">{item.featured&&<strong>Selected · </strong>}{item.form} · {item.publishedAt?<time datetime={item.publishedAt}>{item.publishedAt}</time>:item.metadata}</p><h2>{resource?<a href={resource.href}><PrintWord id={wordIds[item.id]} area="artifacts" text={item.title}/><span class="he-external-mark" aria-hidden="true"> ↗</span></a>:item.title}</h2><p class="he-artifact-description"><EmphasisText text={item.description} phrase={bodyEmphasis.artifacts[item.id]}/></p><div class="he-project-resources">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{kind==='page'?'Explore':kind==='github'?'GitHub':kind==='arxiv'?'arXiv':kind==='dataset'?'Dataset':kind}</a>)}</div>
+ </Styled>;
+})}</div>}</div>

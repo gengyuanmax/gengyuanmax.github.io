@@ -1,0 +1,115 @@
+import {typeScreenLevel} from '../design/screen';
+import {recordScreen,clearScreen} from './screen-data';
+import {design} from '../config/design';
+import {resolve,getPalette,type DesignConfig,type Area} from '../design/settings';
+import {screenPlate,paintMaterial,pressSettings,elementPress,materialVersion} from '../design/press-material';
+import {rgb,type Plate} from '../design/element-composition';
+import {makeToneField,toneSettings} from '../design/tone-field';
+import {rememberTone} from './tone-proof';
+
+const root=document.querySelector<HTMLElement>('#personal-site');
+if(root){
+ let config:DesignConfig=design,frame=0,generation=0;
+ const signatures=new WeakMap<SVGSVGElement,string>();
+ const inkSignatures=new WeakMap<HTMLElement,string>();
+ const observer=new ResizeObserver(schedule);
+ root.querySelectorAll<SVGSVGElement>('[data-print-field]').forEach(el=>observer.observe(el));
+ root.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>observer.observe(el));
+ root.querySelectorAll<HTMLElement>('.he-project-ground').forEach(el=>observer.observe(el));
+ function textureMask(el:HTMLElement,ink:'a'|'b',s:ReturnType<typeof resolve>['values'],letterScreen=false){
+  const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(el.clientWidth*dpr),h=Math.round(el.clientHeight*dpr);if(!w||!h)return;
+  const ground=el.classList.contains('he-project-ground'),owner=el.closest<HTMLElement>('[data-style-element]')!;
+  const identity=(owner?.dataset.styleElement||'shared-type')+(ground?'':':'+(el.dataset.inkCopy||el.textContent));
+  const fontSize=parseFloat(getComputedStyle(el).fontSize);
+  const level=ground?'fine':letterScreen?(typeScreenLevel(fontSize)??'fine'):'coarse';
+  const p=elementPress(pressSettings(s,level,fontSize),identity,ground?'field':'title',fontSize);
+  const bounds=el.getBoundingClientRect(),page=(el.closest('.he-page')||root!).getBoundingClientRect(),origin={x:bounds.left-page.left,y:bounds.top-page.top};
+  if(letterScreen&&ink==='b'){origin.x-=p.offset.x;origin.y-=p.offset.y;}
+  const key=JSON.stringify([w,h,p,ink,ground||letterScreen?origin:null,ground?s.groundOpacity:null,letterScreen,s.titleDotRadius]);if(inkSignatures.get(el)===key)return;
+  let flat=new Float32Array(w*h).fill(ground?s.groundOpacity:1);
+  if(ground){
+   const rim=Math.max(1,Math.round(p.edge*dpr));
+   for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x<rim||y<rim||x>=w-rim||y>=h-rim)flat[y*w+x]=0;
+   const tone=makeToneField(flat,w,h,dpr,'plane',toneSettings(s),p.seed);
+   flat=screenPlate(tone,w,h,ink,p,dpr,origin);
+   if(import.meta.env.DEV)rememberTone(identity,tone,flat,w,h,dpr);
+   el.dataset.toneSource='plane';
+  }
+  if(letterScreen){flat.fill(Math.PI*s.titleDotRadius*s.titleDotRadius);flat=screenPlate(flat,w,h,ink,p,dpr,origin);}
+  if(ground||letterScreen)recordScreen(el,p,ink,letterScreen?fontSize:undefined);else clearScreen(el);
+  const data=paintMaterial([{ink,coverage:flat}],w,h,{a:[0,0,0],b:[0,0,0],paper:[255,255,255]},{...p,offset:{x:0,y:0}},dpr);
+  // The existing DOM glyph/rectangle supplies the shape. The exact same
+  // Print Lab ink transfer supplies its alpha, independently for each plate.
+  for(let i=0;i<data.length;i+=4){const alpha=255-data[i];data[i]=data[i+1]=data[i+2]=0;data[i+3]=alpha;}
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d')!.putImageData(new ImageData(data,w,h),0,0);
+  el.style.maskImage=`url(${canvas.toDataURL()})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';inkSignatures.set(el,key);
+ }
+ async function mask(markup:string,w:number,h:number){
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true})!;
+  const image=new Image(),url=URL.createObjectURL(new Blob([`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 360 220"><g fill="black" color="black">${markup}</g></svg>`],{type:'image/svg+xml'}));
+  try{await new Promise<void>((ok,bad)=>{image.onload=()=>ok();image.onerror=bad;image.src=url;});ctx.drawImage(image,0,0);}finally{URL.revokeObjectURL(url);}
+  const rgba=ctx.getImageData(0,0,w,h).data;return Float32Array.from({length:w*h},(_,i)=>rgba[i*4+3]/255);
+ }
+ function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>void render());}
+ async function render(){
+  const run=++generation;
+  root!.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>{
+   const size=parseFloat(getComputedStyle(el).fontSize),large=size>=48;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<=16);
+   if(el.closest('.he-page')?.getAttribute('aria-hidden')==='true')return;
+   const owner=el.closest<HTMLElement>('[data-style-element]'),area=owner?.dataset.styleAreaOwner||el.closest<HTMLElement>('[data-style-area]')?.dataset.styleArea;
+   const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
+   for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
+    const dotted=s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
+    if(dotted||large)textureMask(layer,ink,s,dotted);else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkSignatures.delete(layer);clearScreen(layer);}
+   }
+  });
+  root!.querySelectorAll<HTMLElement>('.he-project-ground').forEach(el=>{
+   if(el.closest('.he-page')?.getAttribute('aria-hidden')==='true')return;
+   const s=resolve(config,el.dataset.styleAreaOwner as Area,el.dataset.styleElement).values;if(s.groundOpacity===0){clearScreen(el);return;}
+   textureMask(el,s.groundInk==='primary'?'b':'a',s);
+  });
+  for(const svg of root!.querySelectorAll<SVGSVGElement>('[data-print-field]')){
+   const bounds=svg.getBoundingClientRect();if(!bounds.width||!bounds.height)continue;
+   if(svg.closest('.he-page')?.getAttribute('aria-hidden')==='true')continue;
+   const el=svg.parentElement!,page=svg.closest('.he-page')!.getBoundingClientRect();
+   const s=resolve(config,svg.dataset.printArea as Area,svg.dataset.printField).values,global=resolve(config).values;
+   const p=elementPress(pressSettings({...s,registration:global.registration,registrationY:global.registrationY}),svg.dataset.printField!,'field');
+   const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(bounds.width*dpr),h=Math.round(bounds.height*dpr),origin={x:bounds.left-page.left,y:bounds.top-page.top};
+   const palette=getPalette(config,s.palette),proof=root!.dataset.typeProof,key=JSON.stringify([w,h,s.fieldCoverage,s.fieldOverlap,p,palette,origin,proof]);if(signatures.get(svg)===key)continue;
+   try{
+    const plates:Plate[]=[],screenedInks=new Set<'a'|'b'>();
+    for(const ink of ['a','b'] as const){
+     const children=[...(svg.querySelector(`.he-field-${ink}`)?.children||[])];
+     const coverage=new Float32Array(w*h);
+     for(const [index,node] of children.entries()){
+      const patterned=(node.getAttribute('fill')||'').startsWith('url('),e=node.cloneNode(true) as Element;
+      if(patterned)e.setAttribute('fill','black');
+      const source=await mask(e.outerHTML,w,h);if(run!==generation)return;
+      const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
+      const screened=patterned||ring;if(screened)screenedInks.add(ink);
+      const kind=e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
+      const tone=screened?makeToneField(source,w,h,dpr,kind,toneSettings(s,ring?1:s.fieldCoverage/.42),p.seed+index*97):source;
+      const printed=screenPlate(tone,w,h,ink,p,dpr,origin,!screened);
+      if(import.meta.env.DEV&&screened)rememberTone(`${svg.dataset.printField}:${ink}:${index}`,tone,printed,w,h,dpr);
+      for(let i=0;i<coverage.length;i++)coverage[i]=Math.max(coverage[i],printed[i]);
+     }
+     plates.push({ink,coverage});
+    }
+    const pixels=paintMaterial(plates,w,h,{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]},p,dpr);
+    let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field');
+    if(!canvas){canvas=document.createElement('canvas');canvas.className='he-material-field';canvas.setAttribute('aria-hidden','true');el.append(canvas);}
+    canvas.width=w;canvas.height=h;canvas.getContext('2d')!.putImageData(new ImageData(pixels,w,h),0,0);
+    recordScreen(canvas,p,[...screenedInks].join('') as 'a'|'b'|'ab');
+    canvas.dataset.pressRecipe=JSON.stringify({level:p.level,shapes:p.shapes,pitch:p.pitch,angles:p.angles,offset:p.offset,origin,tone:p.tone,units:'CSS px',materialVersion});
+    el.dataset.materialReady='true';signatures.set(svg,key);
+   }catch(error){console.warn('Keeping vector print fallback.',error);}
+  }
+  root!.dispatchEvent(new CustomEvent('design:screen-rendered'));
+ }
+ root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
+ root.addEventListener('design:type-updated',()=>{root!.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>observer.observe(el));schedule();});
+ root.addEventListener('design:proof-updated',schedule);
+ root.addEventListener('transitionend',schedule);window.addEventListener('resize',schedule);void document.fonts.ready.then(schedule);schedule();
+ const pageObserver=new MutationObserver(schedule);root.querySelectorAll('.he-page').forEach(page=>pageObserver.observe(page,{attributes:true,attributeFilter:['aria-hidden']}));
+}

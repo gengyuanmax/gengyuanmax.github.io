@@ -1,0 +1,12 @@
+---
+import Styled from './Styled.astro';
+import {printObjects} from '../config/print-objects';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+import {motifMarkup} from '../design/motifs';
+const {id,class:className=''}=Astro.props as {id:keyof typeof printObjects;class?:string};
+const {area,kind}=printObjects[id];
+---
+<Styled as="span" id={id} area={area} class={`he-print-object ${className}`} aria-hidden="true">
+ <svg class="he-print-field" viewBox="0 0 360 220" data-print-field={id} data-print-kind={kind} data-print-area={area} set:html={motifMarkup(resolve(design,area,id).values,id,kind)}/>
+</Styled>

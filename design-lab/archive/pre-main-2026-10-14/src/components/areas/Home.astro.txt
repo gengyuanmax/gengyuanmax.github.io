@@ -1,0 +1,22 @@
+---
+import InkText from '../InkText.astro';
+import EmphasisText from '../EmphasisText.astro';
+import {bodyEmphasis} from '../../config/body-emphasis';
+import GridGuides from '../GridGuides.astro';
+import PrintMedia from '../PrintMedia.astro';
+import PrintTitle from '../PrintTitle.astro';
+import HomeBridge from '../HomeBridge.astro';
+import PrintWord from '../PrintWord.astro';
+import PrintMotif from '../PrintMotif.astro';
+import PrintGround from '../PrintGround.astro';
+import {profile,pillars,news} from '../../data/content';
+---
+<GridGuides />
+<PrintTitle id="home-name" area="home" class="he-name" lines={profile.name}/>
+<div class="he-brand" data-flow-label="Visual Intelligence"><svg viewBox="0 0 40 32" aria-hidden="true"><circle cx="15" cy="16" r="12"/><path d="M20 4h16v24H20"/></svg><h2 id="research-core"><InkText text={profile.core}/></h2></div>
+<div class="he-intro" data-flow-label="简介"><p class="he-role"><PrintGround id="ground-home-role"/>{profile.role.map(part=><span>{part}<br /></span>)}</p><p class="he-bio"><EmphasisText text={profile.bio} phrase={bodyEmphasis.home}/></p><nav class="he-contact" aria-label="Profile links">{profile.contacts.slice(0,3).map(link=><a href={link.href}>{link.label}<span class="he-contact-arrow" aria-hidden="true">↗</span></a>)}</nav></div>
+<section data-flow-label="Visual intelligence · 三个方向" class="he-research-overview" aria-labelledby="research-core"><PrintGround id="ground-home-pillars"/><ol class="he-pillars">{pillars.map((p,i)=><li><span class="he-number"><InkText text={String(i+1).padStart(2,'0')}/></span><div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3>{p.detail&&<p>{p.detail}</p>}</div></li>)}</ol></section>
+<PrintGround id="plate-home"/>
+<PrintMedia />
+<HomeBridge/>
+<section data-flow-label="News" class="he-news" aria-labelledby="news-heading"><h2 id="news-heading"><PrintMotif id="mark-news"/><PrintWord id="word-news" area="home" text="News"/></h2><div class="he-news-scroll" role="region" aria-labelledby="news-heading" tabindex="0" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{n.date}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div></section>

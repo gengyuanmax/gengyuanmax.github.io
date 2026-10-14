@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Navigation from '../components/Navigation.astro';
+import Home from '../components/areas/Home.astro';
+import Research from '../components/areas/Research.astro';
+import Artifacts from '../components/areas/Artifacts.astro';
+import About from '../components/areas/About.astro';
+import {navigation} from '../data/content';
+import {design} from '../config/design';
+import {resolve,styleText,designAttributes} from '../design/settings';
+const components={home:Home,research:Research,artifacts:Artifacts,about:About};
+const classes={home:'he-home',research:'he-research-page',artifacts:'he-artifacts-page',about:'he-secondary'};
+---
+<Base>
+ <div class="he-site">
+  <Navigation/>
+  <main class="he-window" id="site-content" tabindex="-1"><div class="he-track">{navigation.map(item=>{
+   const Component=components[item.id];
+   return <section class:list={['he-page',classes[item.id]]} id={item.id} aria-label={item.label} data-style-area={item.id} data-home-layout={item.id==='home'?'main':undefined} {...designAttributes(resolve(design,item.id).values)} style={styleText(design.areas[item.id]||{},design)}><Component/></section>;
+  })}</div></main>
+ </div>
+ {import.meta.env.DEV&&<div class="author-entry"><a href="/design/">本地设计台</a><a href="/design/content/">内容确认稿</a><span>阅读动线已确认 · 公开文案待确认</span></div>}
+</Base>

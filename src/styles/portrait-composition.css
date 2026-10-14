@@ -1,0 +1,18 @@
+/* The selected Element Lab composition is one local print group. */
+#personal-site .he-portrait-composition{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:multiply;}
+#personal-site .he-portrait[data-material="composition"]{padding-top:0;mix-blend-mode:multiply;}
+#personal-site .he-portrait[data-material="composition"] img{transform:none;mix-blend-mode:multiply;border-radius:0;mask-image:none;}
+#personal-site .he-portrait[data-material="composition"][data-composition-ready="true"] img{opacity:0;}
+#personal-site .he-portrait[data-material="composition"][data-composition-ready="true"] .he-portrait-composition{display:block;}
+#personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) [data-style-element="plate-home"],
+#personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) .he-bridge-print,
+#personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) .he-portrait-flow{display:none;}
+#personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) .he-bridge{height:28px;margin-top:0;}
+@container(min-width:1001px){
+ #personal-site .he-home[data-home-composition] .he-portrait[data-material="composition"]{grid-column:calc(13 - var(--portrait-span))/13;margin-left:0;}
+ #personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) .he-news h2{grid-column:1/5;top:0;}
+}
+@container(max-width:720px){
+ #personal-site .he-portrait[data-material="composition"]{max-width:280px;}
+ #personal-site .he-home:is([data-material="composition"],[data-portrait-composition="true"]) .he-bridge{height:20px;}
+}

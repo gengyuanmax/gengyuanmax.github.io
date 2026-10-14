@@ -1,0 +1,94 @@
+import {operations,type Operation} from '../design/element-composition';
+import {canvasLayers,paintComposition} from '../design/composition-canvas';
+import {selectedComposition} from '../config/portrait-composition';
+import {compositionStudy as recipe} from '../config/composition-study';
+import {portraitSource} from '../design/portrait-source';
+import {design} from '../config/design';
+import {getPalette,resolve} from '../design/settings';
+import {news} from '../data/content';
+
+const controls=document.querySelector<HTMLFormElement>('#composition-controls')!;
+const status=document.querySelector<HTMLElement>('#status')!;
+const candidates=document.querySelector<HTMLElement>('#candidates')!;
+const others=document.querySelector<HTMLElement>('#other-operations')!;
+const detail=document.querySelector<HTMLCanvasElement>('#context-image')!;
+const state={...selectedComposition.selection};
+for(const [name,value]of Object.entries(state)){
+ const control=controls.elements.namedItem(name);if(control instanceof HTMLInputElement||control instanceof HTMLSelectElement)control.value=String(value);
+}
+document.querySelector('#pitch-value')!.textContent=String(state.pitch);
+document.querySelector('#mis-value')!.textContent=String(state.mis);
+const primary=['over','trap','keyline'] as const;
+const notes:Partial<Record<Operation,string>>={
+ over:'两块版完整相交；人物上的橙色只来自底形的交集。',
+ trap:'底形让出人物轮廓；边界保留少量叠印。',
+ keyline:'人物轮廓外留出纸色；两块版之间有清楚的间隔。',
+};
+for(const [op,label] of Object.entries(operations)){
+ const button=document.createElement('button');button.type='button';button.className='candidate';button.dataset.op=op;button.setAttribute('aria-pressed',String(op===state.op));
+ const image=document.createElement('canvas');image.setAttribute('aria-hidden','true');image.dataset.op=op;
+ const title=document.createElement('strong');title.textContent=label;
+ const note=document.createElement('span');note.textContent=notes[op as Operation]||'点击查看局部排版';
+ button.append(image,title,note);
+ (primary.includes(op as typeof primary[number])?candidates:others).append(button);
+ button.addEventListener('click',()=>{state.op=op as Operation;document.querySelectorAll<HTMLButtonElement>('button[data-op]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.op===op)));schedule();});
+}
+const list=document.querySelector('#news-list')!;
+for(const item of news.slice(0,2)){
+ const li=document.createElement('li'),date=document.createElement('span'),link=document.createElement('a');
+ date.className='date';date.textContent=item.date;link.textContent=item.text;link.href=item.href;li.append(date,link);list.append(li);
+}
+const image=new Image();
+let loaded=false,frame=0;
+image.onload=()=>{loaded=true;schedule();};
+image.onerror=()=>{status.textContent='无法读取现有人像素材。';};
+image.src=portraitSource.cutout;
+function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(render);}
+const cache=new Map<string,ReturnType<typeof canvasLayers>>();
+function layers(cssWidth:number){
+ const dpr=Math.min(window.devicePixelRatio||1,2),width=Math.round(cssWidth*dpr);
+ const key=JSON.stringify([width,state.shape,state.pitch]);
+ const hit=cache.get(key);if(hit)return hit;
+ if(cache.size>12)cache.clear();
+ const result=canvasLayers(image,recipe,state,width);
+ cache.set(key,result);return result;
+}
+function palette(){
+ if(state.palette==='lab')return recipe.palette;
+ const p=getPalette(design,resolve(design,'home','home-portrait').values.palette);return{a:p.secondary,b:p.primary,paper:p.paper};
+}
+function draw(canvas:HTMLCanvasElement,op:Operation){
+ const width=canvas.clientWidth;if(!width)return;
+ const L=layers(width),p=palette();
+ // Print Lab's simulated millimetres: 1 mm = 4 sheet units, with B at (1, .6).
+ const pixels=paintComposition(L,recipe,{...state,op},p);
+ canvas.width=L.width;canvas.height=L.height;
+ canvas.getContext('2d')!.putImageData(new ImageData(pixels,L.width,L.height),0,0);
+ canvas.dataset.rendered=op;
+}
+function render(){
+ if(!loaded)return;
+ try{
+  document.documentElement.style.setProperty('--paper',palette().paper);
+  for(const canvas of candidates.querySelectorAll<HTMLCanvasElement>('canvas'))draw(canvas,canvas.dataset.op as Operation);
+  if(document.querySelector<HTMLDetailsElement>('#all-operations')!.open)for(const canvas of others.querySelectorAll<HTMLCanvasElement>('canvas'))draw(canvas,canvas.dataset.op as Operation);
+  draw(detail,state.op);
+  document.querySelector('#selected-operation')!.textContent=operations[state.op];
+  document.querySelector('#selected-note')!.textContent=notes[state.op]||'同一张人像、同一块几何底形；只更换组合操作。';
+  const s=resolve(design,'home','home-portrait').values;
+  const applied=s.portraitMaterial==='composition'&&state.op===s.compositionOperation&&state.shape===s.compositionShape&&state.pitch===s.compositionPitch&&state.mis===s.compositionMis&&state.palette==='site';
+  status.textContent=`当前局部试样：${operations[state.op]} · ${state.shape==='circle'?'圆形':'三角形'} · ${state.palette==='lab'?'实验室配色':'网站配色'}。${applied?'这组配方已接入首页。':'这是未保存的对照试样。'}`;
+ }catch(error){status.textContent='组合预览失败，请刷新后重试。';console.error(error);}
+}
+controls.addEventListener('input',()=>{
+ const data=new FormData(controls);state.shape=String(data.get('shape')) as 'circle'|'triangle';state.palette=String(data.get('palette'));state.pitch=Number(data.get('pitch'));state.mis=Number(data.get('mis'));
+ document.querySelector('#pitch-value')!.textContent=String(state.pitch);document.querySelector('#mis-value')!.textContent=String(state.mis);schedule();
+});
+document.querySelector('#all-operations')!.addEventListener('toggle',schedule);
+document.querySelector('#grayscale')!.addEventListener('change',event=>{document.body.dataset.grayscale=String((event.target as HTMLInputElement).checked);});
+document.querySelector('#export')!.addEventListener('click',()=>{
+ const output={...recipe,print:{...recipe.print,pitch:state.pitch,mis:state.mis},selection:state,palette:palette(),photoSource:portraitSource,approval:'pending'};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(output,null,2)+'\n'],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download='portrait-composition-review.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+new ResizeObserver(schedule).observe(candidates);
+new ResizeObserver(schedule).observe(detail);

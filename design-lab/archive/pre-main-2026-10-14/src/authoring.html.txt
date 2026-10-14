@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="design-token" content="__DESIGN_TOKEN__"><title>本地设计台</title><link rel="stylesheet" href="/src/styles/studio.css"></head>
+<body><header class="studio-bar"><strong>个人主页 · 设计台</strong><span>所有视觉值为待确认方案</span><a href="/design/layout/" target="_blank" rel="noopener">Layout Lab · 阅读动线 ↗</a><a href="/design/emphasis/" target="_blank">正文强调对照 ↗</a><a href="/design/material/" target="_blank">印刷材质对照 ↗</a><a href="/design/composition/" target="_blank" rel="noopener">人像 × 几何组合 ↗</a><a href="/design/portrait/" target="_blank" rel="noopener">上一版分版校样 ↗</a><a href="/" target="_blank" rel="noopener">独立预览 ↗</a></header>
+<main class="studio-layout"><aside class="studio-controls" aria-label="设计参数">
+ <label>调整范围<select id="scope"><option value="global">全局</option><option value="area">页面</option><option value="element">单个元素</option></select></label>
+ <label id="target-label" hidden>选择对象<select id="target"></select></label>
+ <div class="studio-options"><label><input type="checkbox" id="grid">显示网格</label><label><input type="checkbox" id="flow">阅读顺序</label><label>预览宽度<select id="width"><option value="full">自适应</option><option value="1440">1440</option><option value="768">768</option><option value="375">375</option><option value="320">320</option></select></label></div>
+ <p class="studio-help">先确认编排，再选印刷参数。全局 → 页面 → 元素逐级继承；单个项目可调整起始栏、占栏与错落。照片轮廓裁切不等于人物去背。所有值仍待确认。</p>
+ <nav class="studio-modes" aria-label="设计阶段"><button type="button" data-panel="layout" aria-pressed="true">排版与构图</button><button type="button" data-panel="press" aria-pressed="false">印刷与素材</button></nav>
+ <form id="parameters"></form>
+ <div class="studio-actions"><button id="save" type="button">保存到项目</button><button id="revert" type="button">恢复已保存配置</button><button id="export" type="button">导出配置</button></div>
+ <p id="status" role="status" aria-live="polite">加载配置…</p>
+ </aside><section class="studio-preview" aria-label="网站预览"><iframe id="preview" src="/" title="个人主页实时预览"></iframe></section></main>
+<script type="module" src="/src/client/studio.ts"></script></body></html>
