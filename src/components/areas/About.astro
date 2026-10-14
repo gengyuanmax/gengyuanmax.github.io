@@ -1,0 +1,39 @@
+---
+import InkText from '../InkText.astro';
+import EmphasisText from '../EmphasisText.astro';
+import {bodyEmphasis} from '../../config/body-emphasis';
+import PrintGround from '../PrintGround.astro';
+import PrintTitle from '../PrintTitle.astro';
+import PrintMotif from '../PrintMotif.astro';
+import QuietHeading from '../QuietHeading.astro';
+import Styled from '../Styled.astro';
+import {placements} from '../../config/compositions';
+import {profile,experience,education,service} from '../../data/content';
+const row=(name:string)=>`--item-row:${placements[`about-${name}` as keyof typeof placements].row}`;
+---
+<header class="he-about-masthead"><PrintTitle id="about-title" area="about" lines={["About me"]}/><div class="he-about-folio" aria-hidden="true"><PrintGround id="plate-about"/><span>04</span></div></header>
+<div class="he-about-body">
+ <Styled as="section" id="about-intro" area="about" class="he-about-module he-about-intro" style={row('intro')}>
+  <QuietHeading title={profile.name.join(' ')} ground="ground-about-intro"/><p><EmphasisText text={profile.about} phrase={bodyEmphasis.about}/></p>
+ </Styled>
+ <Styled as="section" id="about-experience" area="about" class="he-about-module he-about-experience" style={row('experience')}>
+  <QuietHeading title="Experience" index="01"/>
+  <ol class="he-timeline">{experience.map(e=><li><p class="he-item-meta">{e.date}</p><div class="he-timeline-content"><h3><InkText text={e.role}/></h3><p>{e.place}</p><p>{e.detail}</p></div></li>)}</ol>
+ </Styled>
+ <Styled as="section" id="about-education" area="about" class="he-about-module he-about-education" style={row('education')}>
+  <QuietHeading title="Education" index="02" ground="ground-about-education"/>
+  <ol class="he-timeline">{education.map(e=><li><p class="he-item-meta">{e.date}</p><div class="he-timeline-content"><h3><InkText text={e.degree}/></h3><p>{e.place}</p>{e.detail&&<p>{e.detail}</p>}</div></li>)}</ol>
+ </Styled>
+ <Styled as="section" id="about-funding" area="about" class="he-about-module he-about-funding" style={row('funding')}>
+  <QuietHeading title="Funding" ground="ground-about-funding"/><p class="he-item-meta">{service.funding}</p><p>{service.project}</p>
+ </Styled>
+ <Styled as="section" id="about-reviewing" area="about" class="he-about-module he-about-reviewing" style={row('reviewing')}>
+  <QuietHeading title="Reviewing"/><p>{service.reviewing}</p>
+ </Styled>
+ <Styled as="section" id="about-outside" area="about" class="he-about-module he-about-outside" style={row('outside')}>
+  <div class="he-personal-heading"><QuietHeading title="Outside research"/><PrintMotif id="mark-about"/></div><p>{profile.personal}</p>
+ </Styled>
+ <Styled as="section" id="about-contact" area="about" class="he-about-module he-about-contact" style={row('contact')}>
+  <QuietHeading title="Contact" index="03"/><nav class="he-contact" aria-label="Contact and profiles">{profile.contacts.map(link=><a href={link.href}>{link.label}<span class="he-contact-arrow" aria-hidden="true">↗</span></a>)}</nav>
+ </Styled>
+</div>

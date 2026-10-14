@@ -1,0 +1,75 @@
+import {applyLayoutStudy} from './layout-study';
+import {portraitSource} from '../design/portrait-source';
+import {compositionAsset,portraitViewport} from '../config/portrait-composition';
+import {design} from '../config/design';
+import {validateConfig,resolve,cssVariables,getPalette,designAttributes,parameters,applicable,type Key,type DesignConfig,type Area} from '../design/settings';
+import {renderPrint,cropRect} from '../design/print';
+import {inkFilter} from '../design/ink';
+import {bridgeMarkup} from '../design/bridge';
+import {motifMarkup,type Motif} from '../design/motifs';
+const root=document.querySelector<HTMLElement>('#personal-site')!;
+const original=new Map<string,Promise<HTMLImageElement>>();
+const applied=new WeakMap<HTMLElement,string[]>();
+let generation=0;
+function attrs(el:HTMLElement,s:Parameters<typeof designAttributes>[0]){for(const [k,v]of Object.entries(designAttributes(s)))el.setAttribute(k,v);}
+function setStyle(el:HTMLElement,values:Parameters<typeof cssVariables>[0],config:DesignConfig) {
+ for(const key of applied.get(el)||[])el.style.removeProperty(key);
+ // These elements carry design tokens only, so remove the initial SSR token values too.
+ if(!applied.has(el))for(const key of Object.keys(cssVariables(resolve(design).values)))el.style.removeProperty(key);
+ const css=cssVariables(values,config);Object.entries(css).forEach(([k,v])=>el.style.setProperty(k,v));applied.set(el,Object.keys(css));
+}
+async function drawImages(config:DesignConfig) {
+ const run=++generation;
+ for(const img of root.querySelectorAll<HTMLImageElement>('[data-print-source]')) {
+  const settings=resolve(config,'home',img.dataset.printElement).values;
+  if(settings.portraitMaterial==='composition'){const previous=img.dataset.previewUrl;img.src=compositionAsset;img.width=portraitViewport.width;img.height=portraitViewport.height;delete img.dataset.previewUrl;delete img.dataset.recipe;if(previous)URL.revokeObjectURL(previous);continue;}
+  if(settings.portraitMaterial==='press'){const previous=img.dataset.previewUrl;img.src=portraitSource.fallback;img.width=480;img.height=640;delete img.dataset.previewUrl;delete img.dataset.recipe;if(previous)URL.revokeObjectURL(previous);continue;}
+  if(settings.portraitMaterial==='cutout'){
+   const previous=img.dataset.previewUrl;img.src=img.dataset.cutoutSource!;img.width=1086;img.height=1448;delete img.dataset.previewUrl;delete img.dataset.recipe;if(previous)URL.revokeObjectURL(previous);continue;
+  }
+  const src=img.dataset.printSource!;
+  if(!original.has(src))original.set(src,new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('无法读取原始素材'));image.src=src;}));
+  try {
+   const input=await original.get(src)!;if(run!==generation)return;
+   img.width=720;img.height=960;
+   const signature=JSON.stringify([src,Object.fromEntries((Object.keys(parameters) as Key[]).filter(key=>applicable(key,'element','home-portrait')).map(key=>[key,settings[key]])),getPalette(config,settings.palette)]);
+   if(img.dataset.recipe===signature)continue;
+   const crop=cropRect(input.naturalWidth,input.naturalHeight,settings);
+   const canvas=document.createElement('canvas');canvas.width=720;canvas.height=Math.round(720*input.naturalHeight/input.naturalWidth);
+   const ctx=canvas.getContext('2d')!;ctx.drawImage(input,crop.x,crop.y,crop.width,crop.height,0,0,canvas.width,canvas.height);
+   const rendered=renderPrint({width:canvas.width,height:canvas.height,data:ctx.getImageData(0,0,canvas.width,canvas.height).data},settings,getPalette(config,settings.palette));
+   ctx.putImageData(new ImageData(new Uint8ClampedArray(rendered.data),rendered.width,rendered.height),0,0);
+   const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob||run!==generation)return;
+   const url=URL.createObjectURL(blob);
+   const previous=img.dataset.previewUrl;img.src=url;img.dataset.previewUrl=url;img.dataset.recipe=signature;if(previous)URL.revokeObjectURL(previous);
+  } catch(error) { parent.postMessage({type:'design:error',message:String(error)},location.origin); }
+ }
+}
+function apply(config:DesignConfig,grid:boolean,flow=false) {
+ validateConfig(config);
+ const global=resolve(config).values;setStyle(root,global,config);attrs(root,global);root.dataset.grid=String(grid);root.dataset.flow=String(flow);
+ document.body.style.setProperty('--paper',getPalette(config,global.palette).paper);
+ root.querySelectorAll<HTMLElement>('[data-style-area]').forEach(el=>{
+  const area=el.dataset.styleArea as Area;setStyle(el,config.areas[area]||{},config);attrs(el,resolve(config,area).values);
+ });
+ root.querySelectorAll<HTMLElement>('[data-style-element]').forEach(el=>{
+  const id=el.dataset.styleElement!,area=el.dataset.styleAreaOwner as Area;
+  setStyle(el,resolve(config,area,id).values,config);
+  attrs(el,resolve(config,area,id).values);
+ });
+ root.querySelectorAll<SVGElement>('[data-ink-filter]').forEach(el=>{const id=el.dataset.inkFilter!;el.innerHTML=inkFilter(resolve(config,el.dataset.inkArea as Area,id).values,`ink-${id}`);});
+ root.querySelectorAll<SVGElement>('[data-print-field]').forEach(el=>{const id=el.dataset.printField!;el.innerHTML=motifMarkup(resolve(config,el.dataset.printArea as Area,id).values,id,el.dataset.printKind as Motif);});
+ root.querySelectorAll('.he-page').forEach(page=>page.querySelectorAll<HTMLElement>('[data-flow-label]').forEach((el,i)=>{el.dataset.flowNumber=String(i+1);}));
+ const bridge=resolve(config,'home','home-bridge').values;
+ const drawing=root.querySelector('.he-bridge-print');if(drawing)drawing.innerHTML=bridgeMarkup(bridge);
+ root.dispatchEvent(new CustomEvent('design:updated',{detail:config}));
+ void drawImages(config);
+}
+window.addEventListener('message',event=>{
+ if(event.origin!==location.origin||event.source!==parent)return;
+ if(event.data?.type==='design:layout-study')try{applyLayoutStudy(event.data.recipe);}catch(error){parent.postMessage({type:'design:error',message:String(error)},location.origin);}
+ if(event.data?.type==='design:apply')try{apply(event.data.config,event.data.grid===true,event.data.flow===true);}catch(error){parent.postMessage({type:'design:error',message:String(error)},location.origin);}
+ if(event.data?.type==='design:select-area'&&['home','research','artifacts','about'].includes(event.data.area))root.dispatchEvent(new CustomEvent('design:navigate',{detail:event.data.area}));
+});
+if(parent!==window)parent.postMessage({type:'design:ready'},location.origin);
+else apply(design,false);

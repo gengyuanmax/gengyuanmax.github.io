@@ -1,0 +1,55 @@
+---
+import '../styles/foundation.css';
+import '../styles/home.css';
+import '../styles/sections.css';
+import '../styles/editorial.css';
+import '../styles/navigation.css'; // Shared paper-and-ink index navigation.
+import '../styles/press-system.css'; // Shared printed objects, text, rules and compositions.
+import '../styles/quiet-modules.css';
+import '../styles/reading-flow.css';
+import '../styles/body-emphasis.css';
+import '../styles/editorial-tension.css';
+import '../styles/portrait-flow.css';
+import '../styles/portrait-composition.css';
+import '../styles/print-material.css';
+import '../styles/duotone-type.css';
+import '../styles/home-main.css';
+import {design} from '../config/design';
+import {profile,pillars} from '../data/content';
+import {resolve,styleText,designAttributes,areaIds} from '../design/settings';
+const values=resolve(design).values;
+---
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  {import.meta.env.DEV&&<meta name="robots" content="noindex,nofollow"/>}
+  <title>{import.meta.env.DEV?'Gengyuan Zhang — 排版与风格草案':'Gengyuan Zhang'}</title>
+  <meta name="description" content={profile.bio}/>
+  <link rel="canonical" href={Astro.site}/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Gengyuan Zhang"/>
+  <meta property="og:description" content={profile.bio}/>
+  <meta property="og:url" content={Astro.site}/>
+  <meta property="og:image" content={new URL('/images/portrait-composition.png',Astro.site)}/>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=Newsreader:opsz,wght@6..72,400..600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Instrument+Serif&amp;display=swap"/>
+ </head>
+ <body style={styleText({palette:values.palette},design)}>
+  <div id="personal-site" style={styleText(values,design)} {...designAttributes(values)}>
+   {/* Before first paint: choose the area from the URL so the first frame is the page that stays.
+        Without JS this never runs and the four areas remain one stacked document. */}
+   <script is:inline define:vars={{areas:[...areaIds],chapters:pillars.map(p=>p.id)}}>
+    const root=document.currentScript.parentElement;let id='home';
+    try{id=decodeURIComponent(location.hash.slice(1))||'home';}catch{}
+    root.dataset.bootArea=areas.includes(id)?id:chapters.includes(id)?'research':'home';
+    root.dataset.booting='true';root.dataset.enhanced='true';
+   </script>
+   <a class="skip-link" href="#site-content">跳到内容</a>
+   <slot/>
+   <span class="he-announcement" data-navigation-status aria-live="polite"/>
+  </div>
+  <script>import '../client/navigation';import '../client/artifacts';import '../client/reading-flow';import '../client/portrait-composition';import '../client/print-material';import '../client/home-branches';import '../client/home-dividers';</script>
+ </body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>人像 × 几何 · 组合对照</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=Newsreader:opsz,wght@6..72,400..600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="/src/styles/composition-review.css"></head>
+<body><header class="review-top"><a href="/design/">← 设计台</a><span>COMPOSITION / 人像与底形 · 待确认</span><a href="https://gengyuanmax.github.io/print-lab/element.html" target="_blank" rel="noopener">元素实验室 ↗</a></header>
+<main>
+ <div class="intro"><h1>人像 × 几何</h1><p>相同素材、相同位置，只比较组合关系。<br>人像用一块蓝版；橙色来自独立几何底形。</p></div>
+ <form id="composition-controls" class="controls">
+  <label>底形<select name="shape"><option value="triangle">三角形</option><option value="circle">圆形</option></select></label>
+  <label>配色<select name="palette"><option value="lab">实验室 · 橙 / 联邦蓝</option><option value="site">现有网站配色</option></select></label>
+  <label>网距 · 640px 画幅 <span><input type="range" name="pitch" min="3" max="12" step=".5" value="6"><output id="pitch-value">6</output> px</span></label>
+  <label>实验室错位 <span><input type="range" name="mis" min="0" max="2" step=".25" value=".5"><output id="mis-value">0.5</output> mm</span></label>
+ </form>
+ <section id="candidates" class="candidates" aria-label="三种主要组合对照"></section>
+ <p id="status" role="status" aria-live="polite">正在读取你现有的抠图素材…</p>
+ <section class="context-section" aria-labelledby="context-title">
+  <header class="context-label"><h2 id="context-title">放入局部排版</h2><strong id="selected-operation">叠印</strong><label><input type="checkbox" id="grayscale"> 灰度检查</label><button type="button" id="export">导出当前配方</button></header>
+  <p id="selected-note">两块版完整相交；人物上的橙色只来自底形的交集。</p>
+  <div class="context-spread">
+   <figure class="context-portrait"><canvas id="context-image" role="img" aria-label="你的现有人像与几何底形的组合试样"></canvas></figure>
+   <section class="context-news" aria-labelledby="context-news-title"><h3 id="context-news-title">News</h3><ol id="news-list"></ol></section>
+  </div>
+  <p class="caption">人物与底形落在同一条下沿；News 从底形的外露边缘接入。这里仅验证局部组合，新闻沿用现有占位内容。</p>
+ </section>
+ <details id="all-operations"><summary>展开元素实验室其余 10 种组合</summary><div id="other-operations" class="other-operations"></div></details>
+ <footer>参考你自己的 Element Lab 源码 e1c9d82：独立遮罩 → 单色加网 → 版层组合 → 油墨相乘。你导出的圆形叠印构图已接入<a href="/#home">首页</a>；当前网站材质见<a href="/design/material/">实景与源码校样</a>。这里保留原组合实验的参数用于对照。</footer>
+</main><script type="module" src="/src/client/composition-review.ts"></script></body></html>

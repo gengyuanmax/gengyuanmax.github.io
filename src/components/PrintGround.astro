@@ -1,0 +1,8 @@
+---
+import Styled from './Styled.astro';
+import {printGrounds} from '../config/print-objects';
+const {id}=Astro.props as {id:keyof typeof printGrounds};
+const {area}=printGrounds[id];
+---
+<Styled as="span" id={id} area={area} class="he-project-ground" aria-hidden="true">
+</Styled>

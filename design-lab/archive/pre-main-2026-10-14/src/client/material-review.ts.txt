@@ -1,0 +1,51 @@
+import {render as labRender} from '../design/vendor/print-lab-reference.js';
+import {darkness,rgb} from '../design/element-composition';
+import {screenPlate,paintMaterial,pressSettings,elementPress} from '../design/press-material';
+import {design} from '../config/design';
+import {resolve,getPalette} from '../design/settings';
+import {selectedComposition} from '../config/portrait-composition';
+const liveFrame=document.querySelector<HTMLIFrameElement>('.live-sheet iframe')!;
+const toneTarget=document.querySelector<HTMLSelectElement>('#tone-target')!;
+function requestTone(){
+ liveFrame.contentWindow?.postMessage({type:'design:select-area',area:toneTarget.selectedOptions[0].dataset.area},location.origin);
+ liveFrame.contentWindow?.postMessage({type:'design:tone-request',target:toneTarget.value},location.origin);
+}
+toneTarget.addEventListener('change',requestTone);document.querySelector('#tone-refresh')!.addEventListener('click',requestTone);
+liveFrame.addEventListener('load',requestTone);
+window.addEventListener('message',e=>{
+ if(e.source!==liveFrame.contentWindow||e.origin!==location.origin)return;
+ if(e.data?.type==='design:ready')requestTone();
+ if(e.data?.type!=='design:tone-output'||e.data.target!==toneTarget.value)return;
+ const pair=document.querySelector('#tone-pair')!;pair.replaceChildren();const proof=e.data.proofs[0];
+ document.querySelector('#tone-status')!.textContent=proof?`实际渲染尺寸 ${proof.width} × ${proof.height}`:'正在切换到对应页面…';
+ if(!proof)return;
+ for(const [key,label]of [['tone','加网前 · 灰度原图'],['screen','加网后 · 单版遮罩']]){
+  const figure=document.createElement('figure'),caption=document.createElement('figcaption');caption.textContent=label;
+  const pane=document.createElement('div');pane.className='tone-pane';
+  const img=document.createElement('img');img.src=proof[key];img.alt=label;img.style.setProperty('--proof-width',`${proof.width/proof.scale}px`);
+  const link=document.createElement('a');link.href=proof[key];link.download=`${proof.name.replaceAll(':','-')}-${key}.png`;link.textContent='下载 PNG';
+  pane.append(img);figure.append(caption,pane,link);pair.append(figure);
+ }
+});
+requestTone();
+const input=new Image();input.src=selectedComposition.photoSource.cutout;
+input.onload=()=>{
+ const n=600,source=document.createElement('canvas');source.width=source.height=n;
+ const ctx=source.getContext('2d',{willReadFrequently:true})!;ctx.drawImage(input,150,24,300,400);
+ const {tone}=darkness(ctx.getImageData(0,0,n,n).data,true),data=new Uint8ClampedArray(n*n*4);
+ for(let i=0;i<tone.length;i++){data[i*4]=data[i*4+1]=data[i*4+2]=255*(1-tone[i]);data[i*4+3]=255;}
+ ctx.putImageData(new ImageData(data,n,n),0,0);
+ const s=resolve(design,'home','home-portrait').values,p=elementPress(pressSettings(s),'home-portrait','image'),palette=getPalette(design,s.palette);
+ document.querySelector('#reference-settings')!.textContent=`AM · 蓝版 ${p.angles.b}° · 网距 ${p.pitch}px · gain ${p.gain} · grain ${p.grain} · starve ${p.starve}`;
+ const reference=document.querySelector<HTMLCanvasElement>('#reference')!;reference.width=reference.height=n;
+ // Explicit paper/inks avoid silently importing a different Lab palette or stock.
+ labRender(reference,{screen:'am',process:'none',mode:'mono',shape:'round',cell:p.pitch,angle:p.angles.b,contrast:1,black:0,white:1,gamma:1,posterize:0,gain:p.gain,grain:p.grain,starve:p.starve,tex:s.paperTexture,mx:0,my:0,band:0,ca:0,age:0,fox:0,fold:'none',stock:'explicit',inkA:palette.primary,inkB:palette.secondary,inkC:palette.primary,paper:palette.paper,blend:'multiply',invA:false,invB:false},source);
+ const adapted=document.querySelector<HTMLCanvasElement>('#adapted')!,dpr=Math.max(1,devicePixelRatio||1),size=Math.round(n*dpr);adapted.width=adapted.height=size;
+ const enlarged=document.createElement('canvas');enlarged.width=enlarged.height=size;
+ const context=enlarged.getContext('2d',{willReadFrequently:true})!;context.imageSmoothingEnabled=true;context.drawImage(source,0,0,size,size);
+ const rgba=context.getImageData(0,0,size,size).data,resampled=Float32Array.from({length:size*size},(_,i)=>1-rgba[i*4]/255);
+ const ink=screenPlate(resampled,size,size,'b',p,dpr),pixels=paintMaterial([{ink:'b',coverage:ink}],size,size,{a:rgb(palette.secondary),b:rgb(palette.primary),paper:rgb(palette.paper)},{...p,offset:{x:0,y:0}},dpr);
+ adapted.getContext('2d')!.putImageData(new ImageData(pixels,size,size),0,0);
+ document.querySelector('#status')!.textContent=`校样已生成。左侧保留原版 600px 参考画幅；右侧与网站一样按设备像素比 ${dpr} 渲染。`;
+};
+document.querySelector('#zoom')!.addEventListener('click',e=>{const button=e.currentTarget as HTMLButtonElement,on=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(on));document.body.dataset.zoom=on?'2':'1';document.querySelectorAll('.proof').forEach(el=>{el.scrollLeft=on?300:0;el.scrollTop=on?40:0;});const live=document.querySelector('.live-proof')!;live.scrollLeft=0;live.scrollTop=on?280:0;});

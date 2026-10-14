@@ -1,0 +1,100 @@
+/* Large ink plates and a few deliberate edge breaks share the existing grid.
+   Only decorative ink/folio shapes bleed; prose, names and links stay intact.
+   Plate recipes remain editable through PrintGround, globally and per element. */
+#personal-site .he-page::before,
+#personal-site .he-nav-shell::before {mask-image:none;opacity:var(--paper-texture);}
+#personal-site .he-page::after {background:linear-gradient(var(--blue-ink),var(--blue-ink)) center top/2px 12px no-repeat,linear-gradient(var(--blue-ink),var(--blue-ink)) center 6px/8px 2px no-repeat;}
+#personal-site .he-nav {grid-template-columns:2fr 4fr 3fr 3fr;}
+#personal-site .he-nav a {grid-column:auto;}
+#personal-site .he-nav a::after {right:25%;height:max(4px,var(--geometry-stroke));}
+
+/* Home: a single full-strength plate leaves the image's cut edge visible.
+   Its right side reaches the sheet edge, while the portrait overlaps the left. */
+#personal-site [data-style-element="plate-home"] {position:relative;grid-column:8/13;grid-row:1/4;align-self:center;top:auto;bottom:auto;left:auto;width:calc(var(--ground-width) + var(--page-gutter) * var(--spread-bleed));height:calc(var(--baseline) * 31);margin-top:112px;z-index:-1;}
+#personal-site .he-portrait img {transform:rotate(var(--portrait-tilt));transform-origin:50% 80%;}
+#personal-site .he-home .he-role {padding:8px 0 8px 14px;border-left:4px solid var(--blue-ink);}
+#personal-site .he-home .he-pillars .he-number {border:0;border-radius:0;background:none;font:750 29px/1 var(--display-face);letter-spacing:-.07em;width:auto;height:auto;white-space:nowrap;}
+#personal-site .he-home .he-pillars li {grid-template-columns:36px minmax(0,1fr);gap:8px;}
+#personal-site .he-home .he-pillars a {text-decoration-color:var(--ink);}
+#personal-site .he-home .he-news {border:0;}
+#personal-site .he-home .he-news h2 {font-size:clamp(46px,6.5cqw,78px);}
+#personal-site .he-home .he-news h2>.he-print-object {width:190px;height:116px;left:calc(-1 * var(--page-gutter) * var(--spread-bleed));top:-16px;}
+#personal-site .he-home .he-date {border-top:3px solid var(--blue-ink);}
+#personal-site .he-home .he-news li {border-bottom:2px solid var(--ink);}
+
+/* Chapter openers: continuous ink, oversized cropped folios, knockout titles.
+   Filtering applies to the ink plate alone, never the small readable detail. */
+#personal-site .he-research-chapter .he-chapter-heading {grid-column:1/-1;grid-row:1;grid-template-columns:190px minmax(0,1fr);gap:0 30px;min-height:186px;padding:28px 20px 28px 0;margin-bottom:8px;color:var(--paper);}
+#personal-site .he-chapter-heading>[data-style-element^="plate-"] {inset:0 auto 0 calc(-1 * var(--page-gutter) * var(--spread-bleed));width:calc(var(--ground-width) + var(--page-gutter) * var(--spread-bleed) * 2);mix-blend-mode:normal;}
+#personal-site .he-chapter-heading>.he-print-object {display:none;}
+#personal-site .he-chapter-heading .he-chapter-number {align-self:stretch;grid-column:1;grid-row:1/3;margin:0 0 -28px calc(-1 * var(--page-gutter) * var(--spread-bleed));height:130px;font:800 182px/.85 var(--display-face);letter-spacing:-.1em;color:var(--paper);-webkit-text-stroke:0;overflow:hidden;}
+#personal-site .he-chapter-heading h2 {grid-column:2;grid-row:1;font-size:clamp(32px,4.2cqw,54px);line-height:1.02;max-width:25ch;}
+#personal-site .he-chapter-heading p {grid-column:2;grid-row:2;color:var(--paper);margin-top:14px;}
+#personal-site .he-research-chapter {row-gap:48px;}
+#personal-site .he-project-imprint {padding-top:4px;}
+#personal-site :is(.he-project-side,.he-embodied-project,.he-surgical-project,.he-machine-note) .he-project-imprint {border:0;padding-left:0;}
+#personal-site :is(.he-project-side,.he-embodied-project,.he-surgical-project,.he-machine-note) .he-project-imprint h3 {position:relative;border:0;padding-bottom:0;}
+#personal-site :is(.he-project-side,.he-embodied-project,.he-surgical-project,.he-machine-note) .he-project-imprint h3::before {content:"";position:absolute;left:-12px;top:-4px;height:calc(.52em + 8px);width:6px;background:var(--red-ink);pointer-events:none;}
+#personal-site .he-project-details {border-bottom-width:2px;}
+
+/* About: an offset masthead against a cropped, full-ink page folio.
+   The two timelines keep a dominant/main column and a delayed side column. */
+#personal-site .he-about-masthead {display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--column-gap);align-items:end;min-height:208px;}
+#personal-site .he-about-masthead h1 {grid-column:1/10;grid-row:1;position:relative;z-index:1;font-size:clamp(56px,10cqw,128px);padding-bottom:12px;}
+#personal-site .he-about-folio {position:relative;isolation:isolate;grid-column:10/13;grid-row:1;align-self:stretch;min-width:0;margin-right:calc(-1 * var(--page-gutter) * var(--spread-bleed));}
+#personal-site .he-about-folio>.he-project-ground {inset:0 auto 0 0;width:var(--ground-width);mix-blend-mode:normal;}
+#personal-site .he-about-folio>span:not(.he-project-ground) {position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;white-space:nowrap;font:800 240px/.65 var(--display-face);letter-spacing:-.11em;color:var(--paper);padding-right:.1em;}
+#personal-site .he-about-body {margin-top:32px;row-gap:76px;}
+#personal-site .he-about-intro .he-quiet-heading {padding-top:0;margin-bottom:8px;}
+#personal-site .he-about-intro .he-quiet-heading h2 {font-size:29px;}
+#personal-site .he-about-intro .he-heading-tick {display:none;}
+#personal-site .he-about-intro>p {margin-top:8px;}
+#personal-site .he-about-experience .he-quiet-heading {padding-top:16px;padding-left:88px;min-height:110px;margin-bottom:8px;}
+#personal-site .he-about-experience .he-module-index {position:absolute;left:calc(-1 * var(--page-gutter) * var(--spread-bleed));top:0;font-size:148px;line-height:.85;height:100px;overflow:hidden;color:var(--red-ink);}
+#personal-site .he-about-experience .he-quiet-heading h2 {position:relative;font-size:39px;}
+#personal-site .he-about-experience .he-heading-tick {display:none;}
+#personal-site .he-about-education .he-quiet-heading {display:block;padding:0 0 10px;border-bottom:4px solid var(--blue-ink);}
+#personal-site .he-about-education .he-module-index {display:block;font-size:112px;line-height:.85;margin-left:-24px;margin-bottom:-8px;}
+#personal-site .he-about-education .he-quiet-heading h2 {position:relative;margin-left:34px;background:var(--paper);width:fit-content;padding:6px 0 0 8px;}
+#personal-site .he-about-body .he-timeline::before {width:3px;}
+#personal-site .he-about-body .he-timeline li::before {width:9px;height:9px;border:0;background:var(--blue-ink);}
+#personal-site .he-about-funding {border-top:4px solid var(--red-ink);padding-top:16px;}
+#personal-site .he-about-outside {border-block-width:3px;}
+#personal-site .he-about-contact {border-top-width:3px!important;}
+
+@container(min-width:1001px){
+ #personal-site .he-name {margin-left:calc(-.6 * var(--page-gutter) * var(--spread-bleed));}
+ #personal-site .he-about-masthead h1 {margin-left:calc(-.6 * var(--page-gutter) * var(--spread-bleed));}
+}
+@container(min-width:721px) and (max-width:1000px){
+ #personal-site [data-style-element="plate-home"] {grid-column:10/13;height:210px;margin-top:80px;}
+ #personal-site .he-chapter-heading .he-chapter-number {font-size:150px;height:110px;}
+ #personal-site .he-research-chapter .he-chapter-heading {grid-template-columns:150px minmax(0,1fr);min-height:166px;}
+ #personal-site .he-about-folio>span:not(.he-project-ground) {font-size:190px;}
+ #personal-site .he-about-masthead {min-height:180px;}
+ #personal-site .he-about-experience .he-quiet-heading h2 {font-size:34px;}
+}
+@container(max-width:720px){
+ #personal-site .he-nav {grid-template-columns:.8fr 1.4fr 1fr 1fr;}
+ #personal-site .he-nav a {grid-column:auto;}
+ #personal-site [data-style-element="plate-home"] {grid-column:3/5;grid-row:4;height:155px;margin-top:30px;}
+ #personal-site .he-home .he-news h2 {min-height:96px;}
+ #personal-site .he-research-chapter .he-chapter-heading {grid-template-columns:70px minmax(0,1fr);grid-row:auto;gap:0 8px;padding:22px 0;min-height:132px;}
+ #personal-site .he-chapter-heading .he-chapter-number {font-size:106px;height:82px;margin-bottom:-22px;}
+ #personal-site .he-chapter-heading h2 {font-size:clamp(24px,5.2cqw,36px);}
+ #personal-site .he-chapter-heading p {font-size:11px;}
+ #personal-site .he-about-masthead {min-height:124px;gap:12px;}
+ #personal-site .he-about-masthead h1 {grid-column:1/10;font-size:clamp(41px,8.5cqw,60px);padding-bottom:8px;}
+ #personal-site .he-about-folio {grid-column:10/13;}
+ #personal-site .he-about-folio>span:not(.he-project-ground) {font-size:138px;}
+ #personal-site .he-about-body {row-gap:52px;}
+ #personal-site .he-about-experience .he-quiet-heading {padding-left:68px;min-height:98px;}
+ #personal-site .he-about-experience .he-module-index {font-size:120px;height:84px;}
+ #personal-site .he-about-experience .he-quiet-heading h2 {font-size:30px;}
+ #personal-site .he-about-education .he-module-index {font-size:100px;}
+}
+@container(max-width:500px){
+ #personal-site [data-style-element="plate-home"] {grid-column:2/5;grid-row:5;height:180px;margin-top:30px;}
+ #personal-site .he-home .he-pillars .he-number {font-size:27px;}
+ #personal-site .he-about-masthead h1 {font-size:clamp(37px,8.5cqw,44px);}
+}

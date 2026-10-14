@@ -1,0 +1,12 @@
+---
+import Styled from './Styled.astro';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+import {bridgeMarkup} from '../design/bridge';
+const s=resolve(design,'home','home-bridge').values;
+---
+<Styled id="home-bridge" area="home" class="he-bridge" aria-hidden="true">
+ <svg class="he-bridge-print" viewBox="0 0 1000 100" preserveAspectRatio="none" set:html={bridgeMarkup(s)}/>
+</Styled>
+
+<canvas class="he-portrait-flow" aria-hidden="true"/>

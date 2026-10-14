@@ -1,0 +1,12 @@
+---
+import InkText from './InkText.astro';
+import PrintGround from './PrintGround.astro';
+import {printGrounds} from '../config/print-objects';
+interface Props {title:string;index?:string;ground?:keyof typeof printGrounds;class?:string;}
+const {title,index,ground,class:className=''}=Astro.props;
+---
+<header class={`he-quiet-heading ${className}`}>
+ {ground&&<PrintGround id={ground}/>}
+ {index&&<span class="he-module-index" aria-hidden="true"><InkText text={index}/></span>}
+ <h2><InkText text={title}/></h2><span class="he-heading-tick" aria-hidden="true"/>
+</header>

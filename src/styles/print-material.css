@@ -1,0 +1,33 @@
+/* One paper layer above the ink: Layout Lab's paper filter, multiplied over
+   both the blank sheet and printing. Never intercepts text or interaction. */
+#personal-site .he-page::before,#personal-site .he-nav-shell::before{z-index:12;opacity:var(--paper-texture);mix-blend-mode:multiply;mask-image:none;}
+#personal-site .he-print-object{position:relative;mix-blend-mode:multiply;}
+#personal-site .he-material-field{position:absolute;inset:0;display:block;width:100%;height:100%;transform:scale(var(--field-scale));transform-origin:50% 60%;pointer-events:none;}
+#personal-site .he-print-object[data-material-ready="true"]>.he-print-field{opacity:0;}
+/* A is stationary, B slips +X/+Y everywhere. Deep overlap is computed from
+   these two inks; there is no purple fill and no text shadow. */
+#personal-site .he-type-line{filter:none;mix-blend-mode:multiply;}
+#personal-site .he-type-line>.he-type-a{transform:none;color:var(--red-ink);text-shadow:none;-webkit-text-stroke:0;}
+#personal-site .he-type-line>.he-type-b{transform:translate(var(--registration-x),var(--registration-y));color:var(--blue-ink);mix-blend-mode:multiply;text-shadow:none;-webkit-text-stroke:0;}
+#personal-site .he-type-line>span[data-material-mask="true"],#personal-site .he-project-ground[data-material-mask="true"]{filter:none;}
+#personal-site .he-type-line[data-press-large="false"]>.he-type-a{visibility:hidden;}
+#personal-site .he-type-line[data-press-large="false"]>.he-type-b{transform:none;filter:none;}
+#personal-site [data-treatment="solid"] .he-type-b{transform:none;}
+/* Dotted display type is supplied by the shared angle-aware screen mask. */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-a{visibility:visible;}
+@media (forced-colors:active){
+ #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-a{visibility:hidden;}
+ #personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{color:CanvasText;background:none;transform:none;mask-image:none!important;}
+}
+/* Full ink fields have straight structural edges. Their wear is in the ink,
+   not a separate scalloped or rounded clipping mask. */
+#personal-site .he-project-ground::before{bottom:0;}
+#personal-site .he-project-ground::after{display:none;}
+#personal-site .he-project-ground{mix-blend-mode:multiply;}
+
+/* Pre-rendered material remains until a complete live plate is published. */
+#personal-site .he-field-fallback{position:absolute;inset:0;width:100%;height:100%;transform:scale(var(--field-scale));transform-origin:50% 60%;pointer-events:none;}
+#personal-site .he-field-fallback~.he-print-field{opacity:0;}
+#personal-site [data-material-ready="true"]>.he-field-fallback{visibility:hidden;}
+/* Same rule for decorative print fields: the reference-layout fallback is for no-JS visitors. */
+#personal-site[data-enhanced] .he-field-fallback{visibility:hidden;}

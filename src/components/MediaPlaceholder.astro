@@ -1,0 +1,5 @@
+---
+interface Props { ratio?:string; label?:string; }
+const {ratio='wide',label='[项目图像]'}=Astro.props;
+---
+<div class:list={['he-media-placeholder',`he-media-${ratio}`]} role="img" aria-label={`${label}占位`}><span>{label}</span></div>

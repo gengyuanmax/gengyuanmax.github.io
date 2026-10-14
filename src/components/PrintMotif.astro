@@ -1,0 +1,16 @@
+---
+import {staticFieldPreview} from '../design/print-pipeline/field-static.mjs';
+import Styled from './Styled.astro';
+import {printObjects} from '../config/print-objects';
+import {design} from '../config/design';
+import {resolve,getPalette} from '../design/settings';
+import {motifMarkup} from '../design/motifs';
+const {id,class:className=''}=Astro.props as {id:keyof typeof printObjects;class?:string};
+const {area,kind}=printObjects[id];
+const settings=resolve(design,area,id).values;
+const fallback=await staticFieldPreview(settings,id,kind,getPalette(design,settings.palette),resolve(design).values.seed);
+---
+<Styled as="span" id={id} area={area} class={`he-print-object ${className}`} aria-hidden="true">
+ <img class="he-field-fallback" src={fallback} width="360" height="220" alt=""/>
+ <svg class="he-print-field" viewBox="0 0 360 220" data-print-field={id} data-print-kind={kind} data-print-area={area} set:html={motifMarkup(resolve(design,area,id).values,id,kind)}/>
+</Styled>

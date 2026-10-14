@@ -1,0 +1,16 @@
+---
+import {portraitSource} from '../design/portrait-source';
+import {compositionAsset,portraitViewport} from '../config/portrait-composition';
+import Styled from './Styled.astro';
+import {assets,portraitReview} from '../data/assets';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+const asset=assets['portrait-canyon'];
+const press=resolve(design,'home','home-portrait').values.portraitMaterial==='press';
+const cutout=resolve(design,'home','home-portrait').values.portraitMaterial==='cutout';
+const composition=resolve(design,'home','home-portrait').values.portraitMaterial==='composition';
+---
+<Styled as="figure" id="home-portrait" area="home" class="he-portrait" data-flow-label="肖像">
+ <img src={composition?compositionAsset:press?portraitSource.fallback:cutout?portraitReview.source:asset.derivative} width={composition?portraitViewport.width:cutout?portraitReview.width:720} height={composition?portraitViewport.height:cutout?portraitReview.height:960} alt={asset.alt} fetchpriority="high" draggable="false" data-print-source={asset.source} data-print-element="home-portrait" data-cutout-source={portraitReview.source} data-press-source={portraitSource.cutout}/>
+ <canvas class="he-portrait-composition" aria-hidden="true"/>
+</Styled>

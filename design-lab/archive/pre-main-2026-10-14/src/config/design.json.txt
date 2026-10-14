@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "global": {
+    "navigationStyle": "swiss",
+    "palette": "blueVermilion",
+    "displayFont": "bricolage",
+    "cueStyle": "portrait",
+    "cueMotion": "reveal",
+    "portraitMaterial": "composition",
+    "bodyFont": "newsreader",
+    "bodySize": 18,
+    "emphasisFont": "bricolage",
+    "paperTexture": 0.08,
+    "toneLight": 225,
+    "toneNoise": 0.065,
+    "toneNoiseScale": 140,
+    "toneDirection": 0.45,
+    "tonePlaneMin": 0.7,
+    "tonePlaneMax": 0.95,
+    "toneSphereMin": 0.3,
+    "toneSphereMax": 0.95,
+    "readingWeight": 3,
+    "screenPitch": 4,
+    "primaryAngle": 75,
+    "secondaryAngle": 15,
+    "registration": 2,
+    "registrationY": 1,
+    "grain": 0.12,
+    "starvation": 0.12,
+    "dotGain": 0.2,
+    "grainSize": 1.5,
+    "inkEdge": 0.15,
+    "pressGrain": 0.03,
+    "seed": 5,
+    "primaryDotShape": "round",
+    "secondaryDotShape": "round"
+  },
+  "areas": {
+    "home": {
+      "homeComposition": "interlock",
+      "homeScale": 0.78,
+      "portraitSpan": 5,
+      "nameIndent": 1
+    }
+  },
+  "elements": {
+    "home-name": {
+      "titleTreatment": "dotted",
+      "titleDotPitch": 0.0625,
+      "titleDotRadius": 0.34,
+      "titleLayerX": 0,
+      "titleLayerY": 0
+    },
+    "home-portrait": {
+      "imageMask": "source",
+      "portraitTilt": 0,
+      "compositionOperation": "over",
+      "compositionShape": "circle",
+      "compositionPitch": 4,
+      "compositionMis": 0.5,
+      "contrast": 1.3,
+      "printPitch": 4.5,
+      "printAngle": 15
+    },
+    "mark-news": {
+      "fieldCoverage": 0.16,
+      "fieldOverlap": 0.7,
+      "fieldScale": 0.8
+    },
+    "mark-benchmarking": {
+      "fieldCoverage": 0.28
+    },
+    "mark-applications": {
+      "fieldCoverage": 0.28
+    },
+    "mark-machines": {
+      "fieldCoverage": 0.28
+    },
+    "mark-mosaic": {
+      "fieldCoverage": 0.5
+    },
+    "mark-avila": {
+      "fieldCoverage": 0.32
+    },
+    "mark-printlab": {
+      "fieldCoverage": 0.25,
+      "fieldScale": 0.85
+    },
+    "mark-about": {
+      "fieldCoverage": 0.18,
+      "fieldOverlap": 0.7,
+      "fieldScale": 0.85
+    },
+    "ground-mosaic": {
+      "groundInk": "primary",
+      "groundOpacity": 0,
+      "groundWidth": 96
+    },
+    "ground-avila": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 91
+    },
+    "ground-home-role": {
+      "groundOpacity": 0,
+      "groundWidth": 96,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "ground-home-pillars": {
+      "groundOpacity": 0,
+      "groundWidth": 14,
+      "groundBleed": 4
+    },
+    "ground-about-intro": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 76,
+      "groundBleed": 8
+    },
+    "ground-about-education": {
+      "groundOpacity": 0,
+      "groundWidth": 64,
+      "groundBleed": 8,
+      "groundEdge": "cut"
+    },
+    "ground-about-funding": {
+      "groundInk": "secondary",
+      "groundOpacity": 0,
+      "groundWidth": 92,
+      "groundBleed": 8
+    },
+    "plate-home": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-about": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-benchmarking": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-applications": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "plate-machines": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
+    "home-bridge": {
+      "cueEdgeDensity": 0.08,
+      "cueTailWidth": 0.35
+    }
+  }
+}

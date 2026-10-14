@@ -1,0 +1,69 @@
+import {design} from '../config/design';
+const frame=document.querySelector<HTMLIFrameElement>('#layout-frame')!;
+const stage=document.querySelector<HTMLElement>('.lab-stage')!;
+const viewport=document.querySelector<HTMLElement>('.lab-viewport')!;
+const width=document.querySelector<HTMLSelectElement>('#layout-width')!;
+const prefix=document.querySelector<HTMLInputElement>('#slogan-prefix')!;
+const core=document.querySelector<HTMLInputElement>('#slogan-core')!;
+const gap=document.querySelector<HTMLInputElement>('#section-gap')!;
+const size=document.querySelector<HTMLInputElement>('#brand-size')!;
+const guide=document.querySelector<HTMLInputElement>('#layout-guide')!;
+const flow=document.querySelector<HTMLInputElement>('#layout-flow')!;
+const register=document.querySelector<HTMLInputElement>('#ink-register')!;
+const name=document.querySelector<HTMLSelectElement>('#name-treatment')!;
+const proof=document.querySelector<HTMLSelectElement>('#type-proof')!;
+const audit=document.querySelector<HTMLInputElement>('#screen-audit')!;
+const grid=document.querySelector<HTMLInputElement>('#layout-grid')!;
+const status=document.querySelector<HTMLElement>('#layout-status')!;
+const buttons=[...document.querySelectorAll<HTMLButtonElement>('[data-layout]')];
+let variant:'fan'|'side'='side',pageHeight=1600,ready=false;
+function recipe(){return {version:1,variant,prefix:prefix.value.trim(),core:core.value.trim(),gap:Number(gap.value),size:Number(size.value),guide:guide.checked,flow:flow.checked,screenAudit:audit.checked,proof:proof.value,name:name.value,registration:Number(register.value),registrationY:Number(register.value)/2};}
+function previewDesign(){return {...design,global:{...design.global,registration:Number(register.value),registrationY:Number(register.value)/2}};}
+function applyPress(){if(ready)frame.contentWindow?.postMessage({type:'design:apply',config:previewDesign(),grid:grid.checked},location.origin);}
+function fit(){
+ const w=width.value==='full'?viewport.clientWidth:width.value==='fit'?1440:Number(width.value);
+ const scale=width.value==='fit'?Math.min(1,viewport.clientWidth/w):1;
+ frame.style.width=`${w}px`;frame.style.height=`${pageHeight}px`;frame.style.transform=`scale(${scale})`;
+ stage.style.width=`${w*scale}px`;stage.style.height=`${pageHeight*scale}px`;
+}
+function send(){
+ document.querySelector<HTMLElement>('#screen-legend')!.hidden=!audit.checked;
+ document.querySelector('#gap-value')!.textContent=`${gap.value} px`;
+ document.querySelector('#size-value')!.textContent=`${size.value} px`;
+ document.querySelector('#register-value')!.textContent=`X ${register.value} / Y ${Number(register.value)/2} px`;
+ if(!ready)return;
+ frame.contentWindow?.postMessage({type:'design:layout-study',recipe:recipe()},location.origin);
+}
+buttons.forEach(button=>button.addEventListener('click',()=>{
+ variant=button.dataset.layout as typeof variant;
+ buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+ document.querySelector('#layout-description')!.textContent=variant==='fan'?'A：个人信息集中在上半部，品牌向下展开三个关注方面，News 接在研究模块之后。':'B：个人信息保持独立；品牌在左、三个关注方面在右，由同一主干连接，小屏收敛为向下阅读。';
+ send();
+}));
+[prefix,core,gap,size,guide,flow,name].forEach(input=>input.addEventListener('input',send));
+audit.addEventListener('change',()=>{if(audit.checked)proof.value='overprint';send();});
+proof.addEventListener('change',()=>{audit.checked=false;send();});
+grid.addEventListener('change',()=>{applyPress();send();});
+register.addEventListener('input',()=>{applyPress();send();});
+width.addEventListener('change',fit);new ResizeObserver(fit).observe(viewport);
+window.addEventListener('message',event=>{
+ if(event.origin!==location.origin||event.source!==frame.contentWindow)return;
+ if(event.data?.type==='design:ready'){
+  ready=true;
+  applyPress();
+  send();
+ }
+ if(event.data?.type==='design:layout-ready'){
+  const height=Number(event.data.height);
+  if(Number.isFinite(height)&&height>0&&height<30000){pageHeight=Math.ceil(height)+8;fit();}
+  status.textContent='B 为当前方向 · 姓名小屏自动实色 · 分版涵盖预览中的文字、线条与印刷素材 · 未知 News 月份保留年份 · 文案待确认';
+ }
+ if(event.data?.type==='design:screen-report')document.querySelector('#screen-report')!.textContent=String(event.data.message);
+ if(event.data?.type==='design:error')status.textContent=`预览未完成：${String(event.data.message)}`;
+});
+document.querySelector('#layout-export')!.addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify({kind:'homepage-layout-study',...recipe(),copyStatus:'candidate-not-approved',design:previewDesign()},null,2)+'\n'],{type:'application/json'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`homepage-layout-${variant}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ status.textContent='实验配方已导出；网站配置未改变。';
+});
+fit();

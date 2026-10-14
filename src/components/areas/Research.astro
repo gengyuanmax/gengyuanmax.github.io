@@ -1,0 +1,31 @@
+---
+import InkText from '../InkText.astro';
+import EmphasisText from '../EmphasisText.astro';
+import {bodyEmphasis} from '../../config/body-emphasis';
+import GridGuides from '../GridGuides.astro';
+import Styled from '../Styled.astro';
+import PrintTitle from '../PrintTitle.astro';
+import PrintMotif from '../PrintMotif.astro';
+import PrintGround from '../PrintGround.astro';
+import PrintWord from '../PrintWord.astro';
+import {pillars,projects,sectionCopy} from '../../data/content';
+import {publications} from '../../data/publications';
+import {projectsForPillar,preferredResource,resourceEntries} from '../../data/catalog';
+import {researchComposition,placements} from '../../config/compositions';
+const slots:Record<string,string>={feature:'he-project-feature',side:'he-project-side',embodied:'he-embodied-project',surgical:'he-surgical-project',note:'he-machine-note',machine:'he-machine-feature'};
+---
+<GridGuides />
+<header class="he-research-masthead"><p class="he-meta">Research projects</p><PrintTitle id="research-title" area="research" lines={["Visual","Intelligence"]}/><p class="he-research-intro">{sectionCopy.research}</p></header>
+<div class="he-research-flow" data-reading-host>{researchComposition.map((chapter,i)=>{
+ const pillar=pillars.find(p=>p.id===chapter.pillar)!;
+ return <section class:list={['he-research-chapter',chapter.className]} id={pillar.id} aria-labelledby={`${pillar.id}-title`}>
+ <header class="he-chapter-heading" data-flow-label={pillar.label}><PrintGround id={`plate-${pillar.id}` as "plate-benchmarking"|"plate-applications"|"plate-machines"}/><PrintMotif id={`mark-${pillar.id}`}/><span class="he-chapter-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span><h2 id={`${pillar.id}-title`}>{pillar.lines.map((line,j)=><>{j>0&&<br/>}{line}</>)}</h2>{pillar.id==='machines'&&<p>{pillar.detail}</p>}</header>
+ {projectsForPillar(Object.values(projects),pillar.id).map((item,index)=>{ const placement=chapter.items[index%chapter.items.length]; const id=`project-${placement.id}`; const position=placements[id as keyof typeof placements]; const resource=preferredResource(item.links); return <Styled as="article" id={id} area="research" style={`--item-row:${position.row+Math.floor(index/chapter.items.length)}`} data-flow-label={item.title} class={`he-project ${slots[placement.slot]}`} data-content-id={`project-${item.id}`}>
+ <span class="he-reading-marker" aria-hidden="true">{String(Object.values(projects).indexOf(item)+1).padStart(2,'0')}</span><div class="he-project-imprint">{item.id==='a'&&<PrintGround id="ground-mosaic"/>}{item.id==='f'&&<PrintGround id="ground-avila"/>}{item.id==='a'&&<PrintMotif id="mark-mosaic"/>}{item.id==='f'&&<PrintMotif id="mark-avila"/>}<p class="he-item-meta"><span>{item.metadata.split(" · ").map((part,i)=><span class="he-meta-unit">{i>0?" · ":""}{part}</span>)}</span></p><h3>{resource?<a href={resource.href}><PrintWord id={`word-project-${item.id}`} area="research" text={item.title}/></a>:item.title}</h3></div><p class="he-project-description"><EmphasisText text={item.description} phrase={bodyEmphasis.projects[item.id]}/></p>
+ {item.themes.filter(theme=>theme!==item.primaryTheme).length>0&&<ul class="he-theme-tags" aria-label="关联研究方向">{item.themes.filter(theme=>theme!==item.primaryTheme).map(theme=><li><a href={`#${theme}`}>{pillars.find(p=>p.id===theme)?.label||theme}</a></li>)}</ul>}
+ <div class="he-project-resources">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{kind==='page'?'Project':kind==='arxiv'?'arXiv':kind==='github'?'GitHub':kind}</a>)}</div>
+ {publications.filter(p=>p.id===item.publicationId).map(p=><details class="he-project-details"><summary>Paper & authors</summary><p><a href={p.url}>{p.title}</a></p><p>{p.authors}</p></details>)}
+ </Styled>; })}
+ </section>;
+})}</div>
+<details class="he-publication-index"><summary>Publications & preprints · {publications.length}</summary><p>* Equal contribution.</p><ol>{[...publications].sort((a,b)=>b.year-a.year).map(p=><li><p class="he-item-meta">{p.venue}</p><h3><a href={p.url}><InkText text={p.title}/></a></h3><p>{p.authors}</p></li>)}</ol></details>

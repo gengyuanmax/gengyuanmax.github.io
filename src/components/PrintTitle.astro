@@ -1,0 +1,9 @@
+---
+import Styled from './Styled.astro';
+import type {Area} from '../design/settings';
+interface Props {id:string;area:Area;lines:string[];class?:string;}
+const {id,area,lines,class:className}=Astro.props;
+---
+<Styled as="h1" id={id} area={area} class={className} data-flow-label={lines.join(' ')}>
+ {lines.map((line,index)=><span class="print-2ink he-type-line"><span class="he-type-a" aria-hidden="true" data-ink-copy={line}></span><span class="he-type-b">{line}{index<lines.length-1?' ':''}</span></span>)}
+</Styled>

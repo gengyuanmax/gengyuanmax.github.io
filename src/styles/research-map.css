@@ -1,0 +1,48 @@
+#personal-site .rm-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+#personal-site .research-map{position:relative;isolation:isolate;aspect-ratio:800/500;width:100%;max-width:640px;margin-inline:auto;color:var(--blue-ink);}
+#personal-site .rm-diagram,#personal-site .rm-inks{width:100%;height:100%;position:absolute;inset:0;pointer-events:none;}
+#personal-site .research-map ol,#personal-site .research-map ul{list-style:none;padding:0;margin:0;}
+#personal-site .rm-directions>li{font:700 18px/1.2 var(--display-face);}
+#personal-site .research-map a{color:var(--blue-ink);display:inline-block;min-height:28px;padding:5px 4px;text-decoration:none;text-underline-offset:3px;line-height:1.2;}
+#personal-site .research-map a:focus-visible{outline:2px solid var(--blue-ink);outline-offset:3px;}
+#personal-site .rm-directions a{position:absolute;inset:0;pointer-events:none;padding:0;}
+#personal-site .rm-label-flat{display:none;}
+#personal-site .rm-label-arc{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:currentColor;}
+#personal-site .rm-label-hit{fill:none;stroke:transparent;pointer-events:stroke;}
+#personal-site .rm-label-arc text{pointer-events:visiblePainted;}
+#personal-site .rm-directions a:focus-visible{outline:none;}
+#personal-site .rm-directions a:is(:hover,:focus-visible) text{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;}
+#personal-site:has(.research-map[data-view="circles"]) .rm-tree,#personal-site:has(.research-map[data-view="circles"]) .he-home-branches{display:none;}
+#personal-site .research-map[data-view="tree"]{display:none;}
+#personal-site:has(.research-map[data-view="circles"]) .he-home .he-brand{grid-column:1/5;}
+#personal-site:has(.research-map[data-view="circles"]) .he-home .he-research-overview{grid-column:6/13;padding:0;}
+@media(max-width:1023px){
+#personal-site:has(.research-map[data-view="circles"]) .he-home .he-brand{grid-column:1/-1;grid-row:1;}
+#personal-site:has(.research-map[data-view="circles"]) .he-home .he-research-overview{grid-column:1/-1;grid-row:2;margin-top:20px;}
+}
+@media(max-width:639px){
+#personal-site .research-map{aspect-ratio:auto;}
+#personal-site .rm-diagram{position:relative;width:160px;height:100px;margin:auto;}
+#personal-site .research-map .rm-directions{display:flex;flex-direction:column;gap:4px;margin:12px 0 24px;}
+#personal-site .rm-directions>li{text-align:left;}
+#personal-site .rm-directions a{position:static;pointer-events:auto;padding:5px 4px;}
+#personal-site .rm-directions a:focus-visible{outline:2px solid var(--blue-ink);}
+#personal-site .rm-label-flat{display:inline;}
+#personal-site .rm-label-arc{display:none;}
+}
+@media(pointer:coarse){#personal-site .rm-touch-help{display:block;font-size:12px;}#personal-site .rm-touch-help a[hidden]{display:none;}}
+
+#personal-site .rm-touch-help{display:none;}
+@media(pointer:coarse){#personal-site .rm-touch-help{display:block;font-size:12px;}#personal-site .rm-touch-help a[hidden]{display:none;}}
+
+#personal-site .rm-directions a:hover{text-decoration:underline;}
+#personal-site .rm-fallback{position:absolute;inset:0;width:100%;height:100%;}
+#personal-site .rm-inks{visibility:hidden;}
+#personal-site [data-canvas-ready="true"] .rm-inks{visibility:visible;}
+#personal-site [data-canvas-ready="true"] .rm-fallback{visibility:hidden;}
+#personal-site .rm-entering .rm-directions{visibility:hidden;}
+#personal-site .rm-directions a{font-size:18px;}
+@media(prefers-reduced-motion:reduce){#personal-site .rm-entering .rm-directions{visibility:visible;}}
+/* With JS the circles appear when their final canvas is ready. The build-time PNG uses a
+   reference layout and the build day's seed, so it would be a different print: no-JS only. */
+#personal-site[data-enhanced] .rm-fallback{visibility:hidden;}

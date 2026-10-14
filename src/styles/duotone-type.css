@@ -1,0 +1,79 @@
+/* Two physical colour roles, one shared register. Blue carries information;
+   vermilion marks a state or overprints display type. Paper is a knockout.
+   These are screen approximations, not production-ready print separations. */
+#personal-site{--press-reg-x:clamp(-.75px,var(--registration-x),.75px);--press-reg-y:clamp(-.5px,var(--registration-y),.5px);}
+#personal-site .print-2ink,#personal-site .he-type-line{isolation:isolate;mix-blend-mode:multiply;}
+#personal-site .he-type-shared{display:inline-grid;width:auto;max-width:100%;vertical-align:baseline;text-wrap:inherit;}
+#personal-site .he-type-shared>span{font:inherit;letter-spacing:inherit;line-height:inherit;min-width:0;}
+#personal-site .he-type-a{user-select:none;-webkit-user-select:none;pointer-events:none;}
+#personal-site .he-type-a[data-ink-copy]::before{content:attr(data-ink-copy);}
+#personal-site .print-2ink.he-type-line>.he-type-a{display:block;visibility:visible;color:var(--red-ink);transform:none;text-shadow:none;-webkit-text-stroke:0;-webkit-text-fill-color:currentColor;}
+#personal-site .print-2ink.he-type-line>.he-type-b{display:block;color:var(--blue-ink);mix-blend-mode:multiply;transform:translate(var(--press-reg-x),var(--press-reg-y));text-shadow:none;-webkit-text-stroke:0;-webkit-text-fill-color:currentColor;}
+/* Dotted display type uses the same angle/shape-aware AM renderer as images.
+   A solid plate is also the no-JS fallback; the renderer supplies the mask. */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{color:var(--blue-ink);-webkit-text-fill-color:currentColor;background:none;transform:translate(var(--press-reg-x),var(--press-reg-y));}
+/* Navigation and linked project names receive the red plate on interaction. */
+#personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a) .he-type-a{opacity:0;}
+#personal-site :is(.he-nav a,.he-project-imprint h3 a,.he-artifact h2 a,.he-pillars h3 a):is(:hover,:focus-visible,[aria-current="page"]) .he-type-a{opacity:1;}
+#personal-site .he-nav a::after{filter:none;}
+#personal-site .he-pillars a .he-type-b{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;}
+#personal-site a:hover .he-type-line>.he-type-b{text-decoration:underline;text-underline-offset:.12em;}
+/* Fine type is one untextured blue plate, with no artificial grey hierarchy. */
+#personal-site :is(p,summary,.he-date,.he-meta,.he-item-meta,.he-contact a,.he-project-resources a,.he-theme-tags a,.he-shortcuts a,.he-reading-marker,.he-artifact-controls button,.he-artifact-group-label,.he-slogan-prefix){background-image:none;-webkit-text-fill-color:currentColor;}
+#personal-site :is(.em-ink,.em-knock){background:none;color:inherit;-webkit-text-fill-color:currentColor;font:inherit;font-weight:600;text-decoration:none;padding:0;margin:0;}
+#personal-site .he-type-line[data-press-fine="true"]>.he-type-a{opacity:0!important;}
+#personal-site .he-type-line[data-press-fine="true"]>.he-type-b{transform:none;filter:none;mask-image:none!important;}
+#personal-site .he-item-meta strong{background:var(--blue-ink);color:var(--paper);-webkit-text-fill-color:var(--paper);}
+#personal-site .he-page::after{opacity:1;}
+#personal-site .he-news h2>.he-print-object{display:none;}
+#personal-site .he-news h2 :is(.he-print-word,.he-type-a){-webkit-text-stroke:0;}
+#personal-site .he-home .he-date{border:0;padding:0;max-width:none;}
+/* Existing artwork can have a paper clearance without introducing white ink. */
+#personal-site :is(.he-project-feature,.he-machine-feature) h3 .he-type-a,
+#personal-site [data-content-id="artifact-d"] h2 .he-type-a{paint-order:stroke fill;-webkit-text-stroke:4px var(--paper);}
+/* Proofs remove a colour everywhere CSS uses its token. Canvas artwork is
+   re-rendered from its actual plates by the shared material renderers. */
+#personal-site[data-type-proof="red"],#personal-site[data-type-proof="red"] *{--blue-ink:transparent!important;}
+#personal-site[data-type-proof="blue"],#personal-site[data-type-proof="blue"] *{--red-ink:transparent!important;}
+#personal-site[data-type-proof="red"] .he-type-b,
+#personal-site[data-type-proof="blue"] .he-type-a{opacity:0!important;}
+#personal-site[data-type-proof="red"] .he-portrait[data-composition-ready="false"] img,
+#personal-site[data-type-proof="blue"] .he-portrait[data-composition-ready="false"] img{visibility:hidden;}
+@media print,(forced-colors:active){
+ #personal-site .he-type-line>.he-type-a{display:none!important;}
+ #personal-site .he-type-line>.he-type-b{color:CanvasText!important;visibility:visible!important;opacity:1!important;transform:none!important;background:none!important;mix-blend-mode:normal!important;mask-image:none!important;filter:none!important;-webkit-text-fill-color:currentColor!important;}
+ #personal-site{color:CanvasText;}
+ #personal-site :is(p,a,summary,.he-date,.he-meta){color:CanvasText;background:none;-webkit-text-fill-color:currentColor;}
+}
+
+/* Shared page tracks, including the navigation. */
+#personal-site .he-nav{grid-template-columns:repeat(12,minmax(0,1fr));}
+#personal-site .he-nav a{grid-column:span 3;}
+@container(max-width:720px){
+ #personal-site .he-nav{grid-template-columns:repeat(4,minmax(0,1fr));}
+ #personal-site .he-nav a{grid-column:span 1;}
+ #personal-site .he-nav-shell>.he-grid-guides{--columns:4;--column-gap:16px;}
+}
+@container(max-width:430px){#personal-site .he-nav-shell>.he-grid-guides{--column-gap:12px;}}
+
+#personal-site .he-pillars .he-number .he-type-a{opacity:0;}
+/* Light grounds use screened coverage; opacity is only an on/off switch. */
+#personal-site .he-project-ground{opacity:clamp(0,calc(var(--ground-opacity) * 10000),1);}
+
+/* Text-specific registration is bounded; geometry keeps the global register. */
+#personal-site .he-type-line,#personal-site .he-type-line>span{filter:none!important;}
+#personal-site .he-type-line>.he-type-a{transform:none!important;}
+#personal-site .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
+#personal-site .he-type-line[data-text-tier="body"]>.he-type-b{transform:none;mask-image:none!important;}
+
+/* Dotted glyphs use one half-pixel register; clipping retains partial edge dots. */
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{transform:translate(clamp(-.5px,var(--registration-x),.5px),clamp(-.5px,var(--registration-y),.5px));}
+
+/* Dotted display name: the blue plate is the final AM lattice from the first frame,
+   painted by CSS (--dot-plate from first-frame.ts), clipped by the real glyphs.
+   --dot-pitch and data-text-tier are set by an inline script right after the name and
+   kept current by print-material.ts; the fallback is the same em rule without rounding. */
+#personal-site [data-treatment="dotted"]>.he-type-line{--dot-pitch:calc(1em / 16);}
+@supports (width:round(nearest,1px,1px)){#personal-site [data-treatment="dotted"]>.he-type-line{--dot-pitch:max(2px,round(nearest,1em / 16,1px));}}
+#personal-site [data-treatment="dotted"]>.he-type-line>.he-type-b{-webkit-mask-image:var(--dot-plate);mask-image:var(--dot-plate);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);mask-size:calc(var(--dot-pitch) * 400) calc(var(--dot-pitch) * 100);}
+#personal-site [data-treatment="dotted"]>.he-type-line:is([data-text-tier="heading"],[data-text-tier="body"])>.he-type-b{-webkit-mask-image:none;mask-image:none;}

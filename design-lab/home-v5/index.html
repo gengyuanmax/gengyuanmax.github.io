@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Layout review 06 — Gengyuan Zhang</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+  <link rel="stylesheet" href="foundation.css">
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="sections.css">
+  <style>body{margin:0;padding:24px;max-width:1280px;margin-inline:auto;background:light-dark(#e2ded5,#1b1d19);color-scheme:light dark}@media(max-width:600px){body{padding:8px}}</style>
+</head>
+<body>
+<!-- REVIEW START -->
+<div id="home-editorial-v5" data-cue="ink" aria-label="个人主页排版草案 06">
+  <div class="he-review"><span>排版草案 06</span><span>加网 / 油墨 / 印刷瑕疵参数未定</span></div>
+  <div class="he-site">
+    <header class="he-nav-shell">
+    <nav class="he-nav" aria-label="主导航">
+      <button type="button" class="cursor-interaction" data-area="0" data-label="Home" aria-controls="he-home" aria-current="page"><span class="he-nav-number" aria-hidden="true">01</span><span class="he-nav-shape he-shape-home" aria-hidden="true"></span><span class="he-nav-label">Home</span></button>
+      <button type="button" class="cursor-interaction" data-area="1" data-label="Research projects" aria-controls="he-research"><span class="he-nav-number" aria-hidden="true">02</span><span class="he-nav-shape he-shape-research" aria-hidden="true"></span><span class="he-nav-label">Research projects</span></button>
+      <button type="button" class="cursor-interaction" data-area="2" data-label="Artifacts" aria-controls="he-artifacts"><span class="he-nav-number" aria-hidden="true">03</span><span class="he-nav-shape he-shape-artifacts" aria-hidden="true"></span><span class="he-nav-label">Artifacts</span></button>
+      <button type="button" class="cursor-interaction" data-area="3" data-label="About me" aria-controls="he-about"><span class="he-nav-number" aria-hidden="true">04</span><span class="he-nav-shape he-shape-about" aria-hidden="true"></span><span class="he-nav-label">About me</span></button>
+    </nav>
+    <nav class="he-shortcuts" aria-label="Research 三个方向快速定位" hidden>
+      <a class="cursor-interaction" href="#he-benchmarking" data-chapter="he-benchmarking"><span aria-hidden="true">01</span> Benchmarking</a>
+      <a class="cursor-interaction" href="#he-applications" data-chapter="he-applications"><span aria-hidden="true">02</span> Domain application</a>
+      <a class="cursor-interaction" href="#he-machines" data-chapter="he-machines"><span aria-hidden="true">03</span> [Machines]</a>
+    </nav>
+    </header>
+    <div class="he-window"><div class="he-track">
+      <section class="he-page he-home" id="he-home" aria-label="Home">
+        <div class="he-grid-guides" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <h1 class="he-name"><span>Gengyuan</span><span>Zhang</span></h1>
+        <div class="he-intro">
+          <p class="he-role">[当前身份]<br>[所在机构]</p>
+          <p class="he-bio">[两句以内的简短介绍，待你确认]</p>
+          <p class="he-contact">[Email] <span>/</span> [CV]</p>
+        </div>
+        <section class="he-research-overview" aria-labelledby="he-core">
+          <h2 id="he-core">Visual Intelligence</h2>
+          <ol class="he-pillars">
+            <li><span class="he-number">01</span><div><h3><a class="cursor-interaction" href="#he-benchmarking" data-jump="he-benchmarking">Benchmarking<br>visual intelligence</a></h3></div></li>
+            <li><span class="he-number">02</span><div><h3><a class="cursor-interaction" href="#he-applications" data-jump="he-applications">Domain application</a></h3><p>Embodied AI · Surgical domain</p></div></li>
+            <li><span class="he-number">03</span><div><h3><a class="cursor-interaction" href="#he-machines" data-jump="he-machines">[Machines]</a></h3><p>Models · Agents · Systems</p></div></li>
+          </ol>
+        </section>
+        <figure class="he-portrait"><img src="portrait3-riso-display.webp" width="1086" height="1448" alt="现有峡谷人像的双色网点处理试样" draggable="false"></figure>
+        <div class="he-bridge" aria-hidden="true"><div class="he-bridge-neck"></div><div class="he-bridge-tail"></div></div>
+        <section class="he-news" aria-labelledby="he-news-heading">
+          <h2 id="he-news-heading"><span class="he-news-marker" aria-hidden="true"></span>News</h2>
+          <ol>
+            <li><span class="he-date">[日期]</span><p>[最近一条动态，待确认]</p></li>
+            <li><span class="he-date">[日期]</span><p>[近期动态，待确认]</p></li>
+            <li><span class="he-date">[日期]</span><p>[近期动态，待确认]</p></li>
+          </ol>
+        </section>
+      </section>
+      <section class="he-page he-research-page" id="he-research" aria-label="Research projects" aria-hidden="true" inert>
+        <div class="he-grid-guides" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <header class="he-research-masthead"><p class="he-meta">Research projects</p><h1>Visual<br>Intelligence</h1><p class="he-research-intro">[研究主线的简短说明]</p></header>
+        <div class="he-research-flow">
+          <section class="he-research-chapter he-benchmark" id="he-benchmarking" aria-labelledby="he-benchmark-title">
+            <header class="he-chapter-heading"><span class="he-chapter-number" aria-hidden="true">01</span><h2 id="he-benchmark-title">Benchmarking<br>visual intelligence</h2></header>
+            <article class="he-project he-project-feature">
+              <div class="he-media-placeholder he-media-wide" role="img" aria-label="Benchmarking 代表项目图像占位"><span>[代表项目图像]</span></div>
+              <p class="he-item-meta">[年份 / 发表信息]</p><h3>[研究项目 A]</h3><p>[研究问题与个人贡献]</p>
+            </article>
+            <article class="he-project he-project-side"><p class="he-item-meta">[相关研究]</p><h3>[研究项目 B]</h3><p>[研究问题与个人贡献]</p></article>
+          </section>
+          <section class="he-research-chapter he-applications" id="he-applications" aria-labelledby="he-applications-title">
+            <header class="he-chapter-heading"><span class="he-chapter-number" aria-hidden="true">02</span><h2 id="he-applications-title">Domain<br>application</h2></header>
+            <article class="he-project he-embodied-project"><div class="he-media-placeholder he-media-portrait" role="img" aria-label="Embodied AI 项目图像占位"><span>[项目图像]</span></div><p class="he-item-meta">Embodied AI</p><h3>[研究项目 C]</h3><p>[研究问题与个人贡献]</p></article>
+            <article class="he-project he-surgical-project"><div class="he-media-placeholder he-media-landscape" role="img" aria-label="Surgical domain 项目图像占位"><span>[项目图像]</span></div><p class="he-item-meta">Surgical domain</p><h3>[研究项目 D]</h3><p>[研究问题与个人贡献]</p></article>
+          </section>
+          <section class="he-research-chapter he-machines" id="he-machines" aria-labelledby="he-machines-title">
+            <header class="he-chapter-heading"><span class="he-chapter-number" aria-hidden="true">03</span><h2 id="he-machines-title">[Machines]</h2><p>Models · Agents · Systems</p></header>
+            <article class="he-project he-machine-note"><p class="he-item-meta">[相关研究]</p><h3>[研究项目 E]</h3><p>[研究问题与个人贡献]</p></article>
+            <article class="he-project he-machine-feature"><div class="he-media-placeholder he-media-panorama" role="img" aria-label="模型或系统项目图像占位"><span>[模型 / 系统项目图像]</span></div><p class="he-item-meta">[年份 / 发表信息]</p><h3>[研究项目 F]</h3><p>[研究问题与个人贡献]</p></article>
+          </section>
+        </div>
+        <details class="he-publication-index"><summary class="cursor-interaction">[完整论文索引]</summary><p>[论文标题 · 作者 · 年份 · 发表信息 · 链接]</p></details>
+      </section>
+      <section class="he-page he-artifacts-page" id="he-artifacts" aria-label="Artifacts" aria-hidden="true" inert>
+        <div class="he-grid-guides" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <header class="he-artifacts-masthead"><h1>Artifacts</h1><p>[个人作品与产出的简短介绍]</p></header>
+        <div class="he-artifact-spread">
+          <article class="he-artifact he-artifact-lead"><div class="he-media-placeholder he-artifact-wide" role="img" aria-label="作品 A 展示图像占位"><span>[作品展示图像]</span></div><p class="he-item-meta">[Demo · 年份]</p><h2>[作品 A 标题]</h2><p>[作品简介]</p></article>
+          <article class="he-artifact he-artifact-margin"><p class="he-item-meta">[文章 · 年份]</p><h2>[文章 B<br>标题]</h2><p>[简短摘录或介绍，待确认]</p></article>
+          <article class="he-artifact he-artifact-small"><div class="he-media-placeholder he-artifact-square" role="img" aria-label="作品 C 图像或运行示例占位"><span>[图像 / 运行示例]</span></div><p class="he-item-meta">[库 / 工具 · 年份]</p><h2>[作品 C 标题]</h2><p>[作品简介]</p></article>
+          <article class="he-artifact he-artifact-type"><p class="he-item-meta">[文章 · 年份]</p><h2>[另一件作品的<br>标题]</h2><p>[简短摘录或介绍，待确认]</p></article>
+          <article class="he-artifact he-artifact-open"><div class="he-media-placeholder he-artifact-wide" role="img" aria-label="作品 E 展示素材占位"><span>[作品展示素材]</span></div><p class="he-item-meta">[形式待定 · 年份]</p><h2>[作品 E 标题]</h2><p>[作品简介]</p></article>
+        </div>
+      </section>
+      <section class="he-page he-secondary" id="he-about" aria-label="About me" aria-hidden="true" inert>
+        <h1>About me</h1><div class="he-secondary-list"><section><h2>Gengyuan Zhang</h2><p>[更完整的个人介绍]</p></section><section><h2>[经历]</h2><p>[当前身份与过往经历]</p></section><section><h2>[联系]</h2><p>[Email · CV · GitHub]</p></section></div>
+      </section>
+    </div></div>
+  </div>
+  <p class="he-font-status" role="status" hidden></p>
+  <span class="he-announcement" aria-live="polite"></span>
+</div>
+<!-- REVIEW END -->
+<script src="interaction.js"></script>
+</body>
+</html>

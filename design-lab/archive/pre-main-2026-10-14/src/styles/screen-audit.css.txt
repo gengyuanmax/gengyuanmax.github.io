@@ -1,0 +1,11 @@
+/* Diagnostic colours exist only in the authoring Lab, outside the ink plates. */
+#personal-site[data-layout-preview]{position:relative;}
+#personal-site .he-screen-audit-layer{position:absolute;inset:0;pointer-events:none;z-index:80;isolation:isolate;overflow:clip;}
+#personal-site:not([data-screen-audit="true"]) .he-screen-audit-layer{display:none;}
+#personal-site .he-screen-audit-mark{position:absolute;border:2px solid var(--audit-color);background:color-mix(in srgb,var(--audit-color) 13%,transparent);}
+#personal-site .he-screen-audit-mark[data-level="coarse"]{--audit-color:#8544bd;}
+#personal-site .he-screen-audit-mark[data-level="medium"]{--audit-color:#007f78;}
+#personal-site .he-screen-audit-mark[data-level="fine"]{--audit-color:#ae6000;}
+#personal-site .he-screen-audit-mark[data-issue="true"]{border-style:dashed;}
+#personal-site .he-screen-audit-mark>span{position:absolute;top:0;left:0;padding:3px 6px;max-width:100%;font:600 12px/1.3 system-ui,sans-serif;color:white;background:var(--audit-color);white-space:nowrap;}
+@media print{#personal-site .he-screen-audit-layer{display:none!important;}}

@@ -1,0 +1,17 @@
+{
+  "src/client/portrait-flow.ts": {
+    "canvas-context": 2
+  },
+  "src/client/tone-proof.ts": {
+    "canvas-context": 1
+  },
+  "src/design/bridge.ts": {
+    "seed-arithmetic": 1
+  },
+  "src/design/composition-canvas.ts": {
+    "canvas-context": 1
+  },
+  "src/design/insert-tape.ts": {
+    "seed-arithmetic": 2
+  }
+}

@@ -1,0 +1,94 @@
+/* Reading furniture: one single-ink rail connects the otherwise staggered works.
+   Positions follow the rendered grid; no line is drawn through a text column. */
+#personal-site [data-reading-host] {position:relative;isolation:isolate;padding-top:30px;}
+#personal-site .he-reading-route {position:absolute;left:-22px;top:0;width:calc(100% + 22px);height:100%;overflow:visible;z-index:-1;pointer-events:none;color:var(--blue-ink);}
+#personal-site .he-reading-route path {fill:none;stroke:currentColor;stroke-width:var(--reading-weight);vector-effect:non-scaling-stroke;}
+#personal-site .he-reading-marker {position:relative;display:block;width:32px;height:26px;margin:0 0 26px;background:var(--paper);border-block:var(--reading-weight) solid var(--blue-ink);color:var(--blue-ink);font:500 11px/23px var(--metadata-face);text-align:center;}
+#personal-site .he-page[data-reading-ink="secondary"] .he-reading-route {color:var(--red-ink);}
+#personal-site .he-page[data-reading-ink="secondary"] .he-reading-marker {color:var(--red-ink);border-color:var(--red-ink);}
+#personal-site .he-page[data-reading-guide="marks"] .he-reading-route,
+#personal-site .he-page[data-reading-guide="none"] :is(.he-reading-route,.he-reading-marker) {display:none;}
+#personal-site .he-research-flow {padding-top:0;}
+#personal-site .he-chapter-heading {border-bottom:0;}
+#personal-site .he-chapter-heading::after {display:none;}
+#personal-site .he-research-chapter {row-gap:44px;}
+#personal-site .he-artifact-spread {row-gap:88px;}
+
+/* Text has a book/editorial role; navigation, labels and titles keep their own. */
+#personal-site {font-optical-sizing:auto;}
+#personal-site .he-shortcuts a {font-family:var(--display-face);}
+#personal-site :is(.he-bio,.he-research-intro,.he-project-description,.he-artifact-description,.he-news p) {line-height:1.55;}
+#personal-site .he-role {font:400 13px/1.65 var(--metadata-face);}
+#personal-site .he-pillars h3 {font:600 16px/1.5 var(--display-face);letter-spacing:-.015em;}
+#personal-site .he-pillars li p {font:400 12px/1.6 var(--metadata-face);}
+#personal-site .he-project-details p {font-size:var(--body-size);}
+#personal-site .he-publication-index h3 {font-family:var(--display-face);}
+#personal-site .he-publication-index li > p:not(.he-item-meta) {font-size:var(--body-size);}
+
+/* About: shared 12-column grid with a deliberately uneven editorial rhythm. */
+#personal-site .he-about-body {grid-template-columns:repeat(12,minmax(0,1fr));gap:64px var(--column-gap);margin-top:46px;}
+#personal-site .he-about-module {grid-column:var(--item-start)/span var(--item-span);grid-row:var(--item-row);margin-top:calc(var(--item-offset)*var(--baseline));min-width:0;align-self:start;}
+#personal-site .he-about-intro .he-quiet-heading h2 {font-size:36px;}
+#personal-site .he-about-intro > p {font-size:clamp(calc(var(--body-size) + 3px),2cqw,calc(var(--body-size) + 8px));line-height:1.45;max-width:49ch;margin-top:20px;}
+#personal-site :is(.he-about-experience,.he-about-education) .he-quiet-heading {align-items:flex-end;gap:20px;padding-top:0;margin-bottom:24px;}
+#personal-site :is(.he-about-experience,.he-about-education) .he-quiet-heading h2 {font-size:34px;padding-bottom:4px;}
+#personal-site :is(.he-about-experience,.he-about-education) .he-module-index {font:700 80px/.82 var(--display-face);letter-spacing:-.075em;border:0;flex-basis:auto;align-self:end;padding:0;}
+#personal-site .he-about-body .he-timeline {--date-margin:112px;--date-gap:28px;}
+#personal-site .he-about-body .he-timeline h3 {font:650 22px/1.2 var(--display-face);letter-spacing:-.025em;}
+#personal-site .he-timeline-content p {line-height:1.5;}
+#personal-site .he-about-education .he-timeline::before {left:3px;}
+#personal-site .he-about-education .he-timeline li {display:block;padding:16px 0 24px 24px;}
+#personal-site .he-about-education .he-timeline li::before {left:0;top:24px;}
+#personal-site .he-about-education .he-timeline .he-item-meta {margin:0 0 12px;}
+#personal-site .he-about-education .he-module-index {font-size:64px;}
+#personal-site .he-about-education .he-quiet-heading h2 {font-size:30px;}
+#personal-site .he-about-education .he-heading-tick {display:none;}
+#personal-site :is(.he-about-funding,.he-about-reviewing) .he-quiet-heading h2 {font-size:30px;}
+#personal-site .he-about-funding > .he-item-meta {font:500 13px/1.8 var(--metadata-face);margin-top:18px;}
+#personal-site .he-about-funding > p:last-child {font-size:calc(var(--body-size) + 3px);line-height:1.45;margin-top:18px;max-width:32ch;}
+#personal-site .he-about-reviewing {margin-left:0;padding-left:24px;}
+#personal-site .he-about-reviewing > p {max-width:34ch;line-height:1.55;}
+#personal-site .he-about-outside {position:relative;padding:30px 0 24px;border-block:1.5px solid var(--blue-ink);}
+#personal-site .he-about-outside .he-quiet-heading h2 {font-size:32px;}
+#personal-site .he-personal-heading > .he-print-object {flex-basis:110px;width:110px;height:76px;margin-top:-64px;}
+#personal-site .he-about-outside > p {font-size:calc(var(--body-size) + 4px);line-height:1.5;max-width:43ch;}
+#personal-site .he-about-contact {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:var(--column-gap);padding-top:18px!important;}
+#personal-site .he-about-contact .he-quiet-heading {margin:0;}
+#personal-site .he-about-contact .he-contact {grid-column:2/-1;justify-self:end;margin:0;}
+#personal-site .he-page[data-rhythm="aligned"] .he-about-module {grid-column:1/-1;grid-row:auto;margin-top:0;}
+@container(max-width:1000px){
+ #personal-site .he-about-body {row-gap:48px;}
+ #personal-site .he-about-intro {grid-column:1/12;}
+ #personal-site .he-about-experience {grid-column:1/8;}
+ #personal-site .he-about-education {grid-column:9/13;margin-top:64px;}
+ #personal-site .he-about-body .he-timeline li {display:block;padding-left:24px;}
+ #personal-site .he-about-body .he-timeline::before {left:3px;}
+ #personal-site .he-about-body .he-timeline li::before {left:0;}
+ #personal-site .he-about-body .he-timeline .he-item-meta {margin:0 0 12px;}
+ #personal-site :is(.he-about-experience,.he-about-education) .he-quiet-heading {flex-wrap:wrap;gap:14px;}
+ #personal-site .he-about-experience .he-heading-tick {display:none;}
+ #personal-site .he-about-education .he-module-index {flex-basis:100%;}
+}
+@container(max-width:720px){
+ #personal-site .he-about-body {grid-template-columns:repeat(4,minmax(0,1fr));row-gap:44px;}
+ #personal-site .he-about-module {grid-column:1/-1;grid-row:auto;margin-top:0;}
+ #personal-site .he-about-intro {grid-column:1/-1;}
+ #personal-site .he-about-education {grid-column:2/5;}
+ #personal-site .he-about-education .he-module-index {flex-basis:auto;font-size:56px;}
+ #personal-site .he-about-education .he-quiet-heading h2 {font-size:28px;}
+ #personal-site .he-about-reviewing {grid-column:2/5;}
+ #personal-site .he-about-outside {grid-column:1/-1;}
+ #personal-site .he-about-contact {display:block;}
+ #personal-site .he-about-contact .he-contact {margin-top:16px;}
+}
+@container(max-width:450px){
+ #personal-site .he-about-intro .he-quiet-heading h2 {font-size:29px;}
+ #personal-site .he-about-intro > p {font-size:calc(var(--body-size) + 2px);}
+ #personal-site .he-about-experience .he-module-index {font-size:62px;}
+ #personal-site .he-about-experience .he-quiet-heading h2 {font-size:29px;}
+ #personal-site .he-about-education {grid-column:1/-1;padding-left:24px;}
+ #personal-site .he-about-reviewing {grid-column:1/-1;margin-left:24px;padding-left:18px;}
+ #personal-site .he-about-outside .he-quiet-heading h2 {font-size:28px;}
+ #personal-site .he-personal-heading > .he-print-object {flex-basis:68px;width:68px;height:48px;margin-top:-48px;}
+ #personal-site .he-about-outside > p {font-size:calc(var(--body-size) + 2px);}
+}

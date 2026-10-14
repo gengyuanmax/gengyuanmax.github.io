@@ -1,0 +1,25 @@
+import '../styles/body-emphasis.css';
+import {design} from '../config/design';
+import {resolve,styleText,getPalette} from '../design/settings';
+import {emphasisMaterial} from '../design/emphasis';
+const s=resolve(design).values,palette=getPalette(design,s.palette),material=emphasisMaterial(palette,s.emphasisPitch,s.emphasisCoverage);
+document.querySelector('#personal-site')!.setAttribute('style',styleText(s,design));
+const samples=[
+ {id:'home',label:'首页 · 简介关键词',x:64,y:574,w:250,h:130},
+ {id:'about',label:'About · 论文题名',x:156,y:437,w:708,h:126},
+ {id:'research',label:'Research · Mosaic 项目描述',x:60,y:415,w:560,h:72},
+];
+for(const sample of samples){
+ const section=document.createElement('section');section.className='pair';
+ const title=document.createElement('h2');title.textContent=sample.label;section.append(title);
+ for(const [side,label]of [['before','改前 · 粗体无衬线'],['after','改后 · 正文衬线 / 蓝墨 / 网点带']]){
+  const figure=document.createElement('figure'),caption=document.createElement('figcaption'),crop=document.createElement('div'),image=document.createElement('img'),link=document.createElement('a');
+  caption.textContent=label;crop.className='crop';crop.style.setProperty('--crop-width',sample.w+'px');crop.style.setProperty('--crop-ratio',`${sample.w}/${sample.h}`);
+  image.src=`/design/emphasis-proof/${sample.id}-${side}.png`;image.alt=sample.label+' · '+label;
+  image.style.width=`${1280/sample.w*100}%`;image.style.left=`${-sample.x/sample.w*100}%`;image.style.top=`${-sample.y/sample.h*100}%`;
+  link.href=image.src;link.className='full';link.textContent='查看完整截图';crop.append(image);figure.append(caption,crop,link);section.append(figure);
+ }
+ document.querySelector('#pairs')!.append(section);
+}
+document.querySelector('#contrast')!.textContent=`当前配色：纸上 ${material.paperContrast.toFixed(2)}:1；最深网点上 ${material.dotContrast.toFixed(2)}:1。网距 ${s.emphasisPitch}px / 45° / 覆盖率 ${Math.round(s.emphasisCoverage*100)}%。实际截图保留纸纹。`;
+document.querySelector('#fallback')!.addEventListener('click',e=>{const button=e.currentTarget as HTMLButtonElement,on=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(on));document.querySelector<HTMLElement>('#personal-site')!.dataset.fallback=String(on);});
