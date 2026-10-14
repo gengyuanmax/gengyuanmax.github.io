@@ -22,19 +22,18 @@ if(root){
     return {x:box.left-rect.left+box.width/2,y:box.top-rect.top,row:row==='auto'?`single-${i}`:`${chapter}-${row}`};
    });
    const headers=[...host.querySelectorAll<HTMLElement>('.he-chapter-heading')];
-   const bands:ReadingBand[]=headers.map(h=>{const b=h.getBoundingClientRect();return {top:b.top-rect.top,bottom:b.bottom-rect.top};});
+   const grounds=headers.map(h=>h.querySelector<HTMLElement>(':scope > [data-style-element^="plate-"]')||h);
+   const bands:ReadingBand[]=headers.map((h,i)=>{const b=h.getBoundingClientRect(),g=grounds[i].getBoundingClientRect();return {top:b.top-rect.top,bottom:b.bottom-rect.top,left:g.left-rect.left,right:g.right-rect.left};});
    const weight=parseFloat(getComputedStyle(host).getPropertyValue('--reading-weight'))||1.5;
    const origin={x:rect.left+scrollX,y:rect.top+scrollY};
-   const grounds=headers.map(h=>h.querySelector<HTMLElement>(':scope > [data-style-element^="plate-"]')||h);
-   const bandLeft=grounds.length?Math.max(...grounds.map(g=>g.getBoundingClientRect().left-rect.left)):undefined;
-   const {ink,knockouts}=readingTree(anchors,bands,{weight,dpr:Math.max(1,devicePixelRatio||1),origin,bandLeft});
+   const {ink,knockouts}=readingTree(anchors,bands,{weight,dpr:Math.max(1,devicePixelRatio||1),origin});
    svg.setAttribute('viewBox',`-22 0 ${rect.width+22} ${rect.height}`);
    svg.replaceChildren(...ink.map(r=>{const e=document.createElementNS(ns,'rect');for(const [k,v] of Object.entries({x:r.x,y:r.y,width:r.width,height:r.height}))e.setAttribute(k,String(v));e.dataset.level=String(r.level);return e;}));
    // Knockouts live inside the band they cut, above its ink and below its type.
    headers.forEach((h,i)=>{
     h.querySelectorAll(':scope > .he-route-knockout').forEach(k=>k.remove());
     const b=h.getBoundingClientRect();
-    for(const k of knockouts){if(k.y<bands[i].top-.5||k.y+k.height>bands[i].bottom+.5)continue;
+    for(const k of knockouts){if(k.y<bands[i].top-.5||k.y+k.height>bands[i].bottom+.5||k.x+k.width<bands[i].left!||k.x>bands[i].right!)continue;
      const e=document.createElement('i');e.className='he-route-knockout';e.setAttribute('aria-hidden','true');
      e.style.cssText=`left:${k.x+rect.left-b.left}px;top:${k.y+rect.top-b.top}px;width:${k.width}px;height:${k.height}px`;h.append(e);}
    });

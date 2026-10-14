@@ -55,4 +55,5 @@ export {renderFieldOriginals,type FieldOriginal} from './field.ts';
 export {dotPitch,dotPlateImage,groundFirstCoverage} from './first-frame.ts';
 export {noiseBudget} from './budget.ts';
 export {rng,salt} from './noise.ts';
+export {separateSubject,subjectSeparation,raggedFrame,raggedFrameRecipe,type SubjectRecipe,type FrameRecipe} from './subject.ts';
 export {pagePlates,plateTables,referencePlate,type PagePlate,type PlateInk} from './plates.ts';

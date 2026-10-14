@@ -32,6 +32,12 @@ test('stacked and filtered layouts lose obsolete branches and empty results draw
  assert.deepEqual(readingTree([]),{ink:[],knockouts:[]});
 });
 test('a knockout never leaves a sliver of band at the band edge',()=>{
- const {knockouts}=readingTree(anchors,bands,{bandLeft:-22,weight:3});
- for(const k of knockouts)assert.ok(k.x-(-22)>=16,`knockout ${k.x-(-22)}px from the band edge`);
+ const {knockouts}=readingTree(anchors,bands.map(b=>({...b,left:-22,right:900})),{weight:3});
+ assert.ok(knockouts.length);for(const k of knockouts)assert.ok(k.x-(-22)>=16,`knockout ${k.x-(-22)}px from the band edge`);
+});
+test('staggered bands that do not reach the trunk are not cut, and the trunk stays ink beside them',()=>{
+ const staggered=[{top:100,bottom:280,left:-60,right:700},{top:600,bottom:780,left:250,right:1300}];
+ const {ink,knockouts}=readingTree(anchors,staggered,{weight:3});
+ assert.equal(knockouts.length,1);assert.ok(knockouts[0].y>=100&&knockouts[0].y+knockouts[0].height<=280);
+ assert.ok(ink.some(r=>r.level===0&&r.y<780&&r.y+r.height>600),'trunk must stay ink beside a band that does not reach it');
 });
