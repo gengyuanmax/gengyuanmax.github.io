@@ -24,3 +24,15 @@ test('the About photograph is printed from the kept source on the shared screen 
  if(aboutPhoto.screen==='coarse')assert.ok(aboutPhoto.displaySize>=72,'coarse is the display tier');
  assert.ok(!aboutPhoto.source.startsWith('public/'),'the unprinted original must not be published');
 });
+test('printed rules keep their weight, wander only within the budget, and carry ink variation',async()=>{
+ const {printRule}=await import('../src/design/print-pipeline/index.ts');
+ const {noiseBudget}=await import('../src/design/print-pipeline/budget.ts');
+ const {alpha,width,height,pad}=printRule(3,1200,2,{seed:23,origin:{x:200,y:300}},{grain:.08,starve:.08,holes:.04,band:.1});
+ let minRow=Infinity,maxRow=0,inked=[];
+ for(let y=0;y<height;y++){let s=0;for(let x=0;x<width;x++)s+=alpha[y*width+x]>0?1:0;minRow=Math.min(minRow,s);maxRow=Math.max(maxRow,s);for(let x=0;x<width;x++)if(alpha[y*width+x]>.99)inked.push(1);}
+ assert.ok(minRow>=Math.floor((3-noiseBudget.rule.edge)*2),'the line thins below its weight');
+ assert.ok(maxRow<=Math.ceil((3+noiseBudget.rule.edge)*2)+2,'the line spreads past its budget');
+ const mid=Math.floor(width/2),core=Array.from({length:height},(_,y)=>alpha[y*width+mid]);
+ assert.ok(Math.min(...core)<.97,'no ink variation: still a digital line');
+ assert.ok(Math.min(...core)>=(1-noiseBudget.transfer.grainLoss)*(1-noiseBudget.transfer.starvation)*(1-noiseBudget.transfer.roller)-1e-6,'ink loss beyond the transfer budget');
+});

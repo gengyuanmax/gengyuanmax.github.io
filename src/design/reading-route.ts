@@ -11,13 +11,24 @@ export interface TreeOptions {rail?:number;gap?:number;weight?:number;dpr?:numbe
 export const bandInset=16;
 /** Weights per level as multiples of the reading weight: the trunk keeps it, buses and stems thin out. */
 export const levelScale=[1,.67,.4] as const;
+/** Whole device pixels per level, strictly decreasing even where rounding would tie. */
+export function guideWeights(weight:number,dpr:number):[number,number,number]{
+ const d2=Math.max(1,Math.round(weight*levelScale[2]*dpr)),d1=Math.max(d2+1,Math.round(weight*levelScale[1]*dpr)),d0=Math.max(d1+1,Math.round(weight*levelScale[0]*dpr));
+ return [d0/dpr,d1/dpr,d2/dpr];
+}
+/** A timeline (About) in the same language as the reading tree: the spine is the trunk
+ * (level 0) and each entry gets a short level-1 branch instead of a square marker. */
+export function timelineGuides(spine:{x:number;top:number;bottom:number},entries:number[],{weight=1.5,dpr=1,origin={x:0,y:0},branch=8}:{weight?:number;dpr?:number;origin?:{x:number;y:number};branch?:number}={}):Rect[]{
+ if(!entries.length)return [];
+ const px=(v:number,o:number)=>Math.round((v+o)*dpr)/dpr-o,w=guideWeights(weight,dpr),x=px(spine.x-w[0]/2,origin.x);
+ const top=px(Math.min(spine.top,...entries),origin.y),bottom=px(Math.max(spine.bottom,...entries.map(y=>y+w[1])),origin.y);
+ return [{x,y:top,width:w[0],height:bottom-top,level:0},...entries.map(y=>({x,y:px(y-w[1]/2,origin.y),width:w[0]+branch,height:w[1],level:1 as const}))];
+}
 export function readingTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,weight=1.5,dpr=1,origin={x:0,y:0}}:TreeOptions={}):{ink:Rect[];knockouts:Rect[]}{
  if(!anchors.length)return {ink:[],knockouts:[]};
  // Snap edges to device pixels in page space, so every rule is crisp and joints meet exactly.
  const px=(v:number,o:number)=>Math.round((v+o)*dpr)/dpr-o,sx=(v:number)=>px(v,origin.x),sy=(v:number)=>px(v,origin.y);
- // Whole device pixels per level, strictly decreasing even where rounding would tie.
- const d2=Math.max(1,Math.round(weight*levelScale[2]*dpr)),d1=Math.max(d2+1,Math.round(weight*levelScale[1]*dpr)),d0=Math.max(d1+1,Math.round(weight*levelScale[0]*dpr));
- const w=[d0/dpr,d1/dpr,d2/dpr];
+ const w=guideWeights(weight,dpr);
  const rows=new Map<string,ReadingAnchor[]>();
  for(const a of anchors){const row=rows.get(a.row)||[];row.push(a);rows.set(a.row,row);}
  const buses=[...rows.values()].map(items=>({items,y:sy(Math.min(...items.map(a=>a.y))-gap)})).sort((a,b)=>a.y-b.y);

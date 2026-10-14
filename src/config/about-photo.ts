@@ -6,7 +6,7 @@ export const aboutPhoto={
  /** Whole frame (user, 2026-10-15): the arch need not fill the box; sky and land surround it. */
  crop:{left:0,top:0,width:1600,height:1200},
  /** Reference width in CSS px; rendered at 2× so phones and retina stay sharp. */
- width:600,scale:2,
+ width:240,scale:3,
  /** The folio replaces a display numeral, so it uses the display (coarse) tier at the
   * name's reference size: 128px → 8 CSS px dots. No fourth frequency. */
  screen:'coarse' as const,displaySize:128,

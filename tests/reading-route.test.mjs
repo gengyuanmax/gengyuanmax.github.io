@@ -41,3 +41,10 @@ test('staggered bands that do not reach the trunk are not cut, and the trunk sta
  assert.equal(knockouts.length,1);assert.ok(knockouts[0].y>=100&&knockouts[0].y+knockouts[0].height<=280);
  assert.ok(ink.some(r=>r.level===0&&r.y<780&&r.y+r.height>600),'trunk must stay ink beside a band that does not reach it');
 });
+test('About timelines use the same levels: spine is the trunk, entries get level-1 branches',async()=>{
+ const {timelineGuides,guideWeights}=await import('../src/design/reading-route.ts');
+ const rects=timelineGuides({x:150,top:20,bottom:400},[30,180,330],{weight:3,dpr:2});
+ const w=guideWeights(3,2);
+ assert.equal(rects.filter(r=>r.level===0).length,1);assert.equal(rects[0].width,w[0]);
+ assert.equal(rects.filter(r=>r.level===1).length,3);for(const r of rects.filter(r=>r.level===1))assert.equal(r.height,w[1]);
+});

@@ -69,3 +69,10 @@ export function paperOrigin(el:Element,page:HTMLElement){
  const bounds=el.getBoundingClientRect(),paper=page.getBoundingClientRect(),zoom=paper.width/(page.offsetWidth||paper.width)||1;
  return {x:(bounds.left-paper.left)/zoom,y:(bounds.top-paper.top)/zoom};
 }
+/** Encode an alpha mask (0..1) as a PNG data URL, synchronously, for CSS mask-image.
+ * Used where the mask must arrive with its element (no flat-then-textured swap). */
+export function alphaMaskURL(alpha:Float32Array,width:number,height:number){
+ const c=surface(width,height),ctx=c.getContext('2d')!,img=ctx.createImageData(width,height);
+ for(let i=0;i<alpha.length;i++)img.data[i*4+3]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);
+ ctx.putImageData(img,0,0);return c.toDataURL();
+}
