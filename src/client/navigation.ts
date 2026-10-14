@@ -8,7 +8,9 @@ if(root) {
  const shortcuts=root.querySelector<HTMLElement>('.he-shortcuts')!;
  const links=[...root.querySelectorAll<HTMLAnchorElement>('[data-area-link]')];
  const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter')];
- let active=0, jump=0, scrollFrame=0;
+ let active=0, jump=0, scrollFrame=0, settle=0;
+ function settled(){clearTimeout(settle);delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
+ track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  function fit() {
   viewport.style.height=pages[active].offsetHeight+'px';
@@ -21,6 +23,12 @@ if(root) {
   if(index<0)return;
   clearTimeout(jump);
   const changed=index!==active;
+  clearTimeout(settle);
+  if(changed&&!reduced()){
+   root!.dataset.navigating='true';
+   // Fallback also covers an interrupted transition or a background tab.
+   settle=window.setTimeout(settled,550);
+  }else settled();
   active=index;
   // Moving focus out of a panel precedes making that panel inert.
   const focused=document.activeElement;

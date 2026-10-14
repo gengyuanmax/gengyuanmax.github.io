@@ -1,0 +1,27 @@
+{
+  "reason": "User-requested left-to-right order: Machines, Benchmarking, Domain. Ink recipes unchanged.",
+  "results": {
+    "research-160-benchmarking-normal": "d0242fc8d3a4c8e95d9b0e4c360ba12d7c8e5ce6ff23504102b31b7a223373bd",
+    "research-160-benchmarking-active": "3b07cda5df81aa72fe7a809e03e7d8ee9ae1b015bf7261f9f9e9ffd2bc6dc5dd",
+    "research-160-benchmarking-quiet": "a875bdfb604af90ec3f27128c35f63ccd260d7c80f4c3899a9b69eb424671e4f",
+    "research-160-domain-normal": "14b967ea98a9f067de2b412decc5c6a97324b00cd0c5af964be2f00943103086",
+    "research-160-domain-active": "a08862ce4d2396e35b05a895da47ebfe44936b8cc09bebf2ba9e38054e1874a2",
+    "research-160-domain-quiet": "9e79a31df8104b57c0ad2d1e81e372e3c55851130ade8af8a5d82f0289cc9d95",
+    "research-160-machines-normal": "fc8c429a470b711cd80b884f6249a9926f8b904acac77e059554664acd44e6fc",
+    "research-160-machines-active": "4962985afe72132024ffc6ec2cc2cfc5b55bbbdde577bc2d204d6ef5a7ed5d21",
+    "research-160-machines-quiet": "fc2e17c991f479c272c0ef77fb13d4dbdb6499670f0497d05b0f1375f641eaa9",
+    "research-160-svg": "a3e82147bbbb3af0907cd249b1cc67b108dca9bc986f112fcbf8385ba97e3954",
+    "research-160-png": "3e59087fc6197e29e1a1bc27c8e7320be6338f735f632a5e81ff2da84ec48f35",
+    "research-640-benchmarking-normal": "ece23920173864e819ca3a4cc6a207a792ca245cf57e769157994788a5674af7",
+    "research-640-benchmarking-active": "963baa6730d61ffdc588f0b72f1140d9841dd607e805cdf056e1ab8499e3456e",
+    "research-640-benchmarking-quiet": "f3dc88578b323958aa5698b663879d3def1a44cf6fe90984fc5330aac9cd38f9",
+    "research-640-domain-normal": "168257d08ba57ff26e637b4f4233642dc6baa87ebc86b2c926e145553c0382dd",
+    "research-640-domain-active": "14d9b0ceade5a8c9618a141ffb56b87e2d81be4003839c823bac3e3f1dc94fad",
+    "research-640-domain-quiet": "e521a8d18b956f35df65c2fb309686b6fb55bb65f67128f7c83ec39f23bd88aa",
+    "research-640-machines-normal": "9bd8e476790f5b893d28708272fc9442179a6a5e962d37e9913c37f85aa0f895",
+    "research-640-machines-active": "6deca3649bf9e225f65500ccc9caae05431d7e55f848ad4a727aa962a74ccc45",
+    "research-640-machines-quiet": "50afb9a050ef97270cda289092cd1e834e7fda68fb2872439ff16be5dffbb3e1",
+    "research-640-svg": "5fd94d7865357f582baec681019b9797c71db5b26e88697a78a2c511da603507",
+    "research-640-png": "80601490c6339f61abb5f62b152aa8c64a0d264cc1baa27d232fdcb37149a4ae"
+  }
+}
