@@ -45,7 +45,7 @@
 #personal-site .he-project-ground[data-ground-edge="cut"]::after {display:none;}
 
 #personal-site .he-project-imprint .he-item-meta {margin-block:0 16px;}
-#personal-site .he-project-imprint .he-item-meta span {border-left:3px solid var(--ink);padding-left:10px;}
+#personal-site .he-project-imprint .he-item-meta > span {border-left:3px solid var(--ink);padding-left:10px;}
 #personal-site .he-project-imprint h3 {font:700 clamp(28px,3cqw,40px)/1.08 var(--display-face);letter-spacing:-.04em;}
 #personal-site .he-project-imprint > .he-print-object {height:220px;width:62%;margin-left:10%;}
 #personal-site :is(.he-project-feature,.he-machine-feature) .he-project-imprint .he-item-meta {position:absolute;left:0;top:0;max-width:14ch;}
@@ -155,3 +155,9 @@
  #personal-site .he-project-imprint .he-item-meta {font-size:10px;}
  #personal-site .he-print-field {overflow:hidden;}
 }
+
+/* Keep a publication label/year together; long venues break only between units. */
+#personal-site .he-project-imprint .he-item-meta{max-width:none;}
+#personal-site .he-project-imprint .he-item-meta > span{display:inline-block;}
+#personal-site .he-project-imprint .he-meta-unit{display:inline-block;white-space:nowrap;overflow-wrap:normal;}
+#personal-site :is(.he-project-feature,.he-machine-feature) .he-project-imprint .he-item-meta{max-width:100%;}

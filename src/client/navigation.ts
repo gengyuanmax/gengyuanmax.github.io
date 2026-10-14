@@ -26,6 +26,7 @@ if(root) {
   const focused=document.activeElement;
   if(changed&&focused instanceof HTMLElement&&pages.some((p,i)=>i!==index&&p.contains(focused)))links[index].focus({preventScroll:true});
   shortcuts.hidden=index!==1;
+  header.dataset.activeArea=pages[index].id;
   pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   track.style.transform=`translateX(-${index*100}%)`;

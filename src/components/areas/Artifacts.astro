@@ -1,4 +1,7 @@
 ---
+import {insertTapes} from '../../design/insert-tape';
+import {design} from '../../config/design';
+import {resolve} from '../../design/settings';
 import EmphasisText from '../EmphasisText.astro';
 import {bodyEmphasis} from '../../config/body-emphasis';
 import GridGuides from '../GridGuides.astro';
@@ -7,7 +10,7 @@ import PrintTitle from '../PrintTitle.astro';
 import PrintMotif from '../PrintMotif.astro';
 import PrintWord from '../PrintWord.astro';
 import MediaPlaceholder from '../MediaPlaceholder.astro';
-import {artifacts,artifactCategories,sectionCopy,printLabModules} from '../../data/content';
+import {artifacts,artifactCategories,sectionCopy} from '../../data/content';
 import {artifactGroups,preferredResource,resourceEntries} from '../../data/catalog';
 import {artifactComposition,placements} from '../../config/compositions';
 const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-icq',d:'word-wikitilo',e:'word-mevtr'};
@@ -23,8 +26,22 @@ const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-i
  const placement=artifactComposition[index%artifactComposition.length];const id=`artifact-${placement.id}`;const position=placements[id as keyof typeof placements];const resource=preferredResource(item.links);
  return <Styled as="article" id={id} area="artifacts" style={`--item-row:${position.row+Math.floor(index/artifactComposition.length)*3}`} data-flow-label={item.title} class={`he-artifact he-artifact-${placement.slot}`} data-content-id={`artifact-${item.id}`}>
  <span class="he-reading-marker" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
- {item.id==='a'&&<div class="he-print-lab-spread"><PrintMotif id="mark-printlab"/>{printLabModules.map((lab,i)=><a href={lab.href}><img src={lab.image} width="250" height="320" alt={`${lab.name} — Print Lab preview`} loading="lazy"/><span>{String(i+1).padStart(2,'0')} / {lab.name}</span></a>)}</div>}
+ {item.id==='a'&&<div class="he-print-lab-spread he-print-lab-overview"><a href={item.links?.page} aria-label="Explore Print Labs: print texture, layout, paper objects and elements"><span class="he-insert-sheet" data-insert-index="0"><img src="/images/print-labs-overview.svg" width="600" height="720" alt="Print Labs — four labs arranged in a two-by-two overview" loading="lazy"/>{insertTapes(0,resolve(design).values.seed).map(style=><i class="he-insert-tape" aria-hidden="true" style={style}/>)}</span></a></div>}
  {item.id==='b'&&<PrintMotif id="mark-paper"/>}{item.id==='d'&&<PrintMotif id="mark-wikitilo"/>}{item.id==='e'&&<PrintMotif id="mark-mevtr"/>}
  {item.previewRatio&&<MediaPlaceholder ratio={item.previewRatio} label="[作品展示素材]"/>}<p class="he-item-meta">{item.featured&&<strong>Selected · </strong>}{item.form} · {item.publishedAt?<time datetime={item.publishedAt}>{item.publishedAt}</time>:item.metadata}</p><h2>{resource?<a href={resource.href}><PrintWord id={wordIds[item.id]} area="artifacts" text={item.title}/><span class="he-external-mark" aria-hidden="true"> ↗</span></a>:item.title}</h2><p class="he-artifact-description"><EmphasisText text={item.description} phrase={bodyEmphasis.artifacts[item.id]}/></p><div class="he-project-resources">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{kind==='page'?'Explore':kind==='github'?'GitHub':kind==='arxiv'?'arXiv':kind==='dataset'?'Dataset':kind}</a>)}</div>
  </Styled>;
 })}</div>}</div>
+
+<script>
+ import {insertTapes} from '../../design/insert-tape';
+ import {resolve,type DesignConfig} from '../../design/settings';
+ document.querySelector('#personal-site')?.addEventListener('design:updated',event=>{
+  const seed=resolve((event as CustomEvent<DesignConfig>).detail).values.seed;
+  document.querySelectorAll<HTMLElement>('[data-insert-index]').forEach(sheet=>{
+   sheet.querySelectorAll('.he-insert-tape').forEach(tape=>tape.remove());
+   for(const style of insertTapes(Number(sheet.dataset.insertIndex),seed)){
+    const tape=document.createElement('i');tape.className='he-insert-tape';tape.setAttribute('aria-hidden','true');tape.style.cssText=style;sheet.append(tape);
+   }
+  });
+ });
+</script>

@@ -1,4 +1,5 @@
 ---
+import Colophon from '../components/Colophon.astro';
 import Base from '../layouts/Base.astro';
 import Navigation from '../components/Navigation.astro';
 import Home from '../components/areas/Home.astro';
@@ -18,6 +19,7 @@ const classes={home:'he-home',research:'he-research-page',artifacts:'he-artifact
    const Component=components[item.id];
    return <section class:list={['he-page',classes[item.id]]} id={item.id} aria-label={item.label} data-style-area={item.id} data-home-layout={item.id==='home'?'main':undefined} {...designAttributes(resolve(design,item.id).values)} style={styleText(design.areas[item.id]||{},design)}><Component/></section>;
   })}</div></main>
+ <Colophon/>
  </div>
  {import.meta.env.DEV&&<div class="author-entry"><a href="/design/">本地设计台</a><a href="/design/content/">内容确认稿</a><span>阅读动线已确认 · 公开文案待确认</span></div>}
 </Base>

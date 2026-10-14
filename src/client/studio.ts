@@ -123,3 +123,5 @@ try{
  draft=currentPreview(saved,sessionStorage).config;
  targets();send();announce(JSON.stringify(draft)===JSON.stringify(saved)?'已加载主版本配置':'已恢复本次会话未保存的更改');
 }catch(error){announce(String(error),true);}
+
+document.querySelector('#research-replay')?.addEventListener('click',()=>frame.contentWindow?.postMessage({type:'research:replay'},location.origin));

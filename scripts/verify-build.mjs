@@ -18,7 +18,9 @@ for(const phrase of ['Making sense of','A little curiosity','Always curious','No
 assert(html.includes('data-home-layout="main"'),'Approved Home layout must be in static HTML');
 const home=html.slice(html.indexOf('id="home"'),html.indexOf('id="research"'));
 assert(home.indexOf('he-home-profile')<home.indexOf('he-home-research')&&home.indexOf('he-home-research')<home.indexOf('news-heading'),'Static reading order must match the selected layout');
-assert.equal((home.match(/class="he-branch-papers"/g)||[]).length,3,'Each research branch has its real links before JS');
+assert.equal((home.match(/data-memberships=/g)||[]).length,3,'Three research direction links exist before JS');
+assert(!home.includes('he-branch-papers'),'Home research presents directions, not project lists');
+for(const anchor of ['#benchmarking','#applications','#machines'])assert(home.includes(`href="${anchor}"`),'Direction links target existing research sections');
 for(const name of ['design','__design'])await assert.rejects(fs.access(`dist/${name}`));
 async function walk(dir){const result=[];for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())result.push(...await walk(file));else result.push(file);}return result;}
 const files=await walk('dist');

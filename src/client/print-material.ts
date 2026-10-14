@@ -15,10 +15,10 @@ if(root){
  const observer=new ResizeObserver(schedule);
  root.querySelectorAll<SVGSVGElement>('[data-print-field]').forEach(el=>observer.observe(el));
  root.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>observer.observe(el));
- root.querySelectorAll<HTMLElement>('.he-project-ground').forEach(el=>observer.observe(el));
+ root.querySelectorAll<HTMLElement>('.he-project-ground,.he-divider-band').forEach(el=>observer.observe(el));
  function textureMask(el:HTMLElement,ink:'a'|'b',s:ReturnType<typeof resolve>['values'],letterScreen=false){
   const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(el.clientWidth*dpr),h=Math.round(el.clientHeight*dpr);if(!w||!h)return;
-  const ground=el.classList.contains('he-project-ground'),owner=el.closest<HTMLElement>('[data-style-element]')!;
+  const ground=el.matches('.he-project-ground,.he-divider-band'),owner=el.closest<HTMLElement>('[data-style-element]')!;
   const identity=(owner?.dataset.styleElement||'shared-type')+(ground?'':':'+(el.dataset.inkCopy||el.textContent));
   const fontSize=parseFloat(getComputedStyle(el).fontSize);
   const level=ground?'fine':letterScreen?(typeScreenLevel(fontSize)??'fine'):'coarse';
@@ -68,6 +68,11 @@ if(root){
    if(el.closest('.he-page')?.getAttribute('aria-hidden')==='true')return;
    const s=resolve(config,el.dataset.styleAreaOwner as Area,el.dataset.styleElement).values;if(s.groundOpacity===0){clearScreen(el);return;}
    textureMask(el,s.groundInk==='primary'?'b':'a',s);
+  });
+  root!.querySelectorAll<HTMLElement>('.he-divider-band').forEach(el=>{
+   const s=resolve(config,'home').values;
+   if(s.homeDividerStyle!=='print'){clearScreen(el);inkSignatures.delete(el);return;}
+   textureMask(el,'b',{...s,groundOpacity:s.homeDividerCoverage});
   });
   for(const svg of root!.querySelectorAll<SVGSVGElement>('[data-print-field]')){
    const bounds=svg.getBoundingClientRect();if(!bounds.width||!bounds.height)continue;

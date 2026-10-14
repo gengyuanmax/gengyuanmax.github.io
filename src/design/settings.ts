@@ -13,11 +13,11 @@ export type Parameter = { label: string; group: string; scopes: readonly Scope[]
 const all: readonly Scope[] = ['global', 'area', 'element'];
 const globalOnly: readonly Scope[] = ['global'];
 export const palettes = {
-  blueVermilion: { label: '蓝 / 朱红', paper: '#f0ebdf', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
-  pinkBlue: { label: '荧光粉 / 蓝', paper: '#f3f1e9', text: '#20212a', muted: '#626370', rule: '#bdbdc2', primary: '#173d9a', secondary: '#e341a1' },
-  blackRed: { label: '黑 / 红', paper: '#f0eee7', text: '#232323', muted: '#63605b', rule: '#bab6ae', primary: '#292927', secondary: '#b7392f' },
+  blueVermilion: { label: '蓝 / 朱红', yellow:'#dfba29', paper: '#f0ebdf', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
+  pinkBlue: { label: '荧光粉 / 蓝', yellow:'#dfba29', paper: '#f3f1e9', text: '#20212a', muted: '#626370', rule: '#bdbdc2', primary: '#173d9a', secondary: '#e341a1' },
+  blackRed: { label: '黑 / 红', yellow:'#dfba29', paper: '#f0eee7', text: '#232323', muted: '#63605b', rule: '#bab6ae', primary: '#292927', secondary: '#b7392f' },
 };
-export const paletteRoles = { paper:'纸色', text:'正文墨色', muted:'次要文字', rule:'分隔线', primary:'主墨色', secondary:'第二墨色' };
+export const paletteRoles = { yellow:'黄色版 · 研究圆', paper:'纸色', text:'正文墨色', muted:'次要文字', rule:'分隔线', primary:'主墨色', secondary:'第二墨色' };
 export type PaletteRole=keyof typeof paletteRoles;
 export type InkPalette=Record<PaletteRole,string>;
 export const fontFamilies = {
@@ -28,6 +28,33 @@ export const fontFamilies = {
   jetbrains: '"JetBrains Mono", "PingFang SC", monospace',
 };
 export const parameters = {
+  researchSeed:{label:'研究圆 · 种子（0 = 今日日期）',group:'构图',type:'number',default:0,min:0,max:99999999,step:1,scopes:globalOnly},
+  researchDropout:{label:'研究圆 · 掉点阈值',group:'构图',type:'number',default:.06,min:0,max:.15,step:.01,scopes:globalOnly},
+  researchDotGain:{label:'研究圆 · 网点扩大',group:'构图',type:'number',default:1.12,min:1,max:1.5,step:.01,scopes:globalOnly},
+  researchInkNoise:{label:'研究圆 · 墨量起伏',group:'构图',type:'number',default:.15,min:0,max:.3,step:.01,scopes:globalOnly},
+  researchFeedNoise:{label:'研究圆 · 走纸浅带',group:'构图',type:'number',default:.2,min:0,max:.3,step:.01,scopes:globalOnly},
+  researchFiberNoise:{label:'研究圆 · 纸纤维减墨',group:'构图',type:'number',default:.065,min:0,max:.12,step:.005,scopes:globalOnly},
+  researchBlueAngle:{label:'研究蓝版 · 网角',group:'印刷墨层',type:'number',default:15,min:0,max:180,step:1,scopes:globalOnly},
+  researchOrangeAngle:{label:'研究橙版 · 网角',group:'印刷墨层',type:'number',default:75,min:0,max:180,step:1,scopes:globalOnly},
+
+  researchStagger:{label:'研究圆 · 上下偏移',group:'构图',type:'number',default:18,min:-30,max:30,step:2,scopes:globalOnly},
+  researchOperation:{label:'研究圆 · 元素操作',group:'构图',type:'select',default:'over',options:{over:'叠印'},scopes:globalOnly},
+
+  researchPitch:{label:'研究圆 · 可见网点网距',group:'构图',type:'number',default:7,min:6,max:8,step:1,scopes:globalOnly},
+  researchOrangeX:{label:'研究橙版 · 错版 X',group:'印刷墨层',type:'number',default:1.5,min:-2,max:2,step:.5,scopes:globalOnly},
+  researchOrangeY:{label:'研究橙版 · 错版 Y',group:'印刷墨层',type:'number',default:-1,min:-2,max:2,step:1,scopes:globalOnly},
+
+  researchView:{label:'研究关系 · 树 / 叠印圆',group:'构图',type:'select',default:'circles',options:{tree:'树 · 对照',circles:'三色叠印圆'},scopes:globalOnly},
+  researchRatio:{label:'研究圆 · 水平间距 / 半径',group:'构图',type:'number',default:1.33,min:.55,max:1.4,step:.01,scopes:globalOnly},
+  researchCoverage:{label:'研究圆 · 网点覆盖率',group:'构图',type:'number',default:.45,min:.4,max:.5,step:.01,scopes:globalOnly},
+  researchAnchors:{label:'研究圆 · 区域锚点',group:'构图',type:'select',default:'off',options:{off:'隐藏',on:'显示'},scopes:globalOnly},
+  yellowAngle:{label:'黄色版 · 网角',group:'印刷墨层',type:'number',default:0,min:0,max:180,step:1,scopes:globalOnly},
+  yellowX:{label:'黄色版 · 错版 X',group:'印刷墨层',type:'number',default:-1,min:-12,max:12,step:.5,scopes:globalOnly},
+  yellowY:{label:'黄色版 · 错版 Y',group:'印刷墨层',type:'number',default:1.5,min:-12,max:12,step:.5,scopes:globalOnly},
+
+  homeDividerStyle:{label:'首页分隔处理',group:'构图',type:'select',default:'print',options:{print:'双墨章节线 + News 细网过渡',plain:'原细线 · 对照'},scopes:['global','area']},
+  dividerMotion:{label:'分隔印出动态 · 全局',group:'构图',type:'select',default:'once',options:{once:'首次进入视口印出',none:'静态'},scopes:globalOnly},
+  homeDividerCoverage:{label:'News 过渡带墨量',group:'构图',type:'number',default:.18,min:.08,max:.3,step:.01,scopes:['global','area']},
   homeSectionGap:{label:'个人信息 / 品牌间距',group:'构图',type:'number',default:56,min:32,max:104,step:8,unit:'px',scopes:['global','area'],css:'--home-section-gap'},
   homeBrandSize:{label:'品牌字号',group:'构图',type:'number',default:56,min:36,max:68,step:4,unit:'px',scopes:['global','area'],css:'--home-brand-size'},
   emphasisPitch:{label:'正文强调网距',group:'正文强调',type:'number',default:3.5,min:3,max:4,step:.25,unit:'px',scopes:['global','area']},
@@ -166,7 +193,7 @@ export function applicable(key:Key,scope:Scope,target?:string) {
   const p:Parameter=parameters[key];
   if(!p.scopes.includes(scope))return false;
   if(scope==='global')return true;
-  if(scope==='area'){if(['homeSectionGap','homeBrandSize'].includes(key))return target==='home';if(key.startsWith('reading'))return target==='research'||target==='artifacts';if(key==='tabLift')return false;if(p.group==='图像与加网'||p.group==='人像组合'||key.startsWith('cue')||['homeComposition','homeScale','portraitSpan','portraitOverlap','portraitTilt','nameIndent'].includes(key))return target==='home';return true;}
+  if(scope==='area'){if(['homeSectionGap','homeBrandSize','homeDividerStyle','homeDividerCoverage'].includes(key))return target==='home';if(key.startsWith('reading'))return target==='research'||target==='artifacts';if(key==='tabLift')return false;if(p.group==='图像与加网'||p.group==='人像组合'||key.startsWith('cue')||['homeComposition','homeScale','portraitSpan','portraitOverlap','portraitTilt','nameIndent'].includes(key))return target==='home';return true;}
   if(target&&Object.hasOwn(printGrounds,target))return p.group==='模块底形'||p.group==='加网前影调'||inkKeys.includes(key)||key==='palette';
   if(target&&Object.hasOwn(printObjects,target))return p.group==='元素印刷'||p.group==='加网前影调'||inkKeys.includes(key)||key==='palette';
   if(target==='home-portrait')return key==='portraitTilt'||p.group==='图像与加网'||p.group==='人像组合'||p.group==='加网前影调'||inkKeys.includes(key)||key==='palette';
@@ -266,7 +293,7 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
 }
 export function styleText(settings: Overrides,config?:DesignConfig) { return Object.entries(cssVariables(settings,config)).map(([k,v]) => `${k}:${v}`).join(';'); }
 
-export function designAttributes(s:Settings) { return {'data-reading-guide':s.readingGuide,'data-reading-ink':s.readingInk,'data-ground-ink':s.groundInk,'data-ground-edge':s.groundEdge,'data-navigation':s.navigationStyle,'data-home-composition':s.homeComposition,'data-cue':s.cueStyle,'data-treatment':s.titleTreatment,'data-rhythm':s.rhythm,'data-mask':s.portraitMaterial!=='recipe'?'source':s.imageMask,'data-material':s.portraitMaterial,'data-cue-motion':s.cueMotion}; }
+export function designAttributes(s:Settings) { return {'data-home-dividers':s.homeDividerStyle,'data-divider-motion':s.dividerMotion,'data-reading-guide':s.readingGuide,'data-reading-ink':s.readingInk,'data-ground-ink':s.groundInk,'data-ground-edge':s.groundEdge,'data-navigation':s.navigationStyle,'data-home-composition':s.homeComposition,'data-cue':s.cueStyle,'data-treatment':s.titleTreatment,'data-rhythm':s.rhythm,'data-mask':s.portraitMaterial!=='recipe'?'source':s.imageMask,'data-material':s.portraitMaterial,'data-cue-motion':s.cueMotion}; }
 
 export function editorialBounds(config:DesignConfig,id:string){
  const p=placements[id as keyof typeof placements];if(!p)return null;

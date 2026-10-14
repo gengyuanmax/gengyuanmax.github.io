@@ -17,7 +17,7 @@ function setStyle(el:HTMLElement,values:Parameters<typeof cssVariables>[0],confi
 function apply(input:DesignConfig,grid:boolean,flow:boolean,proof:unknown,audit:boolean){
  validateConfig(input);const config=mainDesignConfig(input);
  const global=resolve(config).values;setStyle(root,global,config);attrs(root,global);root.dataset.grid=String(grid);root.dataset.flow=String(flow);
- root.dataset.screenAudit=String(audit);root.dataset.typeProof=!audit&&['red','blue'].includes(String(proof))?String(proof):'overprint';
+ root.dataset.screenAudit=String(audit);root.dataset.typeProof=!audit&&['red','blue','yellow'].includes(String(proof))?String(proof):'overprint';
  document.body.style.setProperty('--paper',getPalette(config,global.palette).paper);
  root.querySelectorAll<HTMLElement>('[data-style-area]').forEach(el=>{const area=el.dataset.styleArea as Area;setStyle(el,config.areas[area]||{},config);attrs(el,resolve(config,area).values);});
  root.querySelectorAll<HTMLElement>('[data-style-element]').forEach(el=>{const id=el.dataset.styleElement!,area=el.dataset.styleAreaOwner as Area;const s=resolve(config,area,id).values;setStyle(el,s,config);attrs(el,s);});
@@ -28,6 +28,7 @@ function apply(input:DesignConfig,grid:boolean,flow:boolean,proof:unknown,audit:
 }
 window.addEventListener('message',event=>{
  if(event.origin!==location.origin||event.source!==parent)return;
+ if(event.data?.type==='research:replay')root.dispatchEvent(new Event('research:replay'));
  if(event.data?.type==='design:apply')try{apply(event.data.config,event.data.grid===true,event.data.flow===true,event.data.proof,event.data.screenAudit===true);}catch(error){parent.postMessage({type:'design:error',message:String(error)},location.origin);}
  if(event.data?.type==='design:select-area'&&['home','research','artifacts','about'].includes(event.data.area))root.dispatchEvent(new CustomEvent('design:navigate',{detail:event.data.area}));
 });
