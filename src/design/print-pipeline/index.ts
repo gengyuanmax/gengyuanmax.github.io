@@ -31,7 +31,7 @@ export function screenPrintElement<Id extends string>(e:Readonly<MaterialElement
 export function screenPrintElement(e:Readonly<InsertElement>):string;
 export function screenPrintElement(e:Readonly<LineElement>):string;
 export function screenPrintElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
- if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation);
+ if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation,e.id);
  if(e.profile==='insert')return e.source.src;
  if(e.profile==='polygon-v1')return screenPolygons(e.source,e.width,e.height,e.seed,e.plate,e.screen);
  if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],{transfer:{grain:e.press.grain,starve:e.press.starve,holes:e.press.holes,band:e.press.band},...e.textRecipe},e.press.sheet);

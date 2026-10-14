@@ -10,3 +10,9 @@ test('line screen is stable for a saved recipe and changes only with its seed',(
 test('line recipe rejects nonfinite noise parameters before producing SVG',()=>{
  assert.throws(()=>definePrintElement({...recipe,seed:NaN}),/Invalid line screen/);
 });
+test('two navigation screens have independent SVG definition IDs',()=>{
+ const screens=['research-navigation','about-navigation'].map(id=>screenPrintElement(definePrintElement({...recipe,id})));
+ const ids=screens.flatMap(svg=>[...svg.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
+ assert.equal(new Set(ids).size,ids.length);
+ for(const svg of screens)for(const [,id] of svg.matchAll(/url\(#([^)]*)\)/g))assert(svg.includes(`id="${id}"`));
+});

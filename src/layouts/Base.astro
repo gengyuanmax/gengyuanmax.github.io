@@ -16,6 +16,7 @@ import '../styles/duotone-type.css';
 import '../styles/home-main.css';
 import '../styles/compact-layout.css';
 import {design} from '../config/design';
+import {aboutSections} from '../data/about-sections';
 import {profile,pillars} from '../data/content';
 import {resolve,styleText,designAttributes,areaIds} from '../design/settings';
 const values=resolve(design).values;
@@ -41,10 +42,10 @@ const values=resolve(design).values;
   <div id="personal-site" style={styleText(values,design)} {...designAttributes(values)}>
    {/* Before first paint: choose the area from the URL so the first frame is the page that stays.
         Without JS this never runs and the four areas remain one stacked document. */}
-   <script is:inline define:vars={{areas:[...areaIds],chapters:pillars.map(p=>p.id)}}>
+   <script is:inline define:vars={{areas:[...areaIds],chapters:[...pillars.map(p=>p.id),"publications"],aboutAnchors:aboutSections.map(s=>s.id)}}>
     const root=document.currentScript.parentElement;let id='home';
     try{id=decodeURIComponent(location.hash.slice(1))||'home';}catch{}
-    root.dataset.bootArea=areas.includes(id)?id:chapters.includes(id)?'research':'home';
+    root.dataset.bootArea=areas.includes(id)?id:chapters.includes(id)?'research':aboutAnchors.includes(id)?'about':'home';
     root.dataset.booting='true';root.dataset.enhanced='true';
    </script>
    <a class="skip-link" href="#site-content">跳到内容</a>

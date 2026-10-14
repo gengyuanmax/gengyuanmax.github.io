@@ -30,4 +30,4 @@ const slots:Record<string,string>={feature:'he-project-feature',side:'he-project
  </Styled>; })}
  </section>;
 })}</div>
-<details class="he-publication-index"><summary>Publications & preprints, {publications.length}</summary><p>* Equal contribution.</p><ol>{[...publications].sort((a,b)=>b.year-a.year).map(p=><li><p class="he-item-meta">{p.venue}</p><h3><a href={p.url}><InkText text={p.title}/></a></h3><p>{p.authors}</p></li>)}</ol></details>
+<details id="publications" class="he-publication-index"><summary>Publications & preprints, {publications.length}</summary><p>* Equal contribution.</p><ol>{[...publications].sort((a,b)=>b.year-a.year).map(p=><li><p class="he-item-meta">{p.venue}</p><h3><a href={p.url}><InkText text={p.title}/></a></h3><p>{p.authors}</p></li>)}</ol></details>

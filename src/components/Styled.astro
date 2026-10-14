@@ -1,8 +1,8 @@
 ---
 import {design} from '../config/design';
 import {resolve,styleText,designAttributes,type Area} from '../design/settings';
-interface Props { as?:'span'|'div'|'h1'|'header'|'figure'|'article'|'section'; id:string; area:Area; class?:string; style?:string; [key:string]:unknown; }
-const {as:Tag='div',id,area,class:className,style:placementStyle='',...rest}=Astro.props;
+interface Props { as?:'span'|'div'|'h1'|'header'|'figure'|'article'|'section'; id:string; anchorId?:string; area:Area; class?:string; style?:string; [key:string]:unknown; }
+const {as:Tag='div',id,area,class:className,style:placementStyle='',anchorId,...rest}=Astro.props;
 const {values}=resolve(design,area,id);
 ---
-<Tag class={className} data-style-element={id} data-style-area-owner={area} {...designAttributes(values)} style={`${styleText(values,design)};${placementStyle}`} {...rest}><slot /></Tag>
+<Tag id={anchorId} class={className} data-style-element={id} data-style-area-owner={area} {...designAttributes(values)} style={`${styleText(values,design)};${placementStyle}`} {...rest}><slot /></Tag>

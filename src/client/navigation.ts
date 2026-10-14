@@ -9,11 +9,13 @@ if(root) {
  const header=root.querySelector<HTMLElement>('.he-nav-shell')!;
  const shortcuts=root.querySelector<HTMLElement>('.he-shortcuts')!;
  const links=[...root.querySelectorAll<HTMLAnchorElement>('[data-area-link]')];
- const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter')];
+ const aboutNav=root.querySelector<HTMLElement>('.he-about-shortcuts')!;
+ const aboutSections=[...root.querySelectorAll<HTMLElement>('[data-about-section]')];
+ const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter, .he-publication-index')];
  root.addEventListener('design:updated',event=>{
   const lineSettings=resolve((event as CustomEvent<DesignConfig>).detail).values;
   const recipe=screen('medium','a',lineSettings);
-  shortcuts.querySelector('.he-chapter-indicator')!.innerHTML=screenPrintElement(definePrintElement({id:'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation}));
+  root.querySelectorAll('.he-chapter-indicator').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement({id:indicator.closest('.he-about-shortcuts')?'about-section-indicator':'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation})));
  });
  let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
  let chapterTarget:string|null=null,chapterScrolling=false;
@@ -27,11 +29,14 @@ if(root) {
   if(viewport.style.height!==height)viewport.style.height=height;
   if(root!.style.getPropertyValue('--he-header-height')!==headerHeight)root!.style.setProperty('--he-header-height',headerHeight);
  }
+ function markAbout(id:string){const index=aboutSections.findIndex(s=>s.id===id);aboutNav.style.setProperty('--about-index',String(Math.max(0,index)));aboutNav.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.aboutLink===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
  function markChapter(id:string) { const index=chapters.findIndex(c=>c.id===id);shortcuts.style.setProperty('--chapter-index',String(Math.max(0,index)));shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
  function navigate(id:string, {history=true,scroll=true,focus=false}={}) {
-  const chapter=chapters.find(c=>c.id===id);
-  const index=chapter?1:pages.findIndex(p=>p.id===id);
+  const aboutSection=aboutSections.find(c=>c.id===id);
+  const chapter=chapters.find(c=>c.id===id)||aboutSection;
+  const index=aboutSection?3:chapter?1:pages.findIndex(p=>p.id===id);
   if(index<0)return;
+  if(chapter instanceof HTMLDetailsElement)chapter.open=true;
   clearTimeout(jump);
   releaseChapter();
   const changed=index!==active;
@@ -55,8 +60,8 @@ if(root) {
   track.style.transform=`translateX(-${index*100}%)`;
   fit();
   if(history&&location.hash!==`#${id}`)window.history.pushState(null,'',`#${id}`);
-  root!.querySelector('[data-navigation-status]')!.textContent=chapter?shortcuts.querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
-  if(chapter)markChapter(id);else if(index===1)markChapter(chapters[0].id);
+  root!.querySelector('[data-navigation-status]')!.textContent=chapter?(aboutSection?aboutNav:shortcuts).querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
+  if(aboutSection)markAbout(id);else if(chapter)markChapter(id);else if(index===1)markChapter(chapters[0].id);else if(index===3)markAbout(aboutSections[0].id);
   if(scroll&&chapter){
    // Keep the clicked destination selected while smooth scrolling crosses other
    // chapters. Scrollspy must not pull the moving indicator backwards mid-flight.
@@ -67,7 +72,7 @@ if(root) {
    fit();
    chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
    if(focus&&chapter){
-    const heading=chapter.querySelector<HTMLElement>('h2')!;
+    const heading=chapter.querySelector<HTMLElement>('h2, summary')!;
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});
    }
   },changed&&!reduced()?490:0);
@@ -79,14 +84,14 @@ if(root) {
  // Take over from the boot state in one step: navigating home first and then to the
  // URL's area would commit an intermediate transform and play a slide on load.
  let initial='home';try{initial=decodeURIComponent(location.hash.slice(1))||'home';}catch{}
- if(!pages.some(p=>p.id===initial)&&!chapters.some(c=>c.id===initial))initial='home';
+ if(!pages.some(p=>p.id===initial)&&!chapters.some(c=>c.id===initial)&&!aboutSections.some(c=>c.id===initial))initial='home';
  navigate(initial,{history:false,scroll:!!location.hash});
  delete root.dataset.booting;
  root.addEventListener('click',event=>{
   const target=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
   if(!target||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
   const id=target.hash.slice(1);
-  if(!pages.some(p=>p.id===id)&&!chapters.some(c=>c.id===id))return;
+  if(!pages.some(p=>p.id===id)&&!chapters.some(c=>c.id===id)&&!aboutSections.some(c=>c.id===id))return;
   event.preventDefault();navigate(id,{focus:event.detail===0});
  });
  links.forEach((a,i)=>a.addEventListener('keydown',event=>{
@@ -117,6 +122,7 @@ if(root) {
    if(chapterScrolling){clearTimeout(chapterIdle);chapterIdle=window.setTimeout(releaseChapter,160);}
    return;
   }
+  if(active===3){if(scrollFrame)return;scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;if(chapterTarget)return;const edge=header.getBoundingClientRect().bottom+80;const reached=aboutSections.filter(s=>s.getBoundingClientRect().top<=edge);if(reached.length)markAbout(reached.reduce((a,b)=>a.getBoundingClientRect().top>b.getBoundingClientRect().top?a:b).id);});return;}
   if(active!==1||scrollFrame)return;
   scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;if(chapterTarget)return;let id=chapters[0].id;const edge=header.getBoundingClientRect().bottom+shortcuts.offsetHeight+80;for(const c of chapters)if(c.getBoundingClientRect().top<=edge)id=c.id;markChapter(id);});
  },{passive:true});

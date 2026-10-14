@@ -1,12 +1,6 @@
 ---
 import InkText from './InkText.astro';
 import {pillars} from '../data/content';
-import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
-import {screen} from '../design/screen';
-import {design} from '../config/design';
-import {resolve} from '../design/settings';
-const lineSettings=resolve(design).values;
-const recipe=screen('medium','a',lineSettings);
-const chapterScreen=screenPrintElement(definePrintElement({id:'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation}));
+import ChapterIndicator from './ChapterIndicator.astro';
 ---
-  <nav class="he-shortcuts" aria-label="Research 三个方向快速定位"><span class="he-chapter-indicator" aria-hidden="true" set:html={chapterScreen}/>{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span>{p.short}</a>)}</nav>
+  <nav class="he-shortcuts" aria-label="Research sections" data-native-scroll><ChapterIndicator/>{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span class="he-shortcut-number" aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span><span class="he-shortcut-label">{p.short}</span></a>)}<a href="#publications" data-chapter="publications"><span class="he-shortcut-number" aria-hidden="true">Appx.</span><span class="he-shortcut-label">Publication</span></a></nav>

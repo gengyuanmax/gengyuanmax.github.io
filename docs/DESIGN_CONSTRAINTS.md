@@ -299,3 +299,9 @@ Artifacts 槽位调整为 6/5、4/6、6 列，作品标题上限统一 44px，Pr
 - 规则集中在 `editorial-tension.css` 末尾的 “One type scale” 段，覆盖各分区旧的单独字号。
 
 合并约定：本地的导航、内容顺序、紧凑布局保留；远端 About 照片、统一字号和 rule-v1 材质保留。章节色带按当前显示顺序（Machines、Benchmarking、Domain）依次左出血、右出血、居中，而非绑定旧顺序的方向名。线网已有 line-v3 配方，不重复套 rule-v1；非文字印刷扫描在横向切页结束后执行。
+
+研究次级目录末尾增加 `Appx. Publication`，定位并展开论文列表；它是附录入口，不是第四个研究方向。窄屏目录可横向滚动，保持词语完整。
+
+About 正文移除重复姓名标题；照片下方添加纵向章节目录（Experience、Education、Funding、Reviewing、Outside research、Contact），沿用研究目录的 line-v3 朱红选中块，保持原有章节编号。
+
+Research 次级目录编号 01/02/03 不收缩、不拆行；文字标签独立排版，允许按词换成两行，不连带压缩编号。

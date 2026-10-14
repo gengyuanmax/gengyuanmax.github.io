@@ -71,6 +71,20 @@
 
 @container(max-width:540px){
  #personal-site .he-research-page .he-shortcuts a{display:block;padding-inline:4px;overflow-wrap:normal;}
- #personal-site .he-research-page .he-shortcuts a>span{display:block;white-space:nowrap;}
+ #personal-site .he-research-page .he-shortcuts a>.he-shortcut-number{display:block;white-space:nowrap;}
  #personal-site .he-research-page .he-chapter-indicator svg{margin-left:4px;}
+}
+
+/* About's vertical index continues the chapter navigation beneath the photograph. */
+#personal-site .he-about-intro{grid-column:2/9;}
+#personal-site .he-about-shortcuts{grid-column:10/13;grid-row:1;position:relative;isolation:isolate;display:grid;grid-auto-rows:40px;align-self:start;}
+#personal-site .he-about-shortcuts a{display:flex;align-items:center;gap:12px;color:var(--ink);font:500 14px/1.3 var(--reading-face);text-decoration:none;min-height:40px;position:relative;padding:0 4px;}
+#personal-site .he-about-shortcuts a>span{font:500 12px/1.5 var(--metadata-face);min-width:30px;}
+#personal-site .he-about-shortcuts a:focus-visible{outline:2px solid var(--blue-ink);outline-offset:2px;}
+#personal-site .he-about-shortcuts .he-chapter-indicator{top:22px;bottom:auto;width:100%;transform:translateY(calc(var(--about-index,0) * 40px));}
+#personal-site [data-about-section]{scroll-margin-top:calc(var(--he-nav-height,100px) + 16px);}
+@container(max-width:720px){
+ #personal-site .he-about-shortcuts{grid-column:1/-1;grid-row:auto;justify-self:end;width:60%;margin-top:-16px;}
+ #personal-site .he-about-body .he-about-module{grid-row:auto;}
+ #personal-site .he-about-intro{grid-column:1/-1;}
 }
