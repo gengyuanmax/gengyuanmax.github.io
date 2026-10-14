@@ -4,6 +4,8 @@ import fs from 'node:fs/promises';
 await fs.cp('assets/pdf','dist/assets/pdf',{recursive:true});
 await fs.cp('print-lab','dist/print-lab',{recursive:true});
 await fs.writeFile('dist/.nojekyll','');
+await fs.cp('licenses','dist/licenses',{recursive:true});
+await fs.copyFile('LICENSE','dist/LICENSE');
 const redirects={publications:'research',projects:'artifacts',repositories:'artifacts',cv:'about'};
 for(const [route,target] of Object.entries(redirects)){
  const href=`https://gengyuanmax.github.io/#${target}`;

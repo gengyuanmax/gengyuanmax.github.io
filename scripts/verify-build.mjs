@@ -29,7 +29,7 @@ console.log(`Build verified: ${ids.length} unique IDs, four areas, three shortcu
 assert(!html.includes('noindex'),'Production homepage must be indexable');
 assert(html.includes('<title>Gengyuan Zhang</title>'),'Use the public page title');
 assert(html.includes('rel="canonical" href="https://gengyuanmax.github.io/"'));
-for(const file of ['.nojekyll','robots.txt','sitemap.xml','404.html','assets/pdf/new_CV.pdf','assets/pdf/ZHANG_cv_2406.pdf'])await fs.access(`dist/${file}`);
+for(const file of ['.nojekyll','LICENSE','licenses/print-lab.txt','licenses/natural-earth.md','robots.txt','sitemap.xml','404.html','assets/pdf/new_CV.pdf','assets/pdf/ZHANG_cv_2406.pdf'])await fs.access(`dist/${file}`);
 for(const file of ['new_CV.pdf','ZHANG_cv_2406.pdf'])assert.deepEqual(await fs.readFile(`dist/assets/pdf/${file}`),await fs.readFile(`assets/pdf/${file}`),'Previously published PDFs must remain byte-identical');
 for(const route of ['publications','projects','repositories','cv'])assert((await fs.readFile(`dist/${route}/index.html`,'utf8')).includes('location.replace('));
 for(const file of ['index.html','print.html','layout.html','object.html','element.html'])assert.deepEqual(await fs.readFile(`dist/print-lab/${file}`),await fs.readFile(`print-lab/${file}`),'Preserve Print Labs migration exactly');
