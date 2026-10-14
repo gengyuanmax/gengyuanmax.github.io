@@ -8,8 +8,6 @@
 #personal-site .he-research-masthead{padding-bottom:32px;}
 #personal-site .he-artifacts-masthead{padding-bottom:0;margin-bottom:24px;}
 #personal-site .he-about-masthead{min-height:166px;}
-#personal-site .he-about-masthead h1{font-size:clamp(47.6px,8.5cqw,108.8px);}
-#personal-site .he-about-folio>span:not(.he-project-ground){font-size:204px;}
 #personal-site .he-research-chapter .he-chapter-heading{min-height:149px;padding-block:20px;grid-template-columns:167px minmax(0,1fr);}
 #personal-site .he-chapter-heading h2{font-size:clamp(28px,3.696cqw,47.52px);}
 #personal-site .he-chapter-heading .he-chapter-number{font-size:160px;height:114px;margin-bottom:-20px;}
@@ -38,8 +36,6 @@
  #personal-site .he-home[data-home-layout] .he-name{font-size:clamp(44.2px,calc(21.25cqw - 10.2px),132.6px);padding-bottom:18px;}
  #personal-site .he-home[data-home-layout] .he-brand h2{font-size:clamp(25.5px,calc(var(--home-brand-size) * .595),39.1px);}
  #personal-site .he-about-masthead{min-height:96px;}
- #personal-site .he-about-folio{min-height:96px;}
- #personal-site .he-about-masthead h1{font-size:clamp(30.6px,6.545cqw,51px);}
  #personal-site .he-research-chapter .he-chapter-heading{min-height:120px;padding-block:16px;grid-template-columns:70px minmax(0,1fr);gap:0 14px;}
  #personal-site .he-chapter-heading h2{font-size:22px;}
  #personal-site .he-chapter-heading .he-chapter-number{font-size:92px;height:78px;margin-bottom:-16px;}
@@ -50,11 +46,8 @@
 
 #personal-site .he-artifact-controls{margin-bottom:28px;padding-top:10px;}
 @container(max-width:720px){
- #personal-site .he-research-masthead h1{font-size:clamp(32.3px,9.18cqw,63.75px);}
- #personal-site .he-artifacts-masthead h1{font-size:clamp(39.1px,9.35cqw,110.5px);}
  #personal-site .he-artifacts-masthead{row-gap:16px;}
  #personal-site .he-artifacts-masthead>p{grid-column:1/-1;}
- #personal-site .he-about-folio>span:not(.he-project-ground){font-size:65px;}
 }
 
 #personal-site .he-role-part{display:inline-block;}
@@ -74,4 +67,10 @@
 @container(max-width:480px){
  #personal-site .he-research-masthead h1{grid-column:1/-1;}
  #personal-site .he-research-intro{grid-column:1/-1;grid-row:2;margin-top:16px;}
+}
+
+@container(max-width:540px){
+ #personal-site .he-research-page .he-shortcuts a{display:block;padding-inline:4px;overflow-wrap:normal;}
+ #personal-site .he-research-page .he-shortcuts a>span{display:block;white-space:nowrap;}
+ #personal-site .he-research-page .he-chapter-indicator svg{margin-left:4px;}
 }

@@ -1,8 +1,14 @@
 /* Reading furniture: one single-ink rail connects the otherwise staggered works.
    Positions follow the rendered grid; no line is drawn through a text column. */
 #personal-site [data-reading-host] {position:relative;isolation:isolate;padding-top:30px;}
-#personal-site .he-reading-route {position:absolute;left:-22px;top:0;width:calc(100% + 22px);height:100%;overflow:visible;z-index:-1;pointer-events:none;color:var(--blue-ink);}
-#personal-site .he-reading-route rect {fill:currentColor;shape-rendering:crispEdges;}
+#personal-site .he-reading-route {position:absolute;inset:0;overflow:visible;z-index:-1;pointer-events:none;color:var(--blue-ink);}
+/* Guide lines (print-guides.ts, rule-v1): ink-coloured blocks masked by their printed rule. */
+#personal-site .he-guide {position:absolute;display:block;pointer-events:none;}
+#personal-site .he-timeline > li.he-timeline-guides {position:absolute;inset:0;display:block;padding:0;margin:0;border:0;pointer-events:none;color:var(--blue-ink);}
+#personal-site .he-timeline > li.he-timeline-guides::before,
+#personal-site .he-about-body .he-timeline[data-guides="print"]::before,
+#personal-site .he-about-body .he-timeline[data-guides="print"] > li::before {display:none;}
+#personal-site .he-page[data-reading-ink="secondary"] .he-timeline-guides {color:var(--red-ink);}
 /* Where the trunk crosses a chapter band the band is knocked out: paper, not ink over ink. */
 #personal-site .he-route-knockout {position:absolute;display:block;z-index:0;background:var(--paper);pointer-events:none;}
 #personal-site .he-page[data-reading-guide="marks"] .he-route-knockout,#personal-site .he-page[data-reading-guide="none"] .he-route-knockout {display:none;}

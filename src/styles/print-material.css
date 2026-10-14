@@ -40,3 +40,20 @@ html:has(#personal-site){overflow-x:clip;}
 #personal-site::after{content:"";position:absolute;top:calc(-1 * var(--sheet-margin,0px));bottom:calc(-1 * var(--sheet-margin,0px));left:calc(50% - 50vw);width:100vw;z-index:12;pointer-events:none;background-image:var(--paper-grain-image);opacity:var(--paper-texture);mix-blend-mode:multiply;}
 #personal-site .he-page::before{content:none;}
 @media print{#personal-site::after{content:none;}}
+
+/* Non-text marks are printed (print-rules.ts). In JS mode CSS borders never paint: their
+   printed copies sit in .he-rule-layer above the boxes (a paper background would hide
+   them), where they never overlap text. Pseudo bars and ink blocks keep
+   their own box and take a printed mask. Until the first pass they stay paper (no flat
+   ink first). data-rules-measure briefly restores CSS so the script can read it. */
+#personal-site[data-enhanced]:not([data-rules-measure]) *:not(select,input,textarea){border-color:transparent!important;}
+#personal-site[data-enhanced]:not([data-rules-ready]) :is(.he-heading-tick,.he-colophon-inks i,.he-item-meta strong,.he-divider-plate){visibility:hidden;}
+#personal-site[data-enhanced]:not([data-rules-ready]) :is(.he-nav a,.he-project-imprint h3,.he-artifact-controls button,.he-page,.he-nav-shell,.he-media-placeholder)::after,
+#personal-site[data-enhanced]:not([data-rules-ready]) .he-project-imprint h3::before{visibility:hidden;}
+#personal-site [data-print-block]{-webkit-mask-image:var(--print-block);mask-image:var(--print-block);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+#personal-site [data-print-pseudo~="before"]::before{-webkit-mask-image:var(--print-before);mask-image:var(--print-before);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+#personal-site [data-print-pseudo~="after"]::after{-webkit-mask-image:var(--print-after);mask-image:var(--print-after);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+#personal-site :is(.he-page,.he-nav-shell,.he-colophon){isolation:isolate;}
+#personal-site .he-colophon{position:relative;}
+#personal-site .he-rule-layer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible;}
+@media print{#personal-site[data-enhanced] *{border-color:revert!important;}#personal-site .he-rule-layer{display:none;}}

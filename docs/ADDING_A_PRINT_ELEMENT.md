@@ -63,6 +63,8 @@ const screened = screenOriginal('example-photo', {
 }, width, height, 'b', resolvedPress, dpr, origin);
 ```
 
+单墨照片需要保住暖色主体轮廓时（如 About 的拱门），用 `separateSubject`（`photo-subject-v1`）代替 `darkness`，并可乘以 `raggedFrame` 的手工上墨边；完整例子是 `scripts/render-about-photo.mjs`。
+
 真实照片和几何背景分别适配、分版，再合成；不能把几何球面色调应用到照片上。现有裁切、色阶和分色公式不变。完整例子是 `composition-canvas.ts` 与 `scripts/render-portrait-composition.mjs`，二者使用相同核心；浏览器和 sharp 的源图采样是明确的环境适配差异，不能声称两者逐像素相同。
 
 ## 原色图像 / 插页

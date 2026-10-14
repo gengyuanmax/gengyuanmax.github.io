@@ -98,3 +98,61 @@
  #personal-site .he-home .he-pillars .he-number {font-size:27px;}
  #personal-site .he-about-masthead h1 {font-size:clamp(37px,8.5cqw,44px);}
 }
+
+/* About folio: Max's photograph of Delicate Arch printed in the blue plate
+   (scripts/render-about-photo.mjs). It replaces the meaningless "04" numeral. */
+#personal-site .he-about-photo{margin:0 calc(-1 * var(--page-gutter) * var(--spread-bleed)) 0 0;align-self:end;grid-column:11/13;}
+#personal-site .he-about-photo>img{display:block;width:100%;height:auto;mix-blend-mode:multiply;}
+@container(max-width:720px){
+ #personal-site .he-about-masthead:has(.he-about-photo){grid-template-columns:minmax(0,1fr) 40%;align-items:end;}
+ #personal-site .he-about-masthead:has(.he-about-photo) h1{grid-column:1;}
+ #personal-site .he-about-photo{grid-column:2;grid-row:1;min-height:0;margin-right:calc(-1 * var(--page-gutter) * var(--spread-bleed));}
+}
+
+/* Staggered chapter openers (user, 2026-10-15): the three bands no longer stack as
+   identical full-width bars. 01 bleeds off the left edge, 02 off the right, 03 floats
+   inside the grid; each keeps the shared plate, numeral and knockout title. */
+@container(min-width:721px){
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading{grid-column:1/10;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading{grid-column:4/13;padding-left:24px;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading{grid-column:2/11;padding-left:24px;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading>[data-style-element^="plate-"]{left:calc(-1 * var(--page-gutter) * var(--spread-bleed));right:0;width:auto;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{margin-left:0;}
+}
+@container(max-width:720px){
+ /* Without the left bleed the numeral needs its own room, or "02" is cropped to "0". */
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{font-size:90px;}
+}
+@container(max-width:720px){
+ #personal-site .he-research-chapter .he-chapter-heading{padding-right:12px;}
+ #personal-site .he-research-chapter .he-chapter-heading h2{overflow-wrap:normal;font-size:clamp(21px,5.2cqw,36px);}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading{margin-right:9%;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading{margin-left:9%;padding-left:10px;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading{margin-left:4%;margin-right:5%;padding-left:10px;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading>[data-style-element^="plate-"]{right:0;width:auto;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{margin-left:0;}
+}
+@container(max-width:720px){
+ /* Without the left bleed the numeral needs its own room, or "02" is cropped to "0". */
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{font-size:90px;}
+}
+
+/* One type scale across the four areas (user, 2026-10-15). Page titles share a single
+   size and weight; every About module heading shares one size; module numerals 01–03
+   share one display numeral. Later and more specific than the per-area rules above. */
+#personal-site{--page-title-size:clamp(40px,9.4cqw,120px);--module-title-size:clamp(26px,2.7cqw,34px);--module-index-size:clamp(64px,8cqw,112px);}
+#personal-site .he-page :is(.he-research-masthead,.he-artifacts-masthead,.he-about-masthead) h1{font-size:var(--page-title-size);}
+#personal-site .he-page .he-about-module .he-quiet-heading h2{font-size:var(--module-title-size);line-height:1.1;letter-spacing:-.035em;}
+#personal-site .he-page .he-about-module .he-module-index{font:700 var(--module-index-size)/.85 var(--display-face);letter-spacing:-.075em;border:0;padding:0;height:auto;overflow:visible;flex-basis:auto;}
+#personal-site .he-page .he-about-experience .he-quiet-heading{padding-left:0;min-height:0;display:flex;align-items:flex-end;gap:20px;}
+#personal-site .he-page .he-about-experience .he-module-index{position:static;}
+#personal-site .he-page .he-about-education .he-module-index{margin:0;}
+#personal-site .he-page .he-about-education .he-quiet-heading h2{margin-left:0;padding:0;}
+#personal-site .he-page :is(.he-about-contact,.he-about-education) .he-quiet-heading{display:flex;align-items:flex-end;gap:20px;}
+#personal-site .he-page .he-about-module .he-module-index{color:var(--ink);}
