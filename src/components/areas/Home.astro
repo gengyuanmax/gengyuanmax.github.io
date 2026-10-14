@@ -10,11 +10,21 @@ import PrintMedia from '../PrintMedia.astro';
 import PrintTitle from '../PrintTitle.astro';
 import PrintWord from '../PrintWord.astro';
 import {profile,pillars,news} from '../../data/content';
+import {screenScale} from '../../design/screen';
 const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1');
 ---
 <GridGuides />
 <div class="he-home-profile">
  <PrintTitle id="home-name" area="home" class="he-name" lines={profile.name}/>
+ <script is:inline define:vars={{coarseEm:screenScale.coarseEm,fine:screenScale.fine,medium:screenScale.medium}}>
+  /* Same pitch and tier rules as first-frame.ts dotPitch() and text.ts textTier(), applied while
+     parsing so the name's CSS dot plate is exact in the first frame. print-material.ts keeps it current. */
+  document.currentScript.previousElementSibling.querySelectorAll('.he-type-line').forEach(line=>{
+   const size=parseFloat(getComputedStyle(line).fontSize),coarse=Math.max(2,Math.round(size*coarseEm));
+   line.style.setProperty('--dot-pitch',(coarse>=medium*1.5?coarse:fine)+'px');
+   line.dataset.textTier=size>=72?'display':size>=24?'heading':'body';
+  });
+ </script>
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map(part=><span>{part}<br /></span>)}</p>
   <p class="he-bio"><EmphasisText text={profile.bio} phrase={bodyEmphasis.home}/></p>

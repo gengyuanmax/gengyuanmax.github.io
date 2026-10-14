@@ -1,4 +1,5 @@
 import {lowNoise,rng} from './noise.ts';
+import {noiseBudget,within} from './budget.ts';
 import type {Settings} from '../settings.ts';
 
 /** Source-image construction, before the existing Print Lab AM screen.
@@ -15,8 +16,10 @@ export function maskBounds(mask:Float32Array,width:number,height:number):ToneBou
 }
 export function makeToneField(mask:Float32Array,width:number,height:number,scale:number,kind:ToneKind,s:ToneSettings,seed:number,bounds=maskBounds(mask,width,height)){
  if(s.exposure===0)return new Float32Array(width*height);
- const n=Math.max(width,height),random=rng(seed),noise=lowNoise(n,Math.max(1,Math.ceil(n/(s.noiseScale*.5*scale))),random);
- const second=lowNoise(n,Math.max(1,Math.ceil(n/(s.noiseScale*.23*scale))),random);
+ // Pre-screen variation resizes dots: bounded amplitude, never finer than the budget scale.
+ const amplitude=within(s.noise,noiseBudget.tone.amplitude),featureScale=Math.max(noiseBudget.tone.minScale,s.noiseScale||0);
+ const n=Math.max(width,height),random=rng(seed),noise=lowNoise(n,Math.max(1,Math.ceil(n/(featureScale*.5*scale))),random);
+ const second=lowNoise(n,Math.max(1,Math.ceil(n/(featureScale*.23*scale))),random);
  const out=new Float32Array(width*height),angle=s.light*Math.PI/180,lx=Math.cos(angle)*.66,ly=Math.sin(angle)*.66,lz=Math.sqrt(1-.66*.66);
  const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(b,v));
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
@@ -34,7 +37,7 @@ export function makeToneField(mask:Float32Array,width:number,height:number,scale
    const direction=-(u*lx+v*ly)/(Math.abs(lx)+Math.abs(ly));
    value=(s.planeMin+s.planeMax)/2+(s.planeMax-s.planeMin)/2*direction*s.direction;
   }
-  const variation=((noise[y*n+x]*.7+second[y*n+x]*.3)-.5)*2*s.noise;
+  const variation=((noise[y*n+x]*.7+second[y*n+x]*.3)-.5)*2*amplitude;
   const lo=kind==='sphere'?s.sphereMin:s.planeMin,hi=kind==='sphere'?s.sphereMax:s.planeMax;
   out[i]=mask[i]*clamp(clamp(value+variation,lo,hi)*s.exposure,.005,.97);
  }

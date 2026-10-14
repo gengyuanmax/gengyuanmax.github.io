@@ -48,7 +48,12 @@ if(root) {
  root.dataset.enhanced='true';
  if(import.meta.env.DEV)root.addEventListener('design:navigate',e=>navigate((e as CustomEvent<string>).detail,{history:false,scroll:false}));
  const readHash=()=>{let id='home';try{id=decodeURIComponent(location.hash.slice(1))||'home';}catch{}navigate(id,{history:false,scroll:!!location.hash});};
- navigate('home',{history:false,scroll:false});readHash();
+ // Take over from the boot state in one step: navigating home first and then to the
+ // URL's area would commit an intermediate transform and play a slide on load.
+ let initial='home';try{initial=decodeURIComponent(location.hash.slice(1))||'home';}catch{}
+ if(!pages.some(p=>p.id===initial)&&!chapters.some(c=>c.id===initial))initial='home';
+ navigate(initial,{history:false,scroll:!!location.hash});
+ delete root.dataset.booting;
  root.addEventListener('click',event=>{
   const target=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
   if(!target||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;

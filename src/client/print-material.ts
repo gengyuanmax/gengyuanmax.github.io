@@ -1,5 +1,6 @@
 import {paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
+import {dotPitch} from '../design/print-pipeline/index';
 import {recordScreen,clearScreen} from './screen-data';
 import {design} from '../config/design';
 import {resolve,getPalette,type DesignConfig,type Area} from '../design/settings';
@@ -55,12 +56,16 @@ if(root){
   await document.fonts.ready;if(run!==generation)return;
   root!.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>{
    const size=parseFloat(getComputedStyle(el).fontSize),large=size>=24;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<24);el.dataset.textTier=textTier(size);
+   el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);
    if(el.closest('.he-page')?.getAttribute('aria-hidden')==='true')return;
    const owner=el.closest<HTMLElement>('[data-style-element]'),area=owner?.dataset.styleAreaOwner||el.closest<HTMLElement>('[data-style-area]')?.dataset.styleArea;
    const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
    for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
     const dotted=size>=72&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
-    if(size>=24)textureMask(layer,ink,s,dotted);else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();clearScreen(layer);}
+    // The dotted plate is painted by CSS (--dot-plate) from the first frame; a JS mask would replace it.
+    if(dotted){if(layer.dataset.materialMask){layer.style.removeProperty('mask-image');layer.style.removeProperty('mask-size');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();}
+     recordScreen(layer,elementPress(pressSettings(s,typeScreenLevel(size)!,size),owner?.dataset.styleElement||'shared-type','title',size),ink,size);continue;}
+    if(size>=24)textureMask(layer,ink,s,false);else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();clearScreen(layer);}
    }
   });
   root!.querySelectorAll<HTMLElement>('.he-project-ground').forEach(el=>{

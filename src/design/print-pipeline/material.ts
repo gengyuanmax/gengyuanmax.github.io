@@ -5,6 +5,7 @@ import type {PrintPlate,RGB} from './types.ts';
 import {salt} from './noise.ts';
 import type {Settings} from '../settings.ts';
 import {toneSettings,type ToneSettings} from './tone.ts';
+import {noiseBudget,within,withinSigned} from './budget.ts';
 
 /** Print Lab's mask spreading and ink-transfer stages, adapted to rectangular
  * web elements. All distances below are CSS pixels, independent of object size.
@@ -13,14 +14,14 @@ export const materialVersion='print-lab-e1c9d82-sheet-v2';
 export type Press<Id extends string='a'|'b'> = {sheet?:Sheet;band?:number;level:ScreenLevel;shapes:Record<Id,ScreenShape>;pitch:number;angles:Record<Id,number>;registration?:Partial<Record<Id,{x:number;y:number}>>;gain:number;grain:number;starve:number;cluster:number;edge:number;holes:number;seed:number;offset:{x:number;y:number};patch?:number;role?:'title'|'field'|'image';tone?:ToneSettings};
 export function pressSettings(s:Settings,level:ScreenLevel='medium',fontSize=128):Press{
  const a=screen(level,'a',s,fontSize),b=screen(level,'b',s,fontSize);
- return {level,pitch:a.pitch,shapes:{a:a.shape,b:b.shape},angles:{a:a.angle,b:b.angle},gain:s.dotGain,band:s.banding,grain:s.grain,starve:s.starvation,cluster:s.grainSize,edge:s.inkEdge,holes:s.pressGrain,seed:s.seed,offset:{x:s.registration,y:s.registrationY},tone:toneSettings(s)};
+ return {level,pitch:a.pitch,shapes:{a:a.shape,b:b.shape},angles:{a:a.angle,b:b.angle},gain:within(s.dotGain,noiseBudget.dotGain),band:within(s.banding,noiseBudget.transfer.roller*2),grain:s.grain,starve:s.starvation,cluster:s.grainSize,edge:s.inkEdge,holes:within(s.pressGrain,noiseBudget.transfer.grainArea),seed:s.seed,offset:{x:withinSigned(s.registration,noiseBudget.registration.plate),y:withinSigned(s.registrationY,noiseBudget.registration.plate)},tone:toneSettings(s)};
 }
 /** Each element has a stable independent field, rather than restarting the same
  * noise tile. Ink plates then use independent samples from that field. */
 export function elementPress<Id extends string>(p:Press<Id>,key:string,role:NonNullable<Press['role']>,fontSize=180):Press<Id>{
  let seed=p.seed;for(const c of key)seed=(Math.imul(seed,31)+c.charCodeAt(0))|0;
  return {...p,seed,role,patch:role==='title'?Math.max(4,fontSize/3):160,
-  grain:Math.min(role==='title'?.08:.2,p.grain),starve:Math.min(role==='title'?.08:.25,p.starve)};
+  grain:within(p.grain,role==='title'?.08:noiseBudget.transfer.grainLoss),starve:within(p.starve,role==='title'?.08:noiseBudget.transfer.starvation)};
 }
 const cache=new Map<string,{n:number;fine:Float32Array;low:Float32Array;edge:Float32Array}>();
 export function materialFields(width:number,height:number,scale:number,p:Press<string>){

@@ -5,6 +5,7 @@ import {printObjects,printWords,printGrounds} from '../config/print-objects.ts';
 import {selectedComposition} from '../config/portrait-composition.ts';
 import {operations} from './element-composition.ts';
 import {emphasisMaterial} from './emphasis.ts';
+import {dotPlateImage,groundFirstCoverage} from './print-pipeline/first-frame.ts';
 export type Scope = 'global' | 'area' | 'element';
 export type Parameter = { label: string; group: string; scopes: readonly Scope[]; css?: string } & (
   { type: 'number'; default: number; min: number; max: number; step: number; unit?: string } |
@@ -30,10 +31,10 @@ export const fontFamilies = {
 export const parameters = {
   researchSeed:{label:'研究圆 · 种子（0 = 今日日期）',group:'构图',type:'number',default:0,min:0,max:99999999,step:1,scopes:globalOnly},
   researchDropout:{label:'研究圆 · 掉点阈值',group:'构图',type:'number',default:.06,min:0,max:.15,step:.01,scopes:globalOnly},
-  researchDotGain:{label:'研究圆 · 网点扩大',group:'构图',type:'number',default:1.12,min:1,max:1.5,step:.01,scopes:globalOnly},
-  researchInkNoise:{label:'研究圆 · 墨量起伏',group:'构图',type:'number',default:.15,min:0,max:.3,step:.01,scopes:globalOnly},
-  researchFeedNoise:{label:'研究圆 · 走纸浅带',group:'构图',type:'number',default:.2,min:0,max:.3,step:.01,scopes:globalOnly},
-  researchFiberNoise:{label:'研究圆 · 纸纤维减墨',group:'构图',type:'number',default:.065,min:0,max:.12,step:.005,scopes:globalOnly},
+  researchDotGain:{label:'研究圆 · 网点扩大',group:'构图',type:'number',default:1.12,min:1,max:1.3,step:.01,scopes:globalOnly},
+  researchInkNoise:{label:'研究圆 · 墨量起伏',group:'构图',type:'number',default:.15,min:0,max:.15,step:.01,scopes:globalOnly},
+  researchFeedNoise:{label:'研究圆 · 走纸浅带',group:'构图',type:'number',default:.2,min:0,max:.2,step:.01,scopes:globalOnly},
+  researchFiberNoise:{label:'研究圆 · 纸纤维减墨',group:'构图',type:'number',default:.065,min:0,max:.08,step:.005,scopes:globalOnly},
   researchBlueAngle:{label:'研究蓝版 · 网角',group:'印刷墨层',type:'number',default:15,min:0,max:180,step:1,scopes:globalOnly},
   researchOrangeAngle:{label:'研究橙版 · 网角',group:'印刷墨层',type:'number',default:75,min:0,max:180,step:1,scopes:globalOnly},
 
@@ -49,8 +50,8 @@ export const parameters = {
   researchCoverage:{label:'研究圆 · 网点覆盖率',group:'构图',type:'number',default:.45,min:.4,max:.5,step:.01,scopes:globalOnly},
   researchAnchors:{label:'研究圆 · 区域锚点',group:'构图',type:'select',default:'off',options:{off:'隐藏',on:'显示'},scopes:globalOnly},
   yellowAngle:{label:'黄色版 · 网角',group:'印刷墨层',type:'number',default:0,min:0,max:180,step:1,scopes:globalOnly},
-  yellowX:{label:'黄色版 · 错版 X',group:'印刷墨层',type:'number',default:-1,min:-12,max:12,step:.5,scopes:globalOnly},
-  yellowY:{label:'黄色版 · 错版 Y',group:'印刷墨层',type:'number',default:1.5,min:-12,max:12,step:.5,scopes:globalOnly},
+  yellowX:{label:'黄色版 · 错版 X',group:'印刷墨层',type:'number',default:-1,min:-2,max:2,step:.5,scopes:globalOnly},
+  yellowY:{label:'黄色版 · 错版 Y',group:'印刷墨层',type:'number',default:1.5,min:-2,max:2,step:.5,scopes:globalOnly},
 
   homeDividerStyle:{label:'首页分隔处理',group:'构图',type:'select',default:'print',options:{print:'双墨章节线 + News 细网过渡',plain:'原细线 · 对照'},scopes:['global','area']},
   dividerMotion:{label:'分隔印出动态 · 全局',group:'构图',type:'select',default:'once',options:{once:'首次进入视口印出',none:'静态'},scopes:globalOnly},
@@ -61,7 +62,7 @@ export const parameters = {
   emphasisCoverage:{label:'正文强调网点覆盖率',group:'正文强调',type:'number',default:.23,min:.2,max:.25,step:.01,scopes:['global','area']},
   emphasisOffset:{label:'正文强调网点带右下偏移',group:'正文强调',type:'number',default:1.5,min:1,max:2,step:.5,unit:'px',scopes:['global','area'],css:'--emphasis-offset'},
   toneLight:{label:'统一光源方向 · 225° 为左上',group:'加网前影调',type:'number',default:225,min:0,max:359,step:1,unit:'°',scopes:globalOnly},
-  toneNoise:{label:'影调低频起伏 · 正负幅度',group:'加网前影调',type:'number',default:.065,min:.02,max:.1,step:.005,scopes:all},
+  toneNoise:{label:'影调低频起伏 · 正负幅度',group:'加网前影调',type:'number',default:.065,min:.02,max:.08,step:.005,scopes:all},
   toneNoiseScale:{label:'影调起伏尺度',group:'加网前影调',type:'number',default:140,min:80,max:200,step:10,unit:'px',scopes:all},
   toneDirection:{label:'平面方向性 · 克制渐变',group:'加网前影调',type:'number',default:.45,min:.1,max:1,step:.05,scopes:all},
   tonePlaneMin:{label:'平面最少墨量',group:'加网前影调',type:'number',default:.7,min:.55,max:.8,step:.01,scopes:all},
@@ -133,8 +134,8 @@ export const parameters = {
   printPitch: { label: '网点间距', group: '图像与加网', type: 'number', default: 6, min: 3, max: 12, step: .5, unit: 'px', scopes: all },
   printAngle: { label: '网角', group: '图像与加网', type: 'number', default: 15, min: 0, max: 90, step: 1, unit: '°', scopes: all },
   contrast: { label: '图像对比度', group: '图像与加网', type: 'number', default: 1.15, min: .6, max: 1.8, step: .05, scopes: all },
-  registration: { label: '套色错位 X', group: '印刷墨层', type: 'number', default: 2, min: -12, max: 12, step: .5, unit: 'px', scopes: all, css:'--registration-x' },
-  grain: { label: '图形颗粒最大减墨', group: '印刷墨层', type: 'number', default: .12, min: 0, max: .2, step: .01, scopes: all },
+  registration: { label: '套色错位 X', group: '印刷墨层', type: 'number', default: 2, min: -3, max: 3, step: .5, unit: 'px', scopes: all, css:'--registration-x' },
+  grain: { label: '图形颗粒最大减墨', group: '印刷墨层', type: 'number', default: .12, min: 0, max: .12, step: .01, scopes: all },
   seed: { label: '颗粒种子', group: '印刷墨层', type: 'number', default: 23, min: 0, max: 9999, step: 1, scopes: all },
   edgeFade: { label: '边缘淡出', group: '图像与加网', type: 'number', default: 0, min: 0, max: .3, step: .01, scopes: all },
   imageZoom: { label: '裁切放大', group: '图像与加网', type: 'number', default: 1, min: 1, max: 1.8, step: .05, scopes: all },
@@ -153,13 +154,13 @@ export const parameters = {
   titleDotRadius: {label:'字内圆点半径 · 相对网距',group:'印刷墨层',type:'number',default:.37,min:.25,max:.38,step:.01,scopes:all,css:'--title-dot-radius'},
   titleLayerX: {label:'网点字形横向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.075,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-x'},
   titleLayerY: {label:'网点字形纵向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.06,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-y'},
-  registrationY: {label:'套色错位 Y',group:'印刷墨层',type:'number',default:1,min:-12,max:12,step:.5,unit:'px',scopes:all,css:'--registration-y'},
+  registrationY: {label:'套色错位 Y',group:'印刷墨层',type:'number',default:1,min:-3,max:3,step:.5,unit:'px',scopes:all,css:'--registration-y'},
   blend: {label:'油墨覆盖方式',group:'印刷墨层',type:'select',default:'multiply',options:{multiply:'透明叠印',normal:'不透明遮盖'},scopes:all},
-  starvation: {label:'图形低频缺墨',group:'印刷墨层',type:'number',default:.12,min:0,max:.25,step:.01,scopes:all},
-  banding: {label:'滚筒墨量变化',group:'图像与加网',type:'number',default:.08,min:0,max:1,step:.01,scopes:all},
+  starvation: {label:'图形低频缺墨',group:'印刷墨层',type:'number',default:.12,min:0,max:.15,step:.01,scopes:all},
+  banding: {label:'滚筒墨量变化',group:'图像与加网',type:'number',default:.08,min:0,max:.1,step:.01,scopes:all},
   paperTexture: {label:'共享纸纹',group:'纸张',type:'number',default:.08,min:0,max:.1,step:.005,scopes:globalOnly,css:'--paper-texture'},
   dotShape: {label:'网点形状 · AM / Ben-Day',group:'图像与加网',type:'select',default:'round',options:{round:'圆形',ellipse:'椭圆',diamond:'菱形',square:'方形'},scopes:all},
-  dotGain: {label:'中间调网点增益',group:'图像与加网',type:'number',default:0,min:0,max:1,step:.05,scopes:all},
+  dotGain: {label:'中间调网点增益',group:'图像与加网',type:'number',default:0,min:0,max:.4,step:.05,scopes:all},
   imageMask: {label:'图像外形（不等于去背）',group:'图像与加网',type:'select',default:'arch',options:{source:'保留源图边界 / 透明通道',arch:'拱形裁片',oval:'椭圆裁片'},scopes:all},
   portraitMaterial: {label:'人像素材',group:'图像与加网',type:'select',default:'cutout',options:{composition:'已选配方 · 人像与几何叠印',press:'旧版 · 双版照片与拖尾',cutout:'旧版抠图 + Riso 成品',recipe:'原图 · 可调加网方案'},scopes:all},
   portraitOverlap: {label:'人像向标题延伸 · 桌面',group:'构图',type:'number',default:1,min:0,max:1,step:.25,scopes:['global','area'],css:'--portrait-overlap'},
@@ -286,6 +287,10 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
     const material=emphasisMaterial(getPalette(config,settings.palette||global.palette),settings.emphasisPitch??global.emphasisPitch,settings.emphasisCoverage??global.emphasisCoverage);
     css['--emphasis-dots']=material.image;css['--emphasis-tile']=`${material.tile}px`;
   }
+  // First-frame print: final geometry painted by CSS before any canvas or mask exists.
+  const all={...shared,...settings} as Settings;
+  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius);
+  if(settings.groundOpacity!==undefined)css['--ground-first']=groundFirstCoverage(all).toFixed(3);
   if(settings.blend)css['--ink-blend']=settings.blend;
   if(settings.itemStart!==undefined&&settings.itemSpan!==undefined)css['--item-start']=String(Math.min(settings.itemStart,13-settings.itemSpan));
   for (const [key, cssName] of [['displayFont','--display-face'],['bodyFont','--reading-face'],['emphasisFont','--emphasis-face'],['metadataFont','--metadata-face']] as const) if (settings[key]) css[cssName] = fontFamilies[settings[key] as keyof typeof fontFamilies];

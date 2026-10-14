@@ -43,3 +43,6 @@
 #personal-site .rm-entering .rm-directions{visibility:hidden;}
 #personal-site .rm-directions a{font-size:18px;}
 @media(prefers-reduced-motion:reduce){#personal-site .rm-entering .rm-directions{visibility:visible;}}
+/* With JS the circles appear when their final canvas is ready. The build-time PNG uses a
+   reference layout and the build day's seed, so it would be a different print: no-JS only. */
+#personal-site[data-enhanced] .rm-fallback{visibility:hidden;}

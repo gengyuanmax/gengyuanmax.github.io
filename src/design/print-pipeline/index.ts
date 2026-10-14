@@ -51,3 +51,6 @@ export {onSheet,sheetFields,type Sheet} from './sheet.ts';
 export {preparePortraitOriginals,paintPortraitOriginals} from './portrait.ts';
 
 export {renderFieldOriginals,type FieldOriginal} from './field.ts';
+
+export {dotPitch,dotPlateImage,groundFirstCoverage} from './first-frame.ts';
+export {noiseBudget} from './budget.ts';

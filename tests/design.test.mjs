@@ -2,13 +2,13 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {defaults,validateConfig,resolve,cssVariables,editorialBounds,getPalette,mainDesignConfig,activeParameter} from '../src/design/settings.ts';
 import {renderPrint,separatePlates,cropRect} from '../src/design/print.ts';
-const config=()=>({version:1,global:{palette:'blueVermilion',grain:.1},areas:{home:{grain:.2}},elements:{'home-portrait':{grain:0}}});
+const config=()=>({version:1,global:{palette:'blueVermilion',grain:.1},areas:{home:{grain:.11}},elements:{'home-portrait':{grain:0}}});
 test('inheritance preserves zero, follows global edits, and restores parents after reset',()=>{
  const c=config();validateConfig(c);
  assert.equal(resolve(c,'home','home-portrait').values.grain,0);
  assert.equal(resolve(c,'home','home-portrait').sources.grain,'element:home-portrait');
  c.global.palette='pinkBlue';assert.equal(resolve(c,'home','home-portrait').values.palette,'pinkBlue');
- delete c.elements['home-portrait'].grain;assert.equal(resolve(c,'home','home-portrait').values.grain,.2);
+ delete c.elements['home-portrait'].grain;assert.equal(resolve(c,'home','home-portrait').values.grain,.11);
  delete c.areas.home.grain;assert.equal(resolve(c,'home','home-portrait').values.grain,.1);
  assert.equal(resolve(c,'research').values.grain,.1);
 });
