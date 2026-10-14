@@ -19,6 +19,8 @@ export const noiseBudget={
   /** Display-name dots (user, 2026-10-14): size ± fraction, centre shift as a fraction of
    * the pitch, and the blue plate's register against the red letter in CSS px. */
   dots:{radius:.18,shift:.06,registration:1.25}},
+ /** Printed guide lines (rule-v1): edge wander in CSS px and its smallest feature. */
+ rule:{edge:.35,wave:14},
  /** Midtone dot gain added to the tone curve before screening. */
  dotGain:.4,
  /** Shared paper texture strength. */

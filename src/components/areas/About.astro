@@ -2,7 +2,6 @@
 import InkText from '../InkText.astro';
 import EmphasisText from '../EmphasisText.astro';
 import {bodyEmphasis} from '../../config/body-emphasis';
-import PrintGround from '../PrintGround.astro';
 import PrintTitle from '../PrintTitle.astro';
 import PrintMotif from '../PrintMotif.astro';
 import QuietHeading from '../QuietHeading.astro';
@@ -10,8 +9,9 @@ import Styled from '../Styled.astro';
 import {placements} from '../../config/compositions';
 import {profile,experience,education,service} from '../../data/content';
 const row=(name:string)=>`--item-row:${placements[`about-${name}` as keyof typeof placements].row}`;
+import {aboutPhoto} from '../../config/about-photo';
 ---
-<header class="he-about-masthead"><PrintTitle id="about-title" area="about" lines={["About me"]}/><div class="he-about-folio" aria-hidden="true"><PrintGround id="plate-about"/><span>04</span></div></header>
+<header class="he-about-masthead"><PrintTitle id="about-title" area="about" lines={["About me"]}/><figure class="he-about-folio he-about-photo" aria-hidden="true"><img src={aboutPhoto.output} width={aboutPhoto.width*aboutPhoto.scale} height={Math.round(aboutPhoto.width*aboutPhoto.scale*aboutPhoto.crop.height/aboutPhoto.crop.width)} alt="" decoding="async"/></figure></header>
 <div class="he-about-body">
  <Styled as="section" id="about-intro" area="about" class="he-about-module he-about-intro" style={row('intro')}>
   <QuietHeading title={profile.name.join(' ')} ground="ground-about-intro"/><p><EmphasisText text={profile.about} phrase={bodyEmphasis.about}/></p>

@@ -69,3 +69,18 @@ export function paperOrigin(el:Element,page:HTMLElement){
  const bounds=el.getBoundingClientRect(),paper=page.getBoundingClientRect(),zoom=paper.width/(page.offsetWidth||paper.width)||1;
  return {x:(bounds.left-paper.left)/zoom,y:(bounds.top-paper.top)/zoom};
 }
+/** Paint an alpha mask (0..1) in one ink colour straight into a canvas: no image
+ * encoding, so many small printed marks stay cheap. */
+export function paintAlpha(target:HTMLCanvasElement,alpha:Float32Array,width:number,height:number,color:[number,number,number]){
+ if(target.width!==width)target.width=width;if(target.height!==height)target.height=height;
+ const ctx=target.getContext('2d')!,img=ctx.createImageData(width,height);
+ for(let i=0;i<alpha.length;i++){const j=i*4;img.data[j]=color[0];img.data[j+1]=color[1];img.data[j+2]=color[2];img.data[j+3]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);}
+ ctx.putImageData(img,0,0);
+}
+/** Encode an alpha mask as a PNG blob URL off the main thread, for CSS mask-image. */
+export function alphaMaskBlob(alpha:Float32Array,width:number,height:number){
+ const c=surface(width,height),ctx=c.getContext('2d')!,img=ctx.createImageData(width,height);
+ for(let i=0;i<alpha.length;i++)img.data[i*4+3]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);
+ ctx.putImageData(img,0,0);
+ return new Promise<string>((done,fail)=>c.toBlob(b=>b?done(URL.createObjectURL(b)):fail(new Error('mask encode failed'))));
+}
