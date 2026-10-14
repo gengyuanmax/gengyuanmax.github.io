@@ -36,7 +36,7 @@
 /* A single translucent plate groups the imprint only. It ends before the
    description; the paper and the neighboring project remain untouched.
    Opacity is explicit digital tint, not a substitute for Lab dot coverage. */
-#personal-site .he-project-ground {position:absolute;z-index:-1;pointer-events:none;top:-12px;bottom:8px;left:calc(-1 * var(--ground-bleed));width:calc(var(--ground-width) + var(--ground-bleed));color:var(--blue-ink);opacity:var(--ground-opacity);mix-blend-mode:var(--ink-blend);filter:var(--ground-filter);}
+#personal-site .he-project-ground {position:absolute;z-index:-1;pointer-events:none;top:-12px;bottom:8px;left:calc(-1 * var(--ground-bleed));width:calc(var(--ground-width) + var(--ground-bleed));color:var(--blue-ink);opacity:var(--ground-opacity);mix-blend-mode:var(--ink-blend);}
 #personal-site .he-project-ground[data-ground-ink="secondary"] {color:var(--red-ink);}
 #personal-site .he-project-ground::before,#personal-site .he-project-ground::after {content:"";position:absolute;left:0;right:0;pointer-events:none;}
 #personal-site .he-project-ground::before {top:0;bottom:18px;background:currentColor;}
@@ -118,7 +118,7 @@
 #personal-site .he-about-body .he-secondary-list > section {border-top:3px solid var(--ink);padding-top:18px;}
 #personal-site .he-about-body .he-secondary-list > section > h2 {font:750 30px/1.1 var(--display-face);letter-spacing:-.04em;}
 #personal-site .he-timeline .he-item-meta {font:500 11px/1.7 var(--metadata-face);padding-left:10px;border-left:3px solid var(--blue-ink);}
-#personal-site .he-nav a::after {filter:url(#ink-nav-home);}
+#personal-site .he-nav a::after {filter:none;}
 #personal-site .he-page::after {opacity:.75;}
 
 @container(max-width:900px){

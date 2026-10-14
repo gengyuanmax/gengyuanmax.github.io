@@ -6,7 +6,7 @@ import {researchLabelArc} from '../design/research-geometry';
 import '../styles/research-map.css';
 import {design} from '../config/design';
 import {resolve} from '../design/settings';
-const s=resolve(design,'home').values,recipe=researchRecipe(s,design),g=recipe.geometry;
+const s=resolve(design,'home').values,recipe=researchRecipe(s,design,640,undefined,{seed:resolve(design).values.seed,origin:{x:0,y:0},height:1440}),g=recipe.geometry;
 const fallback=await staticResearchPreview(recipe);
 ---
 <div class="research-map" data-view={s.researchView} aria-describedby="research-map-description">

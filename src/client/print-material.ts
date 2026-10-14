@@ -1,67 +1,67 @@
+import {paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
 import {recordScreen,clearScreen} from './screen-data';
 import {design} from '../config/design';
 import {resolve,getPalette,type DesignConfig,type Area} from '../design/settings';
-import {screenPlate,paintMaterial,pressSettings,elementPress,materialVersion} from '../design/press-material';
-import {rgb,type Plate} from '../design/element-composition';
+import {renderFieldOriginals,type FieldOriginal,onSheet,screenOriginal,paintMaterial,pressSettings,elementPress,materialVersion,textTextureVersion,textTier} from '../design/print-pipeline/index';
+import {rgb} from '../design/element-composition';
 import {makeToneField,toneSettings} from '../design/tone-field';
 import {rememberTone} from './tone-proof';
 
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root){
  let config:DesignConfig=design,frame=0,generation=0;
- const signatures=new WeakMap<SVGSVGElement,string>();
- const inkSignatures=new WeakMap<HTMLElement,string>();
+ const mounts=new WeakMap<SVGSVGElement,ReturnType<typeof createPrintMount>>();
+ const inkMounts=new WeakMap<HTMLElement,ReturnType<typeof createPrintMount>>();
  const observer=new ResizeObserver(schedule);
+ root.querySelectorAll<HTMLElement>('.he-page').forEach(el=>observer.observe(el));
  root.querySelectorAll<SVGSVGElement>('[data-print-field]').forEach(el=>observer.observe(el));
  root.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>observer.observe(el));
  root.querySelectorAll<HTMLElement>('.he-project-ground,.he-divider-band').forEach(el=>observer.observe(el));
  function textureMask(el:HTMLElement,ink:'a'|'b',s:ReturnType<typeof resolve>['values'],letterScreen=false){
-  const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(el.clientWidth*dpr),h=Math.round(el.clientHeight*dpr);if(!w||!h)return;
+  const dpr=Math.max(1,devicePixelRatio||1),w=Math.round((el.clientWidth||el.offsetWidth)*dpr),h=Math.round((el.clientHeight||el.offsetHeight)*dpr);if(!w||!h)return;
   const ground=el.matches('.he-project-ground,.he-divider-band'),owner=el.closest<HTMLElement>('[data-style-element]')!;
   const identity=(owner?.dataset.styleElement||'shared-type')+(ground?'':':'+(el.dataset.inkCopy||el.textContent));
   const fontSize=parseFloat(getComputedStyle(el).fontSize);
   const level=ground?'fine':letterScreen?(typeScreenLevel(fontSize)??'fine'):'coarse';
-  const p=elementPress(pressSettings(s,level,fontSize),identity,ground?'field':'title',fontSize);
-  const bounds=el.getBoundingClientRect(),page=(el.closest('.he-page')||root!).getBoundingClientRect(),origin={x:bounds.left-page.left,y:bounds.top-page.top};
-  if(letterScreen&&ink==='b'){origin.x-=p.offset.x;origin.y-=p.offset.y;}
-  const key=JSON.stringify([w,h,p,ink,ground||letterScreen?origin:null,ground?s.groundOpacity:null,letterScreen,s.titleDotRadius]);if(inkSignatures.get(el)===key)return;
-  let flat=new Float32Array(w*h).fill(ground?s.groundOpacity:1);
+  let p=elementPress(pressSettings(s,level,fontSize),identity,ground?'field':'title',fontSize);
+  const origin=paperOrigin(el,(el.closest('.he-page')||root!) as HTMLElement);
+  p=onSheet(p,resolve(config).values.seed,origin,(el.closest<HTMLElement>('.he-page')||root!).offsetHeight);
+  if(letterScreen&&ink==='b'){origin.x-=Math.max(-.75,Math.min(.75,p.offset.x));origin.y-=Math.max(-.5,Math.min(.5,p.offset.y));}
+  const style=getComputedStyle(el);
+  const key=JSON.stringify([textTextureVersion,style.fontFamily,style.fontSize,style.fontWeight,style.fontVariationSettings,style.letterSpacing,el.textContent,document.fonts.status,w,h,p,ink,ground||letterScreen?origin:null,ground?s.groundOpacity:null,letterScreen,s.titleDotRadius]);let mount=inkMounts.get(el);if(!mount){mount=createPrintMount();inkMounts.set(el,mount);}const ticket=mount.begin(key);if(!ticket)return;
+  let flat:Float32Array=new Float32Array(w*h).fill(ground?s.groundOpacity:1);
   if(ground){
    const rim=Math.max(1,Math.round(p.edge*dpr));
    for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x<rim||y<rim||x>=w-rim||y>=h-rim)flat[y*w+x]=0;
    const tone=makeToneField(flat,w,h,dpr,'plane',toneSettings(s),p.seed);
-   flat=screenPlate(tone,w,h,ink,p,dpr,origin);
+   flat=screenOriginal(identity,{kind:'shape',mask:flat,tone},w,h,ink,p,dpr,origin);
    if(import.meta.env.DEV)rememberTone(identity,tone,flat,w,h,dpr);
    el.dataset.toneSource='plane';
   }
-  if(letterScreen){flat.fill(Math.PI*s.titleDotRadius*s.titleDotRadius);flat=screenPlate(flat,w,h,ink,p,dpr,origin);}
+  if(!ground){
+   const glyph=letterScreen?textCoverage(el,w,h,dpr):flat;
+   flat=screenOriginal(identity,{kind:'text',mask:glyph,tone:glyph},w,h,ink,p,dpr,origin,!letterScreen,{size:fontSize,dotted:letterScreen,radius:s.titleDotRadius});
+  }
   if(ground||letterScreen)recordScreen(el,p,ink,letterScreen?fontSize:undefined);else clearScreen(el);
-  const data=paintMaterial([{ink,coverage:flat}],w,h,{a:[0,0,0],b:[0,0,0],paper:[255,255,255]},{...p,offset:{x:0,y:0}},dpr);
-  // The existing DOM glyph/rectangle supplies the shape. The exact same
-  // Print Lab ink transfer supplies its alpha, independently for each plate.
-  for(let i=0;i<data.length;i+=4){const alpha=255-data[i];data[i]=data[i+1]=data[i+2]=0;data[i+3]=alpha;}
-  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d')!.putImageData(new ImageData(data,w,h),0,0);
-  el.style.maskImage=`url(${canvas.toDataURL()})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';inkSignatures.set(el,key);
- }
- async function mask(markup:string,w:number,h:number){
-  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-  const ctx=canvas.getContext('2d',{willReadFrequently:true})!;
-  const image=new Image(),url=URL.createObjectURL(new Blob([`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 360 220"><g fill="black" color="black">${markup}</g></svg>`],{type:'image/svg+xml'}));
-  try{await new Promise<void>((ok,bad)=>{image.onload=()=>ok();image.onerror=bad;image.src=url;});ctx.drawImage(image,0,0);}finally{URL.revokeObjectURL(url);}
-  const rgba=ctx.getImageData(0,0,w,h).data;return Float32Array.from({length:w*h},(_,i)=>rgba[i*4+3]/255);
+  // Text already has its one bounded transfer stage; never apply image grain again.
+  const data=ground?paintMaterial([{ink,coverage:flat}],w,h,{a:[0,0,0],b:[0,0,0],paper:[255,255,255]},{...p,offset:{x:0,y:0}},dpr):new Uint8ClampedArray(w*h*4);
+  for(let i=0;i<data.length;i+=4){const alpha=ground?255-data[i]:255*flat[i/4];data[i]=data[i+1]=data[i+2]=0;data[i+3]=alpha;}
+  const canvas=pixelSurface(data,w,h);
+  const url=canvas.toDataURL();ticket.commit(()=>{el.style.maskImage=`url(${url})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';});
  }
  function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>void render());}
  async function render(){
   const run=++generation;
+  await document.fonts.ready;if(run!==generation)return;
   root!.querySelectorAll<HTMLElement>('.he-type-line').forEach(el=>{
-   const size=parseFloat(getComputedStyle(el).fontSize),large=size>=48;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<=16);
+   const size=parseFloat(getComputedStyle(el).fontSize),large=size>=24;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<24);el.dataset.textTier=textTier(size);
    if(el.closest('.he-page')?.getAttribute('aria-hidden')==='true')return;
    const owner=el.closest<HTMLElement>('[data-style-element]'),area=owner?.dataset.styleAreaOwner||el.closest<HTMLElement>('[data-style-area]')?.dataset.styleArea;
    const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
    for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
-    const dotted=s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
-    if(dotted||large)textureMask(layer,ink,s,dotted);else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkSignatures.delete(layer);clearScreen(layer);}
+    const dotted=size>=72&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
+    if(size>=24)textureMask(layer,ink,s,dotted);else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();clearScreen(layer);}
    }
   });
   root!.querySelectorAll<HTMLElement>('.he-project-ground').forEach(el=>{
@@ -71,44 +71,41 @@ if(root){
   });
   root!.querySelectorAll<HTMLElement>('.he-divider-band').forEach(el=>{
    const s=resolve(config,'home').values;
-   if(s.homeDividerStyle!=='print'){clearScreen(el);inkSignatures.delete(el);return;}
+   if(s.homeDividerStyle!=='print'){clearScreen(el);inkMounts.get(el)?.invalidate();return;}
    textureMask(el,'b',{...s,groundOpacity:s.homeDividerCoverage});
   });
   for(const svg of root!.querySelectorAll<SVGSVGElement>('[data-print-field]')){
    const bounds=svg.getBoundingClientRect();if(!bounds.width||!bounds.height)continue;
    if(svg.closest('.he-page')?.getAttribute('aria-hidden')==='true')continue;
-   const el=svg.parentElement!,page=svg.closest('.he-page')!.getBoundingClientRect();
+   const el=svg.parentElement!,page=svg.closest<HTMLElement>('.he-page')!;
    const s=resolve(config,svg.dataset.printArea as Area,svg.dataset.printField).values,global=resolve(config).values;
-   const p=elementPress(pressSettings({...s,registration:global.registration,registrationY:global.registrationY}),svg.dataset.printField!,'field');
-   const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(bounds.width*dpr),h=Math.round(bounds.height*dpr),origin={x:bounds.left-page.left,y:bounds.top-page.top};
-   const palette=getPalette(config,s.palette),proof=root!.dataset.typeProof,key=JSON.stringify([w,h,s.fieldCoverage,s.fieldOverlap,p,palette,origin,proof]);if(signatures.get(svg)===key)continue;
+   let p=elementPress(pressSettings({...s,registration:global.registration,registrationY:global.registrationY}),svg.dataset.printField!,'field');
+   const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(svg.clientWidth*dpr),h=Math.round(svg.clientHeight*dpr),origin=paperOrigin(svg,page);
+   const palette=getPalette(config,s.palette),proof=root!.dataset.typeProof,key=JSON.stringify([w,h,s.fieldCoverage,s.fieldOverlap,page.offsetHeight,p,global.seed,palette,origin,proof]);p=onSheet(p,global.seed,origin,page.offsetHeight);let mount=mounts.get(svg);if(!mount){mount=createPrintMount();mounts.set(svg,mount);}const ticket=mount.begin(key);if(!ticket)continue;
    try{
-    const plates:Plate[]=[],screenedInks=new Set<'a'|'b'>();
+    const originals:FieldOriginal[]=[],screenedInks=new Set<'a'|'b'>();
     for(const ink of ['a','b'] as const){
      const children=[...(svg.querySelector(`.he-field-${ink}`)?.children||[])];
-     const coverage=new Float32Array(w*h);
      for(const [index,node] of children.entries()){
       const patterned=(node.getAttribute('fill')||'').startsWith('url('),e=node.cloneNode(true) as Element;
       if(patterned)e.setAttribute('fill','black');
-      const source=await mask(e.outerHTML,w,h);if(run!==generation)return;
+      const source=await svgCoverage(e.outerHTML,w,h);if(run!==generation||!ticket.current())return;
       const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
       const screened=patterned||ring;if(screened)screenedInks.add(ink);
       const kind=e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
-      const tone=screened?makeToneField(source,w,h,dpr,kind,toneSettings(s,ring?1:s.fieldCoverage/.42),p.seed+index*97):source;
-      const printed=screenPlate(tone,w,h,ink,p,dpr,origin,!screened);
-      if(import.meta.env.DEV&&screened)rememberTone(`${svg.dataset.printField}:${ink}:${index}`,tone,printed,w,h,dpr);
-      for(let i=0;i<coverage.length;i++)coverage[i]=Math.max(coverage[i],printed[i]);
+      originals.push({ink,coverage:source,screened,ring,kind,index});
      }
-     plates.push({ink,coverage});
     }
-    const pixels=paintMaterial(plates,w,h,{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]},p,dpr);
+    const {pixels,tones,screens}=renderFieldOriginals(originals,w,h,dpr,origin,p,s,{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]});
+    if(import.meta.env.DEV)originals.forEach((item,i)=>{if(item.screened)rememberTone(`${svg.dataset.printField}:${item.ink}:${item.index}`,tones[i],screens[i],w,h,dpr);});
     let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field');
     if(!canvas){canvas=document.createElement('canvas');canvas.className='he-material-field';canvas.setAttribute('aria-hidden','true');el.append(canvas);}
-    canvas.width=w;canvas.height=h;canvas.getContext('2d')!.putImageData(new ImageData(pixels,w,h),0,0);
+    const prepared=pixelSurface(pixels,w,h);
+    ticket.commit(()=>{publishCanvas(canvas!,prepared);el.dataset.materialReady='true';});
     recordScreen(canvas,p,[...screenedInks].join('') as 'a'|'b'|'ab');
     canvas.dataset.pressRecipe=JSON.stringify({level:p.level,shapes:p.shapes,pitch:p.pitch,angles:p.angles,offset:p.offset,origin,tone:p.tone,units:'CSS px',materialVersion});
-    el.dataset.materialReady='true';signatures.set(svg,key);
-   }catch(error){console.warn('Keeping vector print fallback.',error);}
+
+   }catch(error){console.warn('Keeping pre-rendered print fallback.',error);}
   }
   root!.dispatchEvent(new CustomEvent('design:screen-rendered'));
  }

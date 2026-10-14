@@ -134,7 +134,7 @@ export const parameters = {
   printAngle: { label: '网角', group: '图像与加网', type: 'number', default: 15, min: 0, max: 90, step: 1, unit: '°', scopes: all },
   contrast: { label: '图像对比度', group: '图像与加网', type: 'number', default: 1.15, min: .6, max: 1.8, step: .05, scopes: all },
   registration: { label: '套色错位 X', group: '印刷墨层', type: 'number', default: 2, min: -12, max: 12, step: .5, unit: 'px', scopes: all, css:'--registration-x' },
-  grain: { label: '颗粒最大减墨 · 大字上限 8%', group: '印刷墨层', type: 'number', default: .12, min: 0, max: .2, step: .01, scopes: all },
+  grain: { label: '图形颗粒最大减墨', group: '印刷墨层', type: 'number', default: .12, min: 0, max: .2, step: .01, scopes: all },
   seed: { label: '颗粒种子', group: '印刷墨层', type: 'number', default: 23, min: 0, max: 9999, step: 1, scopes: all },
   edgeFade: { label: '边缘淡出', group: '图像与加网', type: 'number', default: 0, min: 0, max: .3, step: .01, scopes: all },
   imageZoom: { label: '裁切放大', group: '图像与加网', type: 'number', default: 1, min: 1, max: 1.8, step: .05, scopes: all },
@@ -150,12 +150,12 @@ export const parameters = {
   bodyMeasure: {label:'正文行宽上限',group:'字体',type:'number',default:52,min:32,max:72,step:1,unit:'ch',scopes:['global','area'],css:'--body-measure'},
   titleTreatment: {label:'展示字处理',group:'印刷墨层',type:'select',default:'overprint',options:{solid:'实心墨色',overprint:'双色错位叠印',outline:'轮廓与实心',dotted:'实色字 + 字级 AM 网点'},scopes:all},
   titleDotPitch: {label:'字内装饰网距 · 相对字号',group:'印刷墨层',type:'number',default:screenScale.coarseEm,min:.015,max:.16,step:.005,unit:'em',scopes:all,css:'--title-dot-pitch'},
-  titleDotRadius: {label:'字内圆点半径 · 相对网距',group:'印刷墨层',type:'number',default:.36,min:.25,max:.45,step:.01,scopes:all,css:'--title-dot-radius'},
+  titleDotRadius: {label:'字内圆点半径 · 相对网距',group:'印刷墨层',type:'number',default:.30,min:.25,max:.30,step:.01,scopes:all,css:'--title-dot-radius'},
   titleLayerX: {label:'网点字形横向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.075,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-x'},
   titleLayerY: {label:'网点字形纵向错开 · 相对字号',group:'印刷墨层',type:'number',default:-.06,min:-.12,max:.12,step:.005,unit:'em',scopes:all,css:'--title-layer-y'},
   registrationY: {label:'套色错位 Y',group:'印刷墨层',type:'number',default:1,min:-12,max:12,step:.5,unit:'px',scopes:all,css:'--registration-y'},
   blend: {label:'油墨覆盖方式',group:'印刷墨层',type:'select',default:'multiply',options:{multiply:'透明叠印',normal:'不透明遮盖'},scopes:all},
-  starvation: {label:'低频缺墨 · 大字上限 8%',group:'印刷墨层',type:'number',default:.12,min:0,max:.25,step:.01,scopes:all},
+  starvation: {label:'图形低频缺墨',group:'印刷墨层',type:'number',default:.12,min:0,max:.25,step:.01,scopes:all},
   banding: {label:'滚筒墨量变化',group:'图像与加网',type:'number',default:.08,min:0,max:1,step:.01,scopes:all},
   paperTexture: {label:'共享纸纹',group:'纸张',type:'number',default:.08,min:0,max:.1,step:.005,scopes:globalOnly,css:'--paper-texture'},
   dotShape: {label:'网点形状 · AM / Ben-Day',group:'图像与加网',type:'select',default:'round',options:{round:'圆形',ellipse:'椭圆',diamond:'菱形',square:'方形'},scopes:all},
@@ -237,7 +237,7 @@ export function validateConfig(value: unknown): asserts value is DesignConfig {
     }
   }
 }
-const pageLocked:Key[]=['palette','primaryAngle','secondaryAngle','primaryDotShape','secondaryDotShape','registration','registrationY','dotShape'];
+const pageLocked:Key[]=['palette','primaryAngle','secondaryAngle','primaryDotShape','secondaryDotShape','registration','registrationY','dotShape','banding'];
 export function resolve(config: DesignConfig, area?: Area, element?: string) {
   const values = { ...defaults };
   const placement=element?placements[element as keyof typeof placements]:undefined;

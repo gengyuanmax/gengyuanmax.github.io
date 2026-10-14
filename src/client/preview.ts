@@ -2,7 +2,6 @@ import {currentPreview} from '../design/preview-state';
 import {initScreenAudit} from './screen-audit';
 import {design} from '../config/design';
 import {validateConfig,mainDesignConfig,resolve,cssVariables,getPalette,designAttributes,type DesignConfig,type Area} from '../design/settings';
-import {inkFilter} from '../design/ink';
 import {motifMarkup,type Motif} from '../design/motifs';
 const root=document.querySelector<HTMLElement>('#personal-site')!;
 const applied=new WeakMap<HTMLElement,string[]>();
@@ -21,7 +20,6 @@ function apply(input:DesignConfig,grid:boolean,flow:boolean,proof:unknown,audit:
  document.body.style.setProperty('--paper',getPalette(config,global.palette).paper);
  root.querySelectorAll<HTMLElement>('[data-style-area]').forEach(el=>{const area=el.dataset.styleArea as Area;setStyle(el,config.areas[area]||{},config);attrs(el,resolve(config,area).values);});
  root.querySelectorAll<HTMLElement>('[data-style-element]').forEach(el=>{const id=el.dataset.styleElement!,area=el.dataset.styleAreaOwner as Area;const s=resolve(config,area,id).values;setStyle(el,s,config);attrs(el,s);});
- root.querySelectorAll<SVGElement>('[data-ink-filter]').forEach(el=>{const id=el.dataset.inkFilter!;el.innerHTML=inkFilter(resolve(config,el.dataset.inkArea as Area,id).values,`ink-${id}`);});
  root.querySelectorAll<SVGElement>('[data-print-field]').forEach(el=>{const id=el.dataset.printField!;el.innerHTML=motifMarkup(resolve(config,el.dataset.printArea as Area,id).values,id,el.dataset.printKind as Motif);});
  root.querySelectorAll('.he-page').forEach(page=>page.querySelectorAll<HTMLElement>('[data-flow-label]').forEach((el,i)=>{el.dataset.flowNumber=String(i+1);}));
  root.dispatchEvent(new CustomEvent('design:updated',{detail:config}));root.dispatchEvent(new CustomEvent('design:proof-updated'));

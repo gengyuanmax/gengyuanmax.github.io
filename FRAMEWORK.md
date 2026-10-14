@@ -6,7 +6,7 @@ The selected Home reading flow is confirmed. On 2026-10-14 the user authorized p
 
 ## One main version
 
-`/` and `/design/` use the same Home component, responsive CSS and branch renderer. The order is name → introduction/contact → research brand and three aspects → News. Desktop uses the previously selected B composition; narrow screens preserve the same reading order. 1440 CSS px is the sole primary design canvas. Intermediate widths keep the left-brand/right-branches relationship; small containers stack for readability. There is no A/B selector.
+`/` and `/design/` use the same Home component, responsive CSS and print pipeline. The order is name → introduction/contact → research brand and three aspects → News. Desktop uses the previously selected B composition; narrow screens preserve the same reading order. 1440 CSS px is the sole primary design canvas. At 1024px and above the brand sits left of the research circles; narrower views stack, and below 640px a compact legend precedes direction links. There is no A/B selector.
 
 - `/design/`: the only visual editing desk. Global, Area and Element scopes edit the current version; layout and print panels organize parameters. Inspection tools include grid, DOM reading order, screen tiers, ink proofs and responsive widths.
 - `/design/?view=preview`: the same 1440 canvas without the editing sidebar, carrying the current session draft; fit and original-size modes only change its display scale.
@@ -35,13 +35,13 @@ Run the server smoke check with the development server active. It tests redirect
 | File | Responsibility |
 | --- | --- |
 | `src/config/main-version.ts` | Selected directions, draft slogan, retired objects and draft version key |
-| `src/components/areas/Home.astro` | Shared static Home reading structure and existing project links |
+| `src/components/areas/Home.astro` | Shared static Home reading structure and research direction links |
 | `src/styles/home-main.css` | Selected Home layout and responsive rules |
-| `src/client/home-branches.ts` | Decorative, responsive brand-to-aspect connectors |
+| `src/client/home-branches.ts` | Legacy tree comparison connectors; the main version uses ResearchMap |
 | `src/design/settings.ts` | Typed parameters, inheritance, validation and main-version normalization |
 | `src/config/design.json` | Saved global values and page/element overrides |
 | `src/design/screen.ts` | Three shared screen tiers and per-ink angle/shape tokens |
-| `src/design/press-material.ts` | Shared print material pipeline |
+| `src/design/print-pipeline/index.ts` | Shared print declaration and versioned N-ink core |
 | `src/config/portrait-composition.ts` | Selected portrait/circle composition from Print Lab |
 | `src/data/content.ts` | Content records; terminology and public copy still require approval |
 | `src/data/catalog.ts` | Chronology, primary research membership and resource priorities |
@@ -52,14 +52,20 @@ Global → area → element overrides preserve literal zero and reset to inherit
 
 ## Print system
 
-Current portrait and circle share the medium 4 CSS px screen. Screen tiers are fine 2px, medium 4px and type-relative 1/16em rounded to integer CSS pixels. At the current desktop name size the coarse pitch is 8px. Narrow display names retain the same red base and blue screen, reusing the fine 2px tier when the em tier approaches the image frequency; only type at 16px or below becomes solid. `typeScreenLevel()` owns this choice independently of viewport width. Each ink has a global angle and dot shape. Texture density can vary without adding arbitrary frequencies. Integer CSS pixels reduce one source of inconsistency but do not guarantee absence of sampling moiré at every browser zoom or device scale.
+The portrait and its own background circle share the medium 4 CSS px screen. Research circles retain the explicitly approved polygon recipe and 7px screen; see design constraints section 14. Screen tiers are fine 2px, medium 4px and type-relative 1/16em rounded to integer CSS pixels. At the current desktop name size the coarse pitch is 8px. Text follows the sharp-type-v2 size tiers: display type at 72px or above may use intact dots; 24–72px headings use solid two-ink text; smaller text remains clean single ink. Each ink has a global angle and dot shape. Texture density can vary without adding arbitrary frequencies. Integer CSS pixels reduce one source of inconsistency but do not guarantee absence of sampling moiré at every browser zoom or device scale.
 
 Body text and metadata use clean blue ink; larger headings use shared two-ink overprint. Decorative text layers are hidden from accessibility and do not duplicate content. The screen audit is a development diagnostic, not an additional production palette. Ink proofs simulate digital plate composition, not press-ready separations.
 
 `npm run media` renders the selected portrait composition and associated proof material; builds include it. Original assets and provenance are preserved. Artifacts are not forced through the portrait treatment.
 
-## Verification and remaining work
+## Pipeline migration (2026-10-14)
+
+New elements follow [Adding a print element](docs/ADDING_A_PRINT_ELEMENT.md). Active title, tint, print-field, portrait and research paths use the shared entry; original-color inserts explicitly bypass ink conversion. The core owns versioned raster and polygon screening recipes, noise, transfer and publication. Compatibility exports retain old imports without duplicating algorithms. Selected image recipes are preserved; the subsequently approved sharp text and sheet-coordinate corrections are documented in design constraints sections 16–17. Fixed pre-migration fingerprints and architecture/mount tests protect this transition. Legacy print/portrait-flow paths remain inventoried; this is staged consolidation, not a claim that every historical renderer has been deleted.
+
+## Historical release verification and remaining work
 
 The consolidation passed 42 tests, the Astro check and static build checks. The build contains the selected Home order before JavaScript, three branches with real project links, 73 unique IDs, four areas and five Artifacts, without editor routes or code. Browser review covered 1440, 768, 375 and 320 CSS px with no horizontal document overflow, plus screen auditing, ink proof selection and current-version controls. Redirect and save round-trip checks passed.
 
 Next: continue local refinements of this main version and finalize wording. The current snapshot is authorized for initial publication; future releases still follow the user’s instructions. This first release is published directly to `gh-pages` after local verification. The Astro workflow template is ready but inactive because the current GitHub authorization cannot update workflows; source stays on `codex/personal-brand-rebuild` until that migration is enabled.
+
+Current pipeline verification: 71 tests pass, including four native separation modes, sheet roller continuity, static/live shared adapters and 44 unchanged legacy fingerprints. Portrait, research and motif fallback images share the active rendering core at documented reference dimensions. SVG ink fallback filters are removed. Responsive source sampling and placement can differ from build-time reference pixels.

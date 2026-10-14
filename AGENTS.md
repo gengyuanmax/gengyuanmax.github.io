@@ -10,3 +10,11 @@ Read `docs/DESIGN_CONSTRAINTS.md` before changing visual design, content present
 - Public copy still requires user confirmation; do not infer copy approval from layout approval or publish the draft without instruction.
 - Follow the parent project's read-only rule for `sources/`; do not modify synced references or CV material for this task.
 - When the user changes a global constraint, update the constraint document with its implementation. Do not replace it with a pointer to a chronological handoff.
+
+## Print pipeline boundary
+
+- Before adding or changing a printed element, read `docs/ADDING_A_PRINT_ELEMENT.md`.
+- New printed elements must use `definePrintElement` (or `screenOriginal`, which calls it). Use `print-pipeline/index.ts` for pure stages and `print-pipeline/browser.ts` for publication. Original-color inserts explicitly use the `insert` profile.
+- Keep visual recipes parameterized and versioned. Do not add element-local screening, noise/PRNG, ink compositing, or fallback-swap implementations. Source adapters may sample images/geometry; they do not own print effects.
+- Preserve the `a7a7483` render baseline during architectural migration. Do not update golden fingerprints to make a regression pass. A visual change needs explicit user scope and a new reviewed baseline.
+- The legacy/source-adapter boundary inventory is a migration debt list, not permission for new bypasses. Remove entries as paths retire; do not expand it merely to pass the guard.

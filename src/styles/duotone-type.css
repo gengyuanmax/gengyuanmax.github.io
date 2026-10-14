@@ -1,7 +1,7 @@
 /* Two physical colour roles, one shared register. Blue carries information;
    vermilion marks a state or overprints display type. Paper is a knockout.
    These are screen approximations, not production-ready print separations. */
-#personal-site{--press-reg-x:var(--registration-x);--press-reg-y:var(--registration-y);}
+#personal-site{--press-reg-x:clamp(-.75px,var(--registration-x),.75px);--press-reg-y:clamp(-.5px,var(--registration-y),.5px);}
 #personal-site .print-2ink,#personal-site .he-type-line{isolation:isolate;mix-blend-mode:multiply;}
 #personal-site .he-type-shared{display:inline-grid;width:auto;max-width:100%;vertical-align:baseline;text-wrap:inherit;}
 #personal-site .he-type-shared>span{font:inherit;letter-spacing:inherit;line-height:inherit;min-width:0;}
@@ -59,3 +59,9 @@
 #personal-site .he-pillars .he-number .he-type-a{opacity:0;}
 /* Light grounds use screened coverage; opacity is only an on/off switch. */
 #personal-site .he-project-ground{opacity:clamp(0,calc(var(--ground-opacity) * 10000),1);}
+
+/* Text-specific registration is bounded; geometry keeps the global register. */
+#personal-site .he-type-line,#personal-site .he-type-line>span{filter:none!important;}
+#personal-site .he-type-line>.he-type-a{transform:none!important;}
+#personal-site .he-type-line>.he-type-b{transform:translate(var(--press-reg-x),var(--press-reg-y));}
+#personal-site .he-type-line[data-text-tier="body"]>.he-type-b{transform:none;mask-image:none!important;}

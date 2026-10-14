@@ -10,9 +10,8 @@ export function cropRect(width:number,height:number,s:Settings){
  const w=width/s.imageZoom,h=height/s.imageZoom;
  return {x:(width-w)*s.imageX,y:(height-h)*s.imageY,width:w,height:h};
 }
-export function makeRandom(seed:number){let state=seed>>>0;return()=>{state=(Math.imul(1664525,state)+1013904223)>>>0;return state/4294967296;};}
-function hash(x:number,y:number,seed:number){let n=Math.imul(x,374761393)^Math.imul(y,668265263)^Math.imul(seed,1274126177);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;}
-function field(x:number,y:number,seed:number){const ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy;const a=fx*fx*(3-2*fx),b=fy*fy*(3-2*fy);return (hash(ix,iy,seed)*(1-a)+hash(ix+1,iy,seed)*a)*(1-b)+(hash(ix,iy+1,seed)*(1-a)+hash(ix+1,iy+1,seed)*a)*b;}
+import {legacyRandom as makeRandom,legacyHash as hash,legacyField as field} from './print-pipeline/noise.ts';
+export {makeRandom};
 function spot(shape:string,u:number,w:number){
  const fu=u-Math.floor(u)-.5,fw=w-Math.floor(w)-.5;
  if(shape==='ellipse')return 1-(Math.cos(TAU*u)+.55*Math.cos(TAU*w)+1.55)/3.1;
@@ -27,18 +26,8 @@ function fixedDot(shape:string,u:number,w:number){
  if(shape==='square')return Math.max(Math.abs(x),Math.abs(y))<.29;
  return x*x+y*y<.105;
 }
-export function separatePlates(p:Pixels,s:Settings){
- const a=new Float32Array(p.width*p.height),b=s.inkMode==='one'?null:new Float32Array(a.length);
- const f=(v:number)=>{v=clamp((v-.5)*s.contrast+.5);return clamp(v+s.dotGain*.32*4*v*(1-v));};
- for(let i=0;i<a.length;i++){
-  const r=p.data[i*4]/255,g=p.data[i*4+1]/255,bl=p.data[i*4+2]/255;
-  const d=1-(.299*r+.587*g+.114*bl);
-  if(!b)a[i]=f(d);
-  else if(s.inkMode==='separated'){const cyan=1-r;a[i]=f(cyan);b[i]=f(Math.max(0,1-g-cyan*.6));}
-  else {const v=f(d);a[i]=v**1.9;b[i]=v**.75;}
- }
- return b?[a,b]:[a];
-}
+import {separateLegacyPlates as separatePlates} from './print-pipeline/sources.ts';
+export {separatePlates};
 const bayer=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
 function screen(plate:Float32Array,width:number,height:number,s:Settings,layer:number){
  const out=new Uint8Array(plate.length),angle=(s.printAngle+layer*(s.printMethod==='lines'||s.printMethod==='hatch'?45:30))*Math.PI/180;

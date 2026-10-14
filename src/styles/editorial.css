@@ -3,7 +3,7 @@
 #personal-site .he-page {isolation:isolate; padding-block:calc(var(--baseline) * 5) calc(var(--baseline) * 8);}
 #personal-site .he-page::before {content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:calc(var(--paper-texture) * 2);mask-image:linear-gradient(to right,#000,transparent var(--edge-depth),transparent calc(100% - var(--edge-depth)),#000); background-image:var(--paper-grain-image);}
 #personal-site [data-style-element][data-treatment]:is(h1) {font-weight:var(--title-weight);font-variation-settings:"wdth" var(--title-width),"opsz" 96;line-height:var(--title-leading);letter-spacing:var(--title-tracking);}
-#personal-site .he-type-line {display:grid;isolation:isolate;position:relative;filter:var(--letter-filter);width:max-content;max-width:100%;}
+#personal-site .he-type-line {display:grid;isolation:isolate;position:relative;width:max-content;max-width:100%;}
 #personal-site .he-type-line > span {grid-area:1/1; min-width:0; padding:0; display:block;}
 #personal-site .he-type-a {color:var(--red-ink);transform:translate(calc(-1 * var(--registration-x)),calc(-1 * var(--registration-y)));}
 #personal-site .he-type-b {color:var(--blue-ink);mix-blend-mode:var(--ink-blend);}
