@@ -9,12 +9,13 @@ if(root) {
  const links=[...root.querySelectorAll<HTMLAnchorElement>('[data-area-link]')];
  const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter')];
  let active=0, jump=0, scrollFrame=0, settle=0;
- function settled(){clearTimeout(settle);delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
+ function settled(){clearTimeout(settle);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
  track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  function fit() {
-  viewport.style.height=pages[active].offsetHeight+'px';
-  root!.style.setProperty('--he-header-height',header.offsetHeight+'px');
+  const height=pages[active].offsetHeight+'px',headerHeight=header.offsetHeight+'px';
+  if(viewport.style.height!==height)viewport.style.height=height;
+  if(root!.style.getPropertyValue('--he-header-height')!==headerHeight)root!.style.setProperty('--he-header-height',headerHeight);
  }
  function markChapter(id:string) { shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
  function navigate(id:string, {history=true,scroll=true,focus=false}={}) {
@@ -37,16 +38,16 @@ if(root) {
   header.dataset.activeArea=pages[index].id;
   pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  // Reset ordinary page navigation before the slide, not half a second after it.
+  if(scroll&&!chapter)root!.scrollIntoView({block:'start',behavior:'instant'});
   track.style.transform=`translateX(-${index*100}%)`;
   fit();
   if(history&&location.hash!==`#${id}`)window.history.pushState(null,'',`#${id}`);
   root!.querySelector('[data-navigation-status]')!.textContent=chapter?shortcuts.querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
   if(chapter)markChapter(id);
-  if(scroll)jump=window.setTimeout(()=>{
+  if(scroll&&chapter)jump=window.setTimeout(()=>{
    fit();
-   if(chapter)chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
-   // The sticky header follows the viewport and is not a stable page-top anchor.
-   else root!.scrollIntoView({block:'start',behavior:'instant'});
+   chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
    if(focus&&chapter){
     const heading=chapter.querySelector<HTMLElement>('h2')!;
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});

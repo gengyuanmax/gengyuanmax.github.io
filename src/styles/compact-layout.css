@@ -1,0 +1,59 @@
+/* User-approved compact composition, shared by preview and published pages. */
+#personal-site .he-page{padding-top:24px;}
+#personal-site .he-nav{padding-top:10px;}
+#personal-site .he-nav a{min-height:76px;gap:6px;padding:8px 0 12px;}
+#personal-site .he-nav-shell{padding-bottom:14px;}
+#personal-site .he-nav-shell[data-active-area="research"]{padding-bottom:0;}
+#personal-site .he-shortcuts{padding-block:6px;}
+#personal-site .he-shortcuts a{min-height:36px;}
+#personal-site .he-research-masthead{padding-bottom:32px;}
+#personal-site .he-artifacts-masthead{padding-bottom:0;margin-bottom:24px;}
+#personal-site .he-about-masthead{min-height:166px;}
+#personal-site .he-about-masthead h1{font-size:clamp(47.6px,8.5cqw,108.8px);}
+#personal-site .he-about-folio>span:not(.he-project-ground){font-size:204px;}
+#personal-site .he-research-chapter .he-chapter-heading{min-height:149px;padding-block:20px;grid-template-columns:167px minmax(0,1fr);}
+#personal-site .he-chapter-heading h2{font-size:clamp(28px,3.696cqw,47.52px);}
+#personal-site .he-chapter-heading .he-chapter-number{font-size:160px;height:114px;margin-bottom:-20px;}
+#personal-site .he-chapter-heading p{margin-top:10px;}
+#personal-site .he-research-chapter{row-gap:36px;}
+#personal-site .he-intro-second{grid-column:4/10;grid-row:1/3;}
+#personal-site .he-home[data-home-layout] .he-intro-second .he-contact{margin-top:12px;}
+#personal-site .he-home[data-home-layout] .he-brand h2{font-size:calc(var(--home-brand-size) * .765);}
+#personal-site .he-artifact-spread{row-gap:64px;}
+#personal-site .he-artifact h2{font-size:clamp(30px,3.4cqw,44px);}
+#personal-site .he-artifact .he-print-word{font-size:1em;}
+#personal-site .he-artifact>.he-print-object{max-width:260px;}
+#personal-site .he-print-lab-overview{width:min(100%,220px);float:none;margin:0 0 12px;}
+#personal-site .he-artifact-description{max-width:38ch;}
+@container(min-width:1001px){
+ #personal-site .he-home[data-home-layout] .he-name{grid-column:1/6;grid-row:1;align-self:start;padding-bottom:0;}
+ #personal-site .he-home[data-home-layout] .he-intro{grid-column:6/10;grid-row:1;display:grid;grid-template-columns:1fr;grid-template-rows:1fr 1fr;gap:0;align-self:stretch;}
+ #personal-site .he-home[data-home-layout] .he-role{grid-column:1;grid-row:1;align-self:center;max-width:none;}
+ #personal-site .he-home[data-home-layout] .he-intro-second{grid-column:1;grid-row:2;align-self:center;}
+ #personal-site .he-home[data-home-layout] .he-bio{font-size:20px;line-height:1.35;}
+ #personal-site .he-home[data-home-layout] .he-portrait[data-material]{grid-row:1;align-self:end;max-width:230px;}
+}
+@container(max-width:720px){
+ #personal-site .he-nav a{min-height:70px;padding:6px 0 12px;gap:6px;}
+ #personal-site .he-page{padding-top:20px;}
+ #personal-site .he-home[data-home-layout] .he-name{font-size:clamp(44.2px,calc(21.25cqw - 10.2px),132.6px);padding-bottom:18px;}
+ #personal-site .he-home[data-home-layout] .he-brand h2{font-size:clamp(25.5px,calc(var(--home-brand-size) * .595),39.1px);}
+ #personal-site .he-about-masthead{min-height:96px;}
+ #personal-site .he-about-folio{min-height:96px;}
+ #personal-site .he-about-masthead h1{font-size:clamp(30.6px,6.545cqw,51px);}
+ #personal-site .he-research-chapter .he-chapter-heading{min-height:120px;padding-block:16px;grid-template-columns:70px minmax(0,1fr);gap:0 14px;}
+ #personal-site .he-chapter-heading h2{font-size:22px;}
+ #personal-site .he-chapter-heading .he-chapter-number{font-size:92px;height:78px;margin-bottom:-16px;}
+ #personal-site .he-print-lab-overview{width:min(100%,220px);}
+}
+
+#personal-site .he-slogan-pair{white-space:nowrap;}
+
+#personal-site .he-artifact-controls{margin-bottom:28px;padding-top:10px;}
+@container(max-width:720px){
+ #personal-site .he-research-masthead h1{font-size:clamp(32.3px,9.18cqw,63.75px);}
+ #personal-site .he-artifacts-masthead h1{font-size:clamp(39.1px,9.35cqw,110.5px);}
+ #personal-site .he-artifacts-masthead{row-gap:16px;}
+ #personal-site .he-artifacts-masthead>p{grid-column:1/-1;}
+ #personal-site .he-about-folio>span:not(.he-project-ground){font-size:65px;}
+}

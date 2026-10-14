@@ -15,7 +15,7 @@ import {researchComposition,placements} from '../../config/compositions';
 const slots:Record<string,string>={feature:'he-project-feature',side:'he-project-side',embodied:'he-embodied-project',surgical:'he-surgical-project',note:'he-machine-note',machine:'he-machine-feature'};
 ---
 <GridGuides />
-<header class="he-research-masthead"><p class="he-meta">Research projects</p><PrintTitle id="research-title" area="research" lines={["Visual","Intelligence"]}/><p class="he-research-intro">{sectionCopy.research}</p></header>
+<header class="he-research-masthead"><PrintTitle id="research-title" area="research" lines={["Visual","Intelligence"]}/><p class="he-research-intro">{sectionCopy.research}</p></header>
 <div class="he-research-flow" data-reading-host>{researchComposition.map((chapter,i)=>{
  const pillar=pillars.find(p=>p.id===chapter.pillar)!;
  return <section class:list={['he-research-chapter',chapter.className]} id={pillar.id} aria-labelledby={`${pillar.id}-title`}>

@@ -101,13 +101,13 @@ if(root){
   const later:(()=>void|Promise<void>)[]=[];
   const now=async(job:()=>void|Promise<void>)=>{await job();await yieldToMain();return run===generation;};
   for(const el of root!.querySelectorAll<HTMLElement>('.he-type-line')){
-   const size=parseFloat(getComputedStyle(el).fontSize),large=size>=24;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<24);el.dataset.textTier=textTier(size);
+   const size=parseFloat(getComputedStyle(el).fontSize),large=size>=24;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.closest('[data-style-element="home-name"]')?'display':textTier(size);
    el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);
    const owner=el.closest<HTMLElement>('[data-style-element]'),area=owner?.dataset.styleAreaOwner||el.closest<HTMLElement>('[data-style-area]')?.dataset.styleArea;
    const job=()=>{
     const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
     for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
-     const dotted=size>=72&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
+     const dotted=(size>=72||el.closest('[data-style-element="home-name"]'))&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
      // The dotted plate is painted by CSS (--dot-plate) from the first frame; a JS mask would replace it.
      if(dotted){if(layer.dataset.materialMask){layer.style.removeProperty('mask-image');layer.style.removeProperty('mask-size');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();}
       recordScreen(layer,elementPress(pressSettings(s,typeScreenLevel(size)!,size),owner?.dataset.styleElement||'shared-type','title',size),ink,size);continue;}

@@ -4,9 +4,10 @@ if(root){
  const ns='http://www.w3.org/2000/svg';
  const observed=new Set<Element>();
  let frame=0;
- const schedule=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(draw);};
+ const schedule=()=>{cancelAnimationFrame(frame);if(!root!.dataset.navigating)frame=requestAnimationFrame(draw);};
  const observer=new ResizeObserver(schedule);
  function draw(){
+  if(root!.dataset.navigating)return;
   const live=new Set<Element>();
   root!.querySelectorAll<HTMLElement>('[data-reading-host]').forEach(host=>{
    const rect=host.getBoundingClientRect();
@@ -41,6 +42,7 @@ if(root){
   });
   for(const el of observed)if(!live.has(el)){observer.unobserve(el);observed.delete(el);}
  }
+ root.addEventListener('navigation:settled',schedule);
  root.addEventListener('reading:layout',schedule);
  root.addEventListener('design:updated',schedule);
  root.addEventListener('toggle',schedule,true);
