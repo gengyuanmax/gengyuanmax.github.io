@@ -101,10 +101,10 @@
 
 /* About folio: Max's photograph of Delicate Arch printed in the blue plate
    (scripts/render-about-photo.mjs). It replaces the meaningless "04" numeral. */
-#personal-site .he-about-photo{margin:0 calc(-1 * var(--page-gutter) * var(--spread-bleed)) 0 0;align-self:end;grid-column:8/13;}
+#personal-site .he-about-photo{margin:0 calc(-1 * var(--page-gutter) * var(--spread-bleed)) 0 0;align-self:end;grid-column:7/13;}
 #personal-site .he-about-photo>img{display:block;width:100%;height:auto;mix-blend-mode:multiply;}
 @container(max-width:720px){
- #personal-site .he-about-masthead:has(.he-about-photo){grid-template-columns:minmax(0,1fr) 50%;align-items:end;}
+ #personal-site .he-about-masthead:has(.he-about-photo){grid-template-columns:minmax(0,1fr) 60%;align-items:end;}
  #personal-site .he-about-masthead:has(.he-about-photo) h1{grid-column:1;}
  #personal-site .he-about-photo{grid-column:2;grid-row:1;min-height:0;margin-right:calc(-1 * var(--page-gutter) * var(--spread-bleed));}
 }
