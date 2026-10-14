@@ -5,7 +5,7 @@ export const publications = [
     "title": "How to Train a Surgeon? Benchmarking Generalist Agents in Surgical Scene Understanding",
     "authors": "G. Zhang, X. Han, S. Zhou, A. Koukash, G. Ghazaei, J. Gu, J. Wu, Y. Zhu, N. Navab, and V. Tresp",
     "year": 2026,
-    "venue": "NeurIPS 2026 · Accepted (poster)",
+    "venue": "NeurIPS 2026, Accepted (poster)",
     "url": "https://neurips.cc/virtual/2026/loc/sydney/poster/139078",
     "sources": [
       "cv",
@@ -18,7 +18,7 @@ export const publications = [
     "title": "Rethinking Multi-Image Re-Representation in Multi-Image Understanding",
     "authors": "G. Zhang, X. Han, X. Xie, T. Liu, and V. Tresp",
     "year": 2026,
-    "venue": "arXiv · 2026",
+    "venue": "arXiv, 2026",
     "url": "https://arxiv.org/abs/2609.39363",
     "sources": [
       "cv",
@@ -44,7 +44,7 @@ export const publications = [
     "title": "AViLA: Asynchronous Vision-Language Agent for Streaming Multimodal Data Interaction",
     "authors": "G. Zhang*, T. Hannan*, H. Kleiner, B. Aydemir, X. Xie, J. Lan, T. Seidl, V. Tresp, and J. Gu",
     "year": 2025,
-    "venue": "arXiv · 2025",
+    "venue": "arXiv, 2025",
     "url": "https://arxiv.org/abs/2506.18472",
     "sources": [
       "cv",
@@ -109,7 +109,7 @@ export const publications = [
     "title": "SPOT! Revisiting Video-Language Models for Event Understanding",
     "authors": "G. Zhang*, J. Bi*, J. Gu, Y. Chen, and V. Tresp",
     "year": 2023,
-    "venue": "arXiv · 2023",
+    "venue": "arXiv, 2023",
     "url": "https://arxiv.org/abs/2311.12919",
     "sources": [
       "cv",
@@ -148,7 +148,7 @@ export const publications = [
     "title": "Conformalized Large Language Models under Configuration Shift",
     "authors": "Y. Zhu, J. Yu, L. Li, G. Zhang, Z. Yang, S. Staab, P. Dokania, P. Torr, J. Tang, and E. Kharlamov",
     "year": 2026,
-    "venue": "EMNLP 2026 · Accepted (main conference)",
+    "venue": "EMNLP 2026, Accepted (main conference)",
     "url": "https://arxiv.org/abs/2608.01460",
     "sources": [
       "cv",
@@ -161,7 +161,7 @@ export const publications = [
     "title": "Approximate or Perish: Spectral MLP-KAN Diffusion with Attentive Function Learning for Unsupervised Hyperspectral Image Restoration",
     "authors": "H. Jiang, J. Ma, G. Du, J. Sun, G. Zhang, Z. Zhang, and K. Luo",
     "year": 2026,
-    "venue": "CVPR 2026 Workshops · PBVS",
+    "venue": "CVPR 2026 Workshops, PBVS",
     "url": "https://openaccess.thecvf.com/content/CVPR2026W/PBVS/html/Jiang_Approximate_or_Perish_Spectral_MLP-KAN_Diffusion_with_Attentive_Function_Learning_CVPRW_2026_paper.html",
     "sources": [
       "cv",
@@ -174,7 +174,7 @@ export const publications = [
     "title": "Multimodal Pragmatic Jailbreak on Text-to-image Models",
     "authors": "T. Liu, Z. Lai, J. Wang, G. Zhang, S. Chen, P. Torr, V. Demberg, V. Tresp, and J. Gu",
     "year": 2025,
-    "venue": "ACL 2025 · Long Papers",
+    "venue": "ACL 2025, Long Papers",
     "url": "https://aclanthology.org/2025.acl-long.234/",
     "sources": [
       "cv",
@@ -187,7 +187,7 @@ export const publications = [
     "title": "Unveiling the \"Fairness Seesaw\": Discovering and Mitigating Gender and Race Bias in Vision-Language Models",
     "authors": "J. Lan, U. Schlegel, T. Hannan, G. Zhang, H. Chen, and T. Seidl",
     "year": 2025,
-    "venue": "arXiv · 2025 · Revised February 2026",
+    "venue": "arXiv, 2025, Revised Feb 2026",
     "url": "https://arxiv.org/abs/2505.23798",
     "sources": [
       "cv",
@@ -239,7 +239,7 @@ export const publications = [
     "title": "A Systematic Survey of Prompt Engineering on Vision-Language Foundation Models",
     "authors": "J. Gu, Z. Han, S. Chen, A. Beirami, B. He, G. Zhang, R. Liao, Y. Qin, V. Tresp, and P. Torr",
     "year": 2023,
-    "venue": "arXiv · 2023",
+    "venue": "arXiv, 2023",
     "url": "https://arxiv.org/abs/2307.12980",
     "sources": [
       "cv",

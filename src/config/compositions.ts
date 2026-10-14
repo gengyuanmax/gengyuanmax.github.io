@@ -1,9 +1,10 @@
+import {pillars} from '../data/content.ts';
 // Placement is editorial; no rule maps an output format to a slot.
 export const researchComposition = [
   { pillar:'benchmarking', className:'he-benchmark', items:[{id:'a',slot:'feature',media:'wide'},{id:'b',slot:'side'}] },
   { pillar:'applications', className:'he-applications', items:[{id:'c',slot:'embodied',media:'portrait'},{id:'d',slot:'surgical',media:'landscape'}] },
   { pillar:'machines', className:'he-machines', items:[{id:'e',slot:'note'},{id:'f',slot:'machine',media:'panorama'}] },
-];
+].sort((a,b)=>pillars.findIndex(p=>p.id===a.pillar)-pillars.findIndex(p=>p.id===b.pillar));
 export const artifactComposition = [
   {id:'a',slot:'lead'}, {id:'b',slot:'margin'}, {id:'c',slot:'small'},
   {id:'d',slot:'type'}, {id:'e',slot:'open'},

@@ -24,8 +24,8 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
   });
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
-  <p class="he-role">{profile.role.join(', ')}</p>
-  <div class="he-intro-second"><p class="he-bio">{profile.slogan.slice(0,profile.slogan.indexOf('Human & Machine'))}<span class="he-slogan-pair">Human &amp; Machine</span></p>
+  <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
+  <div class="he-intro-second"><p class="he-bio"><span class="he-slogan-opening">{profile.slogan.slice(0,profile.slogan.indexOf('Human & Machine')).trim()}</span>{' '}<span class="he-slogan-pair">Human &amp; Machine</span></p>
   <nav class="he-contact" aria-label="Profile links">{profile.contacts.slice(0,3).map(link=><a href={link.href}>{link.label}<span class="he-contact-arrow" aria-hidden="true">↗</span></a>)}</nav>
  </div></div>
  <PrintMedia />

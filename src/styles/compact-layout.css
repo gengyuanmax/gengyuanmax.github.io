@@ -57,3 +57,8 @@
  #personal-site .he-artifacts-masthead>p{grid-column:1/-1;}
  #personal-site .he-about-folio>span:not(.he-project-ground){font-size:65px;}
 }
+
+#personal-site .he-role-part{display:inline-block;}
+@container(max-width:720px){
+ #personal-site .he-slogan-opening,#personal-site .he-slogan-pair{display:block;white-space:nowrap;}
+}

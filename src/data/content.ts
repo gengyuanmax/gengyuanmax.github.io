@@ -11,19 +11,19 @@ export const profile={
 };
 export const navigation=[{id:'home',label:'Home',shape:'home'},{id:'research',label:'Research projects',shape:'research'},{id:'artifacts',label:'Artifacts',shape:'artifacts'},{id:'about',label:'About me',shape:'about'}] as const;
 export const pillars=[
+ {id:'machines',action:'Building',label:'Machines can see',short:'Machines can see',lines:['Machines','can see'],detail:'Models, Agents, Systems'},
  {id:'benchmarking',action:'Evaluating',label:'Benchmarking visual intelligence',short:'Benchmarking',lines:['Benchmarking','visual intelligence'],detail:''},
- {id:'applications',action:'Leveraging',label:'Domain applications',short:'Domain applications',lines:['Domain','applications'],detail:'Embodied AI · Surgical domain'},
- {id:'machines',action:'Building',label:'Machines can see',short:'Machines can see',lines:['Machines','can see'],detail:'Models · Agents · Systems'},
+ {id:'applications',action:'Leveraging',label:'Domain applications',short:'Domain applications',lines:['Domain','applications'],detail:'Embodied AI, Surgical domain'},
 ] as const;
 export const sectionCopy={research:'Multimodal understanding, evaluation, and systems',artifacts:'Interactive experiments, research tools, datasets, and papers.'};
 export interface Entry {id:string;title:string;description:string;metadata:string;themes:string[];assetId?:string;links?:ResourceLinks;approval:'pending'|'approved';sources:string[];}
 export const projects:Record<string,Entry & {primaryTheme:string;publicationId:string;details?:string}>={
- a:{id:'a',title:'Mosaic',description:'Multi-image re-representation: visual tools, a grounding-focused benchmark, and a trained agent.',metadata:'arXiv · 2026',primaryTheme:'benchmarking',themes:researchMemberships.a.map(id=>id==='domain'?'applications':id),publicationId:'mosaic',links:{arxiv:'https://arxiv.org/abs/2609.39363'},sources:['cv','mosaic'],approval:'pending'},
+ a:{id:'a',title:'Mosaic',description:'Multi-image re-representation: visual tools, a grounding-focused benchmark, and a trained agent.',metadata:'arXiv, 2026',primaryTheme:'benchmarking',themes:researchMemberships.a.map(id=>id==='domain'?'applications':id),publicationId:'mosaic',links:{arxiv:'https://arxiv.org/abs/2609.39363'},sources:['cv','mosaic'],approval:'pending'},
  b:{id:'b',title:'ICQ',description:'Localizing video events with a reference image and a refinement text.',metadata:'CVPR 2025',primaryTheme:'benchmarking',themes:researchMemberships.b.map(id=>id==='domain'?'applications':id),publicationId:'icq',links:{page:'https://icq-benchmark.github.io/',arxiv:'https://arxiv.org/abs/2406.10079',github:'https://github.com/icq-benchmark/icq-benchmark'},sources:['cv','homepage','icq'],approval:'pending'},
- c:{id:'c',title:'ReEXplore',description:'Retrospective experience replay and hierarchical frontier selection for embodied exploration.',metadata:'EMR Workshop · ECCV 2026',primaryTheme:'applications',themes:researchMemberships.c.map(id=>id==='domain'?'applications':id),publicationId:'reexplore',links:{arxiv:'https://arxiv.org/abs/2511.19033'},sources:['cv','reexplore'],approval:'pending'},
- d:{id:'d',title:'How to Train a Surgeon?',description:'A surgical understanding benchmark and an environment for evaluating tool-using generalist agents.',metadata:'NeurIPS 2026 · Accepted (poster)',primaryTheme:'applications',themes:researchMemberships.d.map(id=>id==='domain'?'applications':id),publicationId:'surgeon',links:{page:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078'},sources:['cv','neurips'],approval:'pending'},
+ c:{id:'c',title:'ReEXplore',description:'Retrospective experience replay and hierarchical frontier selection for embodied exploration.',metadata:'EMR Workshop, ECCV 2026',primaryTheme:'applications',themes:researchMemberships.c.map(id=>id==='domain'?'applications':id),publicationId:'reexplore',links:{arxiv:'https://arxiv.org/abs/2511.19033'},sources:['cv','reexplore'],approval:'pending'},
+ d:{id:'d',title:'How to Train a Surgeon?',description:'A surgical understanding benchmark and an environment for evaluating tool-using generalist agents.',metadata:'NeurIPS 2026, Accepted (poster)',primaryTheme:'applications',themes:researchMemberships.d.map(id=>id==='domain'?'applications':id),publicationId:'surgeon',links:{page:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078'},sources:['cv','neurips'],approval:'pending'},
  e:{id:'e',title:'Me-Retriever',description:'A video–text retrieval model for videos containing multiple events.',metadata:'ICCV 2023',primaryTheme:'machines',themes:researchMemberships.e.map(id=>id==='domain'?'applications':id),publicationId:'mevtr',links:{arxiv:'https://arxiv.org/abs/2308.11551',github:'https://github.com/gengyuanmax/MeVTR'},sources:['cv','homepage','mevtr'],approval:'pending'},
- f:{id:'f',title:'AViLA',description:'A streaming vision-language agent that handles queries and visual evidence arriving at different times.',metadata:'arXiv · 2025',primaryTheme:'machines',themes:researchMemberships.f.map(id=>id==='domain'?'applications':id),publicationId:'avila',links:{arxiv:'https://arxiv.org/abs/2506.18472'},sources:['cv','avila'],approval:'pending'},
+ f:{id:'f',title:'AViLA',description:'A streaming vision-language agent that handles queries and visual evidence arriving at different times.',metadata:'arXiv, 2025',primaryTheme:'machines',themes:researchMemberships.f.map(id=>id==='domain'?'applications':id),publicationId:'avila',links:{arxiv:'https://arxiv.org/abs/2506.18472'},sources:['cv','avila'],approval:'pending'},
 };
 export const artifactCategories:Record<string,string>={demo:'Interactive',article:'Paper / Article',library:'Code',dataset:'Dataset'};
 export const artifacts:Record<string,Entry & {form:string;publishedAt:string|null;categories:string[];featured?:boolean;previewRatio?:string;dateNote?:string}>={
@@ -44,18 +44,18 @@ export const news=[
  {id:'mosaic-2026',date:'30 Sep 2026',text:'Introducing Mosaic, a visual tool environment, benchmark, and trained agent for multi-image understanding.',href:'https://arxiv.org/abs/2609.39363',sources:['mosaic'],approval:'pending'},
  {id:'surgeon-2026',date:'20 Sep 2026',text:'Our paper “How to Train a Surgeon?” has been accepted to the NeurIPS 2026 Evaluations and Datasets Track.',href:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078',sources:['user','cv','neurips'],approval:'approved',note:'Acceptance date confirmed by the user on 14 Oct 2026.'},
  {id:'reexplore-2026',date:'09 Sep 2026',text:'ReEXplore at the Embodied Multimodal Reasoning Workshop, ECCV 2026.',href:'https://arxiv.org/abs/2511.19033',sources:['user','cv'],approval:'approved',note:'Workshop date confirmed by the user; this is not the acceptance notification date or a claim of personal attendance.'},
- {id:'oxford-2026',date:'16 Mar 2026',text:'I visited the Torr Vision Group at the University of Oxford from March 16 to July 31, 2026.',href:'https://torrvision.com/',sources:['user','cv'],approval:'approved',note:'Full visit dates confirmed by the user; ordered by the start date.'},
+ {id:'oxford-2026',date:'16 Mar 2026',text:'I visited the Torr Vision Group at the University of Oxford from 16 Mar to 31 Jul 2026.',href:'https://torrvision.com/',sources:['user','cv'],approval:'approved',note:'Full visit dates confirmed by the user; ordered by the start date.'},
  {id:'funding-2025',date:'Dec 2025',text:'Secured €115,000 in Software Campus funding to lead a research project on intelligent agents for surgical video understanding.',href:'https://softwarecampus.de/',sources:['user','homepage','cv'],approval:'pending',note:'The user confirmed €115,000 and December 2025. Month precision is intentional; no exact day is claimed.'},
 ];
 export const experience=[
  {date:'Oct 2021–present',role:'Research Assistant',place:'LMU Munich',detail:'Multimodal learning, visual/video understanding, and multimodal agents.'},
- {date:'16 Mar–31 Jul 2026',role:'Visiting PhD Student',place:'University of Oxford · Torr Vision Group',detail:'Agentic environments and memory for decision-making under uncertainty.'},
- {date:'Apr–Oct 2025',role:'Applied Scientist Intern',place:'Amazon · London',detail:'Omni-modal audio–video retrieval and retrieval robustness.'},
- {date:'Mar–Nov 2020',role:'Intern',place:'Agile Robots AG · Munich',detail:'Robotic object localization, grasping, and real-time perception.'},
+ {date:'16 Mar–31 Jul 2026',role:'Visiting PhD Student',place:'University of Oxford, Torr Vision Group',detail:'Agentic environments and memory for decision-making under uncertainty.'},
+ {date:'Apr–Oct 2025',role:'Applied Scientist Intern',place:'Amazon, London',detail:'Omni-modal audio–video retrieval and retrieval robustness.'},
+ {date:'Mar–Nov 2020',role:'Intern',place:'Agile Robots AG, Munich',detail:'Robotic object localization, grasping, and real-time perception.'},
  {date:'Sep 2019–Feb 2020',role:'Student Assistant',place:'Technical University of Munich',detail:'Perception for the RobMoSys robotic platform.'},
 ];
 export const education=[
- {date:'2021–present',degree:'PhD in Computer Science',place:'LMU Munich',detail:'Expected completion: December 2026.'},
+ {date:'2021–present',degree:'PhD in Computer Science',place:'LMU Munich',detail:'Expected completion: Dec 2026.'},
  {date:'2018–2021',degree:'MSc in Electrical Engineering and Information Technology',place:'Technical University of Munich',detail:''},
  {date:'2014–2018',degree:'BEng in Information Science and Engineering',place:'Zhejiang University',detail:''},
 ];

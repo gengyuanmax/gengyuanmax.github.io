@@ -241,7 +241,7 @@
 
 首页三个研究方向标签使用蓝、朱红实色双版叠印，桌面保留同心弧形，小屏保留平排链接。18px 方向标签作为明确例外使用双色，不加网、不加噪声；其他小字规则不变。颜色与错版使用全站文字 token（`--press-reg-x/y`），复制层不重复朗读、不改变链接占位。研究圆本身的三版配方不变。
 
-首页研究圆从左到右与小屏链接顺序统一为 Machines can see、Benchmarking visual intelligence、Domain applications。方向与墨色对应不变（黄、蓝、朱红）。中间 Benchmarking 标签沿下弧，左右标签沿上弧分别向外旋转 12°，增加标签到圆边的净距；研究页顺序不随首页构图调整。
+首页研究圆从左到右与小屏链接顺序统一为 Machines can see、Benchmarking visual intelligence、Domain applications。方向与墨色对应不变（黄、蓝、朱红）。中间 Benchmarking 标签沿下弧，左右标签沿上弧分别向外旋转 12°，增加标签到圆边的净距；研究页章节与快捷导航同步采用 Machines → Benchmarking → Domain 顺序。
 
 - 普通页面切换在横向滑动前定位页首，不在动画结束后再纵向跳一次；研究章节锚点仍在滑动后定位。阅读连线在切页稳定后更新。重复选择同一种 Artifacts 排序或筛选不得重建卡片。
 
@@ -252,3 +252,5 @@
 Artifacts 槽位调整为 6/5、4/6、6 列，作品标题上限统一 44px，Print Labs 样张宽度上限 220px，保留作品自身色彩与样式。引导线恢复原有 SVG 样式，不增加粗度、网点或印刷噪声。
 
 姓名即使缩小到手机的 72px 以下仍保留 display 网点身份，复用现有 fine 档位；其他小标题不因此挂网。
+
+身份信息在逗号后主动换行，身份和地点各自成组；手机 slogan 固定为 Vision, Intelligence, 与 Human & Machine 两行。对外月份采用三字母英文缩写（如 Oct 2026），精确日期保留在数据和 time 属性中；元信息使用逗号分隔。
