@@ -99,7 +99,7 @@
 ## 8. 文案与素材边界
 
 - **公开文案仍需逐项定稿。** 用户于 2026-10-14 明确授权当前快照先上线；仅有布局确认仍不能单独推断新文案获批，后续不要自行扩写事实或经历。
-- `Research on building / visual intelligence` 是候选 slogan；维护在 `src/config/main-version.ts` 并同步文案确认页。不要用无关的新文案填布局。
+- 首页 slogan 为 `Vision, Intelligence, Human & Machine`；身份为 `AI researcher, Based in Europe (Germany/UK)`。研究区共享小标题为 `Building, Evaluating, Leveraging`，共享主标题为 `visual intelligence`，维护在 `src/config/main-version.ts` 并同步文案确认页。这些文案由用户明确确认；身份和 slogan 不额外插入破折号、中点或竖线，使用用户指定的逗号、& 和括号。PhD 与 LMU 信息保留在 About。
 - 不编造项目、论文链接、日期、身份或经历。Oxford 访问已经结束，不能未经确认写成当前 Visiting 身份。
 - 保留原素材与来源记录。姓名、人像/圆、WikiTiLo 地球沿用已选方向；局部调整不要顺带替换素材或改造 Artifacts。
 - 不动上级项目的 `sources/` 同步参考文件，CV 维护不属于此网站任务。
@@ -225,3 +225,7 @@
 - 当前页面元素只用 a/b，画面不变；`tests/page-plates.test.mjs` 保证表是唯一来源且任意版都能按表偏移。
 - **研究圆已并入全页版（用户决定，2026-10-14）**：蓝、橙（=朱红参考版）、黄三块版的网角与偏移全部取自本表，蓝 75°、朱红 15°、黄 0°；不再有模块自己的旋转、缩放或 seed 扰动，整页只有一台“印刷机”。原研究专用参数 `researchBlueAngle`、`researchOrangeAngle`、`researchOrangeX/Y` 已移除。迁移基准中只有研究圆蓝/橙版相关的 18 项输出按此重新生成，其余全部保持 a7a7483 原值。
 - 已失效但移动朱红版的旧规则（`.he-bridge-a`、未使用的 `NavMark`、未选用的 Riso 导航底版、被覆盖的 `PrintWord` 朱红层）随第 6 项旧路径一起清理；重新启用前须改为按版列表偏移。
+
+## Research pillar 文案（2026-10-14 用户确认）
+
+主标题有意保持不对称：`Machines can see`、`Benchmarking visual intelligence`、`Domain applications`；分别对应 `Building`、`Evaluating`、`Leveraging`。首页圆标签、研究页章节、子导航和跨方向链接共用这些标题。保持已有布局顺序、项目归属和锚点，文案调整不意味着重分类。
