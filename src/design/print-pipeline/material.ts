@@ -6,15 +6,17 @@ import {salt} from './noise.ts';
 import type {Settings} from '../settings.ts';
 import {toneSettings,type ToneSettings} from './tone.ts';
 import {noiseBudget,within,withinSigned} from './budget.ts';
+import {plateTables,type PlateInk} from './plates.ts';
 
 /** Print Lab's mask spreading and ink-transfer stages, adapted to rectangular
  * web elements. All distances below are CSS pixels, independent of object size.
  * The native square noise functions are reused; only their sampling scale changes. */
 export const materialVersion='print-lab-e1c9d82-sheet-v2';
-export type Press<Id extends string='a'|'b'> = {sheet?:Sheet;band?:number;level:ScreenLevel;shapes:Record<Id,ScreenShape>;pitch:number;angles:Record<Id,number>;registration?:Partial<Record<Id,{x:number;y:number}>>;gain:number;grain:number;starve:number;cluster:number;edge:number;holes:number;seed:number;offset:{x:number;y:number};patch?:number;role?:'title'|'field'|'image';tone?:ToneSettings};
+export type Press<Id extends string=PlateInk> = {sheet?:Sheet;band?:number;level:ScreenLevel;shapes:Record<Id,ScreenShape>;pitch:number;angles:Record<Id,number>;registration?:Partial<Record<Id,{x:number;y:number}>>;gain:number;grain:number;starve:number;cluster:number;edge:number;holes:number;seed:number;offset:{x:number;y:number};patch?:number;role?:'title'|'field'|'image';tone?:ToneSettings};
 export function pressSettings(s:Settings,level:ScreenLevel='medium',fontSize=128):Press{
- const a=screen(level,'a',s,fontSize),b=screen(level,'b',s,fontSize);
- return {level,pitch:a.pitch,shapes:{a:a.shape,b:b.shape},angles:{a:a.angle,b:b.angle},gain:within(s.dotGain,noiseBudget.dotGain),band:within(s.banding,noiseBudget.transfer.roller*2),grain:s.grain,starve:s.starvation,cluster:s.grainSize,edge:s.inkEdge,holes:within(s.pressGrain,noiseBudget.transfer.grainArea),seed:s.seed,offset:{x:withinSigned(s.registration,noiseBudget.registration.plate),y:withinSigned(s.registrationY,noiseBudget.registration.plate)},tone:toneSettings(s)};
+ // Pitch comes from the screen tier; angle, shape and registration from the page's plate list.
+ const pitch=screen(level,'a',s,fontSize).pitch,plates=plateTables(s);
+ return {level,pitch,shapes:plates.shapes,angles:plates.angles,registration:plates.registration,gain:within(s.dotGain,noiseBudget.dotGain),band:within(s.banding,noiseBudget.transfer.roller*2),grain:s.grain,starve:s.starvation,cluster:s.grainSize,edge:s.inkEdge,holes:within(s.pressGrain,noiseBudget.transfer.grainArea),seed:s.seed,offset:{x:withinSigned(s.registration,noiseBudget.registration.plate),y:withinSigned(s.registrationY,noiseBudget.registration.plate)},tone:toneSettings(s)};
 }
 /** Each element has a stable independent field, rather than restarting the same
  * noise tile. Ink plates then use independent samples from that field. */
@@ -70,7 +72,8 @@ export function paintMaterial<Id extends string>(plates:PrintPlate<Id>[],width:n
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const i=y*width+x,fi=y*f.n+x,col=[...inks.paper];
   for(const plate of plates){
-   const registration=p.registration?.[plate.ink];
+   // The blue plate's offset lives in p.offset (the shared, overridable field); other plates use the plate list.
+   const registration=plate.ink==='b'?undefined:p.registration?.[plate.ink];
    const dx=registration?Math.round(registration.x*scale):twoInks&&plate.ink==='b'?Math.round(p.offset.x*scale):0,dy=registration?Math.round(registration.y*scale):twoInks&&plate.ink==='b'?Math.round(p.offset.y*scale):0;
    const xx=x-dx,yy=y-dy;if(xx<0||yy<0||xx>=width||yy>=height)continue;
    const cover=plate.coverage[yy*width+xx];if(!cover)continue;
