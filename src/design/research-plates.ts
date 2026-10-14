@@ -1,16 +1,14 @@
 import {getPalette,type Settings,type DesignConfig} from './settings.ts';
-import {noiseBudget,withinSigned} from './print-pipeline/budget.ts';
-const offset=(v:number)=>withinSigned(v,noiseBudget.registration.research);
+import {pagePlates,type PlateInk} from './print-pipeline/plates.ts';
 export type PlateId='blue'|'orange'|'yellow';
-/** This research-only recipe is intentionally isolated from the site's two-ink
- * portrait recipe. It is the only source of its angles and affine registration. */
+/** The research circles print with the page's own plates (user decision 2026-10-14):
+ * angle and registration come from the page plate list, so the whole page is one press.
+ * Orange is the page's vermilion reference plate; there is no per-module rotation or scale. */
+const pageInk:Record<PlateId,PlateInk>={blue:'b',orange:'a',yellow:'c'};
 export function researchPlates(s:Settings,config?:DesignConfig){
- const palette=getPalette(config,s.palette);
- return {
-  blue:{color:palette.primary,angle:s.researchBlueAngle,x:0,y:0,rotation:0,scale:1},
-  orange:{color:palette.secondary,angle:s.researchOrangeAngle,x:offset(s.researchOrangeX),y:offset(s.researchOrangeY),rotation:.15,scale:1.002},
-  yellow:{color:palette.yellow,angle:s.yellowAngle,x:offset(s.yellowX),y:offset(s.yellowY),rotation:-.2,scale:.998},
- };
+ const palette=getPalette(config,s.palette),page=Object.fromEntries(pagePlates(s).map(p=>[p.ink,p]));
+ const plate=(id:PlateId,color:string)=>{const p=page[pageInk[id]];return {color,angle:p.angle,x:p.registration.x,y:p.registration.y,rotation:0,scale:1};};
+ return {blue:plate('blue',palette.primary),orange:plate('orange',palette.secondary),yellow:plate('yellow',palette.yellow)};
 }
 export const researchPrintOrder=['yellow','orange','blue'] as const;
 export const researchTransfer=.9;

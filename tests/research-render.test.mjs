@@ -1,3 +1,4 @@
+import {pagePlates} from '../src/design/print-pipeline/plates.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaults} from '../src/design/settings.ts';
@@ -22,9 +23,13 @@ test('three noise controls change marks; DPR only changes raster size',()=>{
  const a=paperPixels(base,1),b=paperPixels(base,2);assert.equal(b.width,a.width*2);assert.equal(b.height,a.height*2);
  assert(base.stateDots('domain','active').some(d=>d.tone>dots.reduce((n,d)=>Math.max(n,d.tone),0)));
 });
-test('affine registration varies across the sheet; blue remains the reference',()=>{
- const r=researchRecipe(settings,config,320);assert.deepEqual(r.transforms.blue,{x:0,y:0,rotation:0,scale:1});
- for(const id of ['orange','yellow']){assert.notEqual(r.transforms[id].rotation,0);assert.notEqual(r.transforms[id].scale,1);}
+test('research circles print with the page plates: same angles and offsets, vermilion is the reference',()=>{
+ const r=researchRecipe(settings,config,320),page=Object.fromEntries(pagePlates(settings).map(p=>[p.ink,p]));
+ for(const [id,ink] of [['blue','b'],['orange','a'],['yellow','c']]){
+  assert.equal(r.plates[id].angle,page[ink].angle);
+  assert.deepEqual(r.transforms[id],{...page[ink].registration,rotation:0,scale:1});
+ }
+ assert.deepEqual(r.transforms.orange,{x:0,y:0,rotation:0,scale:1});
  const fallback=plateVector(r,'machines');assert(fallback.includes('<polygon'));assert(!/stroke|pattern|mask/.test(fallback));
 });
 test('automatic seed uses Brussels calendar date and explicit seed is authoritative',()=>{

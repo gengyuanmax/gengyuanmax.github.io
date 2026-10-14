@@ -2,7 +2,7 @@ import {sheetFields,type Sheet} from './print-pipeline/index.ts';
 import {researchGeometry} from './research-geometry.ts';
 import {researchPlates} from './research-plates.ts';
 import {directions,type DirectionId} from '../data/research-map.ts';
-import {paperField,registeredPlates} from './print-pipeline/index.ts';
+import {paperField} from './print-pipeline/index.ts';
 import {definePrintElement,screenPrintElement,polygonVector} from './print-pipeline/index.ts';
 export {dotRadius} from './print-pipeline/polygon.ts';
 export type {Point,Dot} from './print-pipeline/types.ts';
@@ -27,7 +27,8 @@ export function researchRecipe(s:Settings,config:DesignConfig,width=640,seed=res
     coverage:s.researchCoverage,dropout:s.researchDropout,dotGain:s.researchDotGain,inkNoise:s.researchInkNoise,feedNoise:s.researchFeedNoise,fiberNoise:s.researchFiberNoise}
   }));
  };
- const transforms=registeredPlates(plates,seed,'blue');
+ // One press: each plate's transform is its page offset, nothing seeded per module.
+ const transforms=Object.fromEntries(Object.entries(plates).map(([id,p])=>[id,{x:p.x,y:p.y,rotation:p.rotation,scale:p.scale}])) as Record<keyof typeof plates,{x:number;y:number;rotation:number;scale:number}>;
  return {...recipe,stateDots,transforms,paperNoise};
 }
 export type ResearchRecipe=ReturnType<typeof researchRecipe>;
