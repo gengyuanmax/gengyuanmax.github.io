@@ -2,8 +2,6 @@
 import ResearchMap from '../ResearchMap.astro';
 import HomeDivider from '../HomeDivider.astro';
 import InkText from '../InkText.astro';
-import EmphasisText from '../EmphasisText.astro';
-import {bodyEmphasis} from '../../config/body-emphasis';
 import {homeBrandDraft} from '../../config/main-version';
 import GridGuides from '../GridGuides.astro';
 import PrintMedia from '../PrintMedia.astro';
@@ -26,8 +24,8 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
   });
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
-  <p class="he-role">{profile.role.map(part=><span>{part}<br /></span>)}</p>
-  <p class="he-bio"><EmphasisText text={profile.bio} phrase={bodyEmphasis.home}/></p>
+  <p class="he-role">{profile.role.join(', ')}</p>
+  <p class="he-bio">{profile.slogan}</p>
   <nav class="he-contact" aria-label="Profile links">{profile.contacts.slice(0,3).map(link=><a href={link.href}>{link.label}<span class="he-contact-arrow" aria-hidden="true">↗</span></a>)}</nav>
  </div>
  <PrintMedia />

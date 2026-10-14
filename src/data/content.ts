@@ -1,8 +1,9 @@
-import {researchMemberships} from './research-memberships';
+import {researchMemberships} from './research-memberships.ts';
 import type {ResourceLinks} from './catalog';
 // Source-backed review copy. Nothing is marked approved by inference.
 export const profile={
- name:['Gengyuan','Zhang'],role:['PhD researcher','LMU Munich'],core:'Visual Intelligence',approval:'pending' as const,
+ name:['Gengyuan','Zhang'],role:['AI researcher','Based in Europe (Germany/UK)'],core:'Visual Intelligence',approval:'pending' as const,
+ slogan:'Vision, Intelligence, Human & Machine',
  bio:'I study multimodal learning, visual and video understanding, and multimodal agents.',
  about:'I am a PhD researcher at LMU Munich, supervised by Prof. Volker Tresp. My thesis is titled “Promises and Limits of Language-centered Visual Understanding”.',
  personal:'Outside research: plants, travelling, cooking, Crusader Kings III, and my dachshund.',
@@ -10,9 +11,9 @@ export const profile={
 };
 export const navigation=[{id:'home',label:'Home',shape:'home'},{id:'research',label:'Research projects',shape:'research'},{id:'artifacts',label:'Artifacts',shape:'artifacts'},{id:'about',label:'About me',shape:'about'}] as const;
 export const pillars=[
- {id:'benchmarking',label:'Benchmarking visual intelligence',short:'Benchmarking',lines:['Benchmarking','visual intelligence'],detail:''},
- {id:'applications',label:'Domain application',short:'Domain application',lines:['Domain','application'],detail:'Embodied AI · Surgical domain'},
- {id:'machines',label:'Machines',short:'Machines',lines:['Machines'],detail:'Models · Agents · Systems'},
+ {id:'benchmarking',action:'Evaluating',label:'Benchmarking visual intelligence',short:'Benchmarking',lines:['Benchmarking','visual intelligence'],detail:''},
+ {id:'applications',action:'Leveraging',label:'Domain applications',short:'Domain applications',lines:['Domain','applications'],detail:'Embodied AI · Surgical domain'},
+ {id:'machines',action:'Building',label:'Machines can see',short:'Machines can see',lines:['Machines','can see'],detail:'Models · Agents · Systems'},
 ] as const;
 export const sectionCopy={research:'Multimodal understanding, evaluation, and systems for interacting with visual evidence.',artifacts:'Interactive experiments, research tools, datasets, and papers.'};
 export interface Entry {id:string;title:string;description:string;metadata:string;themes:string[];assetId?:string;links?:ResourceLinks;approval:'pending'|'approved';sources:string[];}
