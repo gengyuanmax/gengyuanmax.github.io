@@ -139,7 +139,7 @@
 #personal-site .he-contact {display:flex;flex-wrap:wrap;gap:10px 18px;}
 #personal-site .he-contact a,#personal-site .he-news a {color:var(--ink);text-decoration-color:var(--rule-ink);text-underline-offset:3px;}
 #personal-site .he-news a {text-decoration:none;}
-#personal-site .he-news a:hover {text-decoration:underline;}
+@media (hover:hover){#personal-site .he-news a:hover {text-decoration:underline;}}
 #personal-site .he-date {overflow-wrap:normal;}
 #personal-site .he-project-feature h3,#personal-site .he-machine-feature h3 {font-size:clamp(38px,5.5cqw,68px);}
 #personal-site .he-project {padding-bottom:18px!important;}

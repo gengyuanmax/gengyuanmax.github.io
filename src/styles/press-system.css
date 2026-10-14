@@ -9,16 +9,16 @@
 #personal-site .he-print-word .he-type-line {width:auto;}
 #personal-site .he-print-word .he-type-a {transform:translate(calc(-1 * clamp(-.025em,var(--registration-x),.025em)),calc(-1 * clamp(-.015em,var(--registration-y),.015em)));}
 #personal-site :is(.he-project h3,.he-artifact h2) a {text-decoration:none;display:inline;}
-#personal-site :is(.he-project h3,.he-artifact h2) a:hover {text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:8px;}
+@media (hover:hover){#personal-site :is(.he-project h3,.he-artifact h2) a:hover {text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:8px;}}
 #personal-site .he-project-resources a,#personal-site .he-contact a {text-decoration:none;border-bottom:1.5px solid var(--ink);padding-block:4px;}
-#personal-site .he-project-resources a:hover,#personal-site .he-contact a:hover {border-bottom-width:3px;}
+@media (hover:hover){#personal-site .he-project-resources a:hover,#personal-site .he-contact a:hover {border-bottom-width:3px;}}
 #personal-site .he-item-meta {font:500 11px/1.7 var(--metadata-face);letter-spacing:.025em;color:var(--ink);}
 #personal-site .he-item-meta strong {font-weight:500;background:var(--ink);color:var(--paper);padding:4px 6px;margin-right:8px;box-decoration-break:clone;}
 #personal-site .he-theme-tags {gap:8px 18px;}
 #personal-site .he-theme-tags li {border:0;}
 #personal-site .he-theme-tags a {text-decoration:none;}
 #personal-site .he-theme-tags a::before {content:"↗";margin-right:5px;color:var(--ink);}
-#personal-site .he-theme-tags a:hover {text-decoration:underline;}
+@media (hover:hover){#personal-site .he-theme-tags a:hover {text-decoration:underline;}}
 #personal-site .he-project-details {border-top:0;border-bottom:1.5px solid var(--ink);}
 #personal-site .he-project-details summary {font:400 11px/1.6 var(--metadata-face);padding-block:14px;}
 #personal-site .he-external-mark {font:400 .6em/1 var(--metadata-face);vertical-align:top;display:inline-block;margin-left:.15em;}
@@ -63,7 +63,7 @@
 #personal-site .he-publication-index li::marker {font:500 12px var(--metadata-face);color:var(--blue-ink);}
 #personal-site .he-publication-index li .he-item-meta {border-left:3px solid var(--blue-ink);padding-left:10px;}
 #personal-site .he-publication-index h3 a {text-decoration:none;}
-#personal-site .he-publication-index h3 a:hover {text-decoration:underline;}
+@media (hover:hover){#personal-site .he-publication-index h3 a:hover {text-decoration:underline;}}
 
 /* Artifacts remain interleaved; content identity controls its printed object.
    Regrouping changes the grid placement, never the object attached to a work. */

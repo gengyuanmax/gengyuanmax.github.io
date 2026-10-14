@@ -133,7 +133,7 @@
 #personal-site .he-print-lab-spread .he-insert-sheet{position:relative;display:block;margin:0;padding:6px;background:var(--paper);border:0;box-shadow:none;}
 #personal-site .he-print-lab-spread .he-insert-caption{display:block;margin-top:12px;color:var(--blue-ink);}
 #personal-site .he-print-lab-spread a:focus-visible{outline:2px solid var(--blue-ink);outline-offset:7px;}
-#personal-site .he-print-lab-spread a:hover .he-insert-caption{text-decoration:underline;text-underline-offset:3px;}
+@media (hover:hover){#personal-site .he-print-lab-spread a:hover .he-insert-caption{text-decoration:underline;text-underline-offset:3px;}}
 
 /* A spot yellow belongs only to the inserted project's attachment material. */
 #personal-site .he-print-lab-spread{--insert-tape-ink:#f2df8a;}
