@@ -1,7 +1,7 @@
 /* Layout study 06. Ink, screening and print defects remain unapproved parameters. */
 #personal-site { --he-header-height: 150px;  }
 #personal-site .he-pillars a { color: inherit; text-decoration: underline; text-decoration-color: var(--rule-ink); text-underline-offset: 4px; text-decoration-thickness: 1px; }
-#personal-site .he-pillars a:hover { color: var(--blue-ink); text-decoration-color: currentColor; }
+@media (hover:hover){#personal-site .he-pillars a:hover { color: var(--blue-ink); text-decoration-color: currentColor; }}
 #personal-site .he-research-page, #personal-site .he-artifacts-page { isolation: isolate; }
 #personal-site .he-research-masthead { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); column-gap: var(--column-gap); align-items: end; padding-bottom: 54px; }
 #personal-site .he-research-masthead .he-meta { grid-column: 1/13; margin-bottom: 24px; }

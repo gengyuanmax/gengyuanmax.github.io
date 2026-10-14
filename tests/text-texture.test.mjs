@@ -20,3 +20,15 @@ test('uniform display dots clip to glyph boundaries and ignore noise seed',()=>{
  assert.ok(dots.some((v,i)=>v&&i%w===13));
  assert.ok(dots.every(v=>v===0||v===1));
 });
+test('display and heading type carry the press transfer, bounded by their tier budget; body stays solid',async()=>{
+ const {noiseBudget}=await import('../src/design/print-pipeline/budget.ts');
+ const w=200,h=120,mask=new Float32Array(w*h).fill(1),sheet={seed:23,origin:{x:300,y:900},height:1440,band:.1},transfer={grain:.08,starve:.08,holes:.04,band:.1};
+ for(const [size,cap] of [[96,noiseBudget.text.display],[40,noiseBudget.text.heading]]){
+  const out=printText(mask,w,h,1,5,8,75,{size,dotted:false,radius:.37,transfer},sheet);
+  const min=Math.min(...out),mean=out.reduce((a,v)=>a+v,0)/out.length;
+  assert.ok(min>=1-cap-1e-6,`${size}px lost ${(1-min).toFixed(3)}`);
+  assert.ok(1-min>.06,`${size}px transfer too faint to read as print (${(1-min).toFixed(3)})`);
+  assert.ok(mean>.93,`${size}px mean ink ${mean.toFixed(3)} too thin`);
+ }
+ assert.ok(printText(mask,w,h,1,5,8,75,{size:16,dotted:false,radius:.37,transfer},sheet).every(v=>v===1));
+});

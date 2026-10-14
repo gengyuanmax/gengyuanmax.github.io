@@ -10,7 +10,9 @@
 #personal-site .he-type-line>.he-type-a{transform:none;color:var(--red-ink);text-shadow:none;-webkit-text-stroke:0;}
 #personal-site .he-type-line>.he-type-b{transform:translate(var(--registration-x),var(--registration-y));color:var(--blue-ink);mix-blend-mode:multiply;text-shadow:none;-webkit-text-stroke:0;}
 #personal-site .he-type-line>span[data-material-mask="true"],#personal-site .he-project-ground[data-material-mask="true"]{filter:none;}
+/* The current tab keeps its red plate at every size: below 72px text is exactly registered. */
 #personal-site .he-type-line[data-press-large="false"]>.he-type-a{visibility:hidden;}
+#personal-site .he-nav a[aria-current="page"] .he-type-line[data-press-large="false"]>.he-type-a{visibility:visible;}
 #personal-site .he-type-line[data-press-large="false"]>.he-type-b{transform:none;filter:none;}
 #personal-site [data-treatment="solid"] .he-type-b{transform:none;}
 /* Dotted display type is supplied by the shared angle-aware screen mask. */
@@ -31,3 +33,10 @@
 #personal-site [data-material-ready="true"]>.he-field-fallback{visibility:hidden;}
 /* Same rule for decorative print fields: the reference-layout fallback is for no-JS visitors. */
 #personal-site[data-enhanced] .he-field-fallback{visibility:hidden;}
+/* One sheet of paper under the whole viewport width and document height: the grain
+   no longer stops at the page box (right and bottom edges on wide screens). */
+html:has(#personal-site){overflow-x:clip;}
+#personal-site{position:relative;}
+#personal-site::after{content:"";position:absolute;top:calc(-1 * var(--sheet-margin,0px));bottom:calc(-1 * var(--sheet-margin,0px));left:calc(50% - 50vw);width:100vw;z-index:12;pointer-events:none;background-image:var(--paper-grain-image);opacity:var(--paper-texture);mix-blend-mode:multiply;}
+#personal-site .he-page::before{content:none;}
+@media print{#personal-site::after{content:none;}}

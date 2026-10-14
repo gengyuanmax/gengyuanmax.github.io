@@ -285,7 +285,7 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
   }
   // First-frame print: final geometry painted by CSS before any canvas or mask exists.
   const all={...shared,...settings} as Settings;
-  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius);
+  if(settings.titleTreatment==='dotted')css['--dot-plate']=dotPlateImage(all.primaryAngle,all.titleDotRadius,(config?resolve(config).values:defaults).seed);
   if(settings.groundOpacity!==undefined)css['--ground-first']=groundFirstCoverage(all).toFixed(3);
   if(settings.blend)css['--ink-blend']=settings.blend;
   if(settings.itemStart!==undefined&&settings.itemSpan!==undefined)css['--item-start']=String(Math.min(settings.itemStart,13-settings.itemSpan));
