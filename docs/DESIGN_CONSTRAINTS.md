@@ -265,3 +265,9 @@
 - 已知取舍：链接悬停时下边框加粗（3px）不再显示，因为边框已由印刷层接管。
 - 首次加载的主线程长任务（无头环境约 2.5–3s）在本节之前就存在（d5f125a 同样），主要来自文字遮罩和设置解析，不是本节引入；改变布局时的重印约 70ms。
 
+
+## 25. 统一字号（用户，2026-10-15）
+
+- 全站标题只用 Bricolage Grotesque。三个分区的页面大标题（Research 的 "Visual Intelligence"、"Artifacts"、"About me"）统一为一个字号 `--page-title-size`（`clamp(40px,9.4cqw,120px)`，1440 下 120px），字重、字宽、光学尺寸沿用标题设置；首页姓名保持自己的尺寸。
+- About 的模块标题（Gengyuan Zhang、Experience、Education、Funding、Reviewing、Outside research、Contact）统一为 `--module-title-size`（26–34px）；模块编号 01/02/03 统一为同一种 display 数字 `--module-index-size`（64–112px），都放在标题左侧并底部对齐。原来 Contact 的 "03" 是等宽小字，已改为与 01/02 一致。
+- 规则集中在 `editorial-tension.css` 末尾的 “One type scale” 段，覆盖各分区旧的单独字号。

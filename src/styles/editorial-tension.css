@@ -142,3 +142,17 @@
  #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
  #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading .he-chapter-number{font-size:90px;}
 }
+
+/* One type scale across the four areas (user, 2026-10-15). Page titles share a single
+   size and weight; every About module heading shares one size; module numerals 01–03
+   share one display numeral. Later and more specific than the per-area rules above. */
+#personal-site{--page-title-size:clamp(40px,9.4cqw,120px);--module-title-size:clamp(26px,2.7cqw,34px);--module-index-size:clamp(64px,8cqw,112px);}
+#personal-site .he-page :is(.he-research-masthead,.he-artifacts-masthead,.he-about-masthead) h1{font-size:var(--page-title-size);}
+#personal-site .he-page .he-about-module .he-quiet-heading h2{font-size:var(--module-title-size);line-height:1.1;letter-spacing:-.035em;}
+#personal-site .he-page .he-about-module .he-module-index{font:700 var(--module-index-size)/.85 var(--display-face);letter-spacing:-.075em;border:0;padding:0;height:auto;overflow:visible;flex-basis:auto;}
+#personal-site .he-page .he-about-experience .he-quiet-heading{padding-left:0;min-height:0;display:flex;align-items:flex-end;gap:20px;}
+#personal-site .he-page .he-about-experience .he-module-index{position:static;}
+#personal-site .he-page .he-about-education .he-module-index{margin:0;}
+#personal-site .he-page .he-about-education .he-quiet-heading h2{margin-left:0;padding:0;}
+#personal-site .he-page :is(.he-about-contact,.he-about-education) .he-quiet-heading{display:flex;align-items:flex-end;gap:20px;}
+#personal-site .he-page .he-about-module .he-module-index{color:var(--ink);}
