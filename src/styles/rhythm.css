@@ -1,0 +1,48 @@
+/* Müller-Brockmann rows (user, 2026-10-15). scripts/rhythm.mjs rounds every vertical
+   dimension in the stylesheets to the row (--baseline). This file sizes what the
+   stylesheets cannot: boxes whose height follows their width.
+
+   Pictures occupy whole rows (fields). Their visible edges sit inside the field by the
+   body text's half-leading, so a picture's top meets the ascender of the first text line
+   beside it and its bottom the descender of the last (Müller-Brockmann; Newsreader's
+   ascent + descent is exactly 1em, so half-leading = (line - size) / 2). Text-heavy
+   detail pages may later use Lupton's baseline alignment instead. */
+#personal-site{--row:var(--baseline,8px);}
+#personal-site :is(.he-portrait,.he-about-photo){
+ --body-line:max(var(--row), round(nearest, var(--body-size) * 1.65, var(--row)));
+ --field-inset:calc((var(--body-line) - var(--body-size)) / 2);
+ container-type:inline-size;
+}
+#personal-site .he-portrait img,#personal-site .he-about-photo>img{
+ height:round(nearest, 100cqw * var(--media-ratio), var(--row));
+ padding-block:var(--field-inset);
+}
+#personal-site .he-portrait img{object-fit:contain;object-position:50% 100%;}
+#personal-site .he-about-photo>img{object-fit:cover;}
+
+/* Print Labs insert stack: the stack's height follows its width; round it to rows. */
+#personal-site .he-print-lab-overview{container-type:inline-size;}
+#personal-site .he-print-lab-overview .he-insert-stack{aspect-ratio:auto;height:round(nearest, 100cqw * var(--stack-height), var(--row));}
+
+/* Research circles: 800:500 diagram, height in rows. */
+@media(min-width:640px){
+ #personal-site .he-research-overview{container-type:inline-size;}
+ #personal-site .research-map{aspect-ratio:auto;height:round(nearest, min(100cqw, var(--map-max, 640px)) * .625, var(--row));}
+}
+#personal-site .he-print-lab-overview .he-insert-stack{display:block;}
+
+/* User-agent margins are not in the stylesheets: give lists theirs back in rows. */
+#personal-site :is(ul,ol,dl,menu,blockquote,figure,details){margin-top:round(nearest, 1em, var(--row));margin-bottom:round(nearest, 1em, var(--row));}
+#personal-site :is(ul,ol,dl,menu,blockquote,figure,details)[class]{margin-top:0;margin-bottom:0;}
+
+/* Centring inside a box that is not a whole even number of rows lands between rows;
+   align to the row lines instead. Home identity: role ends on the middle row line,
+   slogan and links start on it. */
+@container(min-width:1001px){
+ #personal-site .he-home[data-home-layout] .he-intro{grid-template-rows:round(down, 50%, var(--row)) 1fr;}
+ #personal-site .he-home[data-home-layout] .he-role{align-self:end;}
+ #personal-site .he-home[data-home-layout] .he-intro-second{align-self:start;}
+}
+#personal-site .he-about-contact{align-items:end;}
+/* Form controls have a fixed border-box height; their border is inside it. */
+#personal-site :is(select,input,button,textarea){--rb-t:0px!important;--rb-b:0px!important;}
