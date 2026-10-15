@@ -100,6 +100,11 @@ if(root){
   await document.fonts.ready;if(run!==generation)return;
   const later:(()=>void|Promise<void>)[]=[];
   const now=async(job:()=>void|Promise<void>)=>{await job();await yieldToMain();return run===generation;};
+  // Illustrations stay paper until printed, while type and grounds already show their
+  // final ink and only gain texture: print the visible illustrations first.
+  for(const svg of root!.querySelectorAll<SVGSVGElement>('[data-print-field]')){
+   if(offscreen(svg))later.push(()=>renderField(svg,run));else if(!await now(()=>renderField(svg,run)))return;
+  }
   for(const el of root!.querySelectorAll<HTMLElement>('.he-type-line')){
    const size=parseFloat(getComputedStyle(el).fontSize),large=size>=24;el.dataset.pressLarge=String(large);el.dataset.pressFine=String(size<24);el.dataset.textTier=textTier(size);
    el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);
@@ -126,9 +131,6 @@ if(root){
     if(s.homeDividerStyle!=='print'){clearScreen(el);inkMounts.get(el)?.invalidate();return;}
     textureMask(el,'b',{...s,groundOpacity:s.homeDividerCoverage});};
    if(offscreen(el))later.push(job);else if(!await now(job))return;
-  }
-  for(const svg of root!.querySelectorAll<SVGSVGElement>('[data-print-field]')){
-   if(offscreen(svg))later.push(()=>renderField(svg,run));else if(!await now(()=>renderField(svg,run)))return;
   }
   root!.dispatchEvent(new CustomEvent('design:screen-rendered'));
   for(const job of later){await whenIdle();if(run!==generation)return;await job();}
