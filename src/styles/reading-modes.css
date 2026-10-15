@@ -102,8 +102,8 @@
  /* Rows (user, 2026-10-15: follow the grid in rows as well as columns; break it only when
     needed). Modules side by side share their top line and their heading line. */
  /* Home: News starts its heading on the same line as the research heading beside it. */
- #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-news{padding-top:36px;}
- #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-divider-news{top:calc(36px + 14px);}
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-news{padding-top:40px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-divider-news{top:calc(40px + var(--baseline,8px));}
  /* Artifacts: one art slot per row; art hangs from the slot's bottom so meta and titles align. */
  /* A column of blocks: margins must not collapse into the art slot. */
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{display:flex;flex-direction:column;align-items:stretch;}
