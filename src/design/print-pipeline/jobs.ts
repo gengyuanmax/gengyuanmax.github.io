@@ -28,7 +28,7 @@ export function runMaskJob(j:MaskJob):MaskResult{
   if(rim)for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x<rim||y<rim||x>=w-rim||y>=h-rim)flat[y*w+x]=0;
   // Worn plate edges (wear-v1) before screening. Metro lines are printed solid (no
   // screen) and wear harder, so their edges read as missing dots on a dense line.
-  flat=wearEdges(flat,w,h,dpr,p.sheet?.seed??p.seed,j.origin,j.route?{depth:noiseBudget.wear.depth*.4,speckle:noiseBudget.wear.speckle*.8}:{depth:noiseBudget.wear.depth*.5,speckle:noiseBudget.wear.speckle*.6});
+  flat=wearEdges(flat,w,h,dpr,p.sheet?.seed??p.seed,j.origin,j.route?{depth:noiseBudget.wear.depth*.5,speckle:noiseBudget.wear.speckle*.8}:{depth:noiseBudget.wear.depth*.5,speckle:noiseBudget.wear.speckle*.6});
   // A solid line keeps its full ink demand; only the plane gets the light/tone field.
   tone=j.route?flat:makeToneField(flat,w,h,dpr,'plane',j.tone,p.seed);
   flat=screenOriginal(j.identity,{kind:'shape',mask:flat,tone},w,h,j.ink,p,dpr,j.origin,!!j.route);

@@ -39,3 +39,8 @@ test('the metro tree steps at 45° to lower stations and jogs before later bands
  for(let i=1;i<bus.length;i++){const dx=Math.abs(bus[i].x-bus[i-1].x),dy=Math.abs(bus[i].y-bus[i-1].y);assert.ok(dx<1e-9||dy<1e-9||Math.abs(dx-dy)<1e-9);}
  assert.ok(bus.some((p,i)=>i>0&&Math.abs(p.x-bus[i-1].x)>0&&Math.abs(p.x-bus[i-1].x)===Math.abs(p.y-bus[i-1].y)),'a 45° step to the lower station');
 });
+test('small height differences keep the bus level',()=>{
+ const t=metroTree([{x:100,y:300,row:'a'},{x:600,y:288,row:'a'}],[],{});
+ const ys=new Set(t.tiles[1].paths[0].points.slice(1,-1).map(p=>p.y));
+ assert.equal(ys.size,1);
+});
