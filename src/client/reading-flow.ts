@@ -8,7 +8,7 @@ if(root){
  let config:DesignConfig=design;
  const observed=new Set<Element>();
  let frame=0;
- const schedule=()=>{cancelAnimationFrame(frame);if(!root!.dataset.navigating)frame=requestAnimationFrame(draw);};
+ const schedule=()=>{clearTimeout(frame);if(!root!.dataset.navigating)frame=window.setTimeout(draw,16);};
  const observer=new ResizeObserver(schedule);
  function draw(){
   if(root!.dataset.navigating)return;

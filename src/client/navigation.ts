@@ -40,8 +40,11 @@ if(root) {
   clearTimeout(jump);
   releaseChapter();
   const changed=index!==active;
+  // The boot takeover never slides (transitions are off while booting), so it must not
+  // hold printing back as "navigating" either.
+  const slides=changed&&!reduced()&&root!.dataset.booting===undefined;
   clearTimeout(settle);
-  if(changed&&!reduced()){
+  if(slides){
    root!.dataset.navigating='true';
    // Fallback also covers an interrupted transition or a background tab.
    settle=window.setTimeout(settled,550);
@@ -75,7 +78,7 @@ if(root) {
     const heading=chapter.querySelector<HTMLElement>('h2, summary')!;
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});
    }
-  },changed&&!reduced()?490:0);
+  },slides?490:0);
   }
  }
  root.dataset.enhanced='true';

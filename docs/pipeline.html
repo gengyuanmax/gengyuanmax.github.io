@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Print Pipeline Map</title>
+<style>
+:root{--paper:#f0ebdf;--paper-2:#e6dfcf;--ink:#231a2b;--blue:#283eb5;--red:#cf5037;--yellow:#e6c814;--muted:#5a5466;--line:#c9c0ab;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "Newsreader",Georgia,"Songti SC","Noto Serif CJK SC",serif;}
+main{max-width:1180px;margin:0 auto;padding:48px 24px 96px;}
+h1,h2,h3{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,"PingFang SC",sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
+h1{font-size:clamp(40px,6vw,76px);font-weight:800;color:var(--ink)}
+h2{font-size:30px;margin:72px 0 8px;padding-top:14px;border-top:3px solid var(--blue)}
+h3{font-size:19px;margin:0 0 6px}
+p{max-width:72ch;margin:8px 0}
+code,.mono{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace}
+code{background:var(--paper-2);padding:1px 5px;border-radius:2px}
+.lede{font-size:19px;color:var(--muted);max-width:68ch;margin-top:14px}
+.kicker{font:500 12px/1.4 "JetBrains Mono",monospace;color:var(--blue);letter-spacing:.04em;text-transform:uppercase}
+.flow{width:100%;height:auto;margin-top:20px;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:10px;font:13px/1.4 "JetBrains Mono",monospace;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:10px;margin-right:6px;vertical-align:-1px}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:14px}
+.table-wrap{overflow-x:auto;margin-top:16px;-webkit-overflow-scrolling:touch}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font:600 12px/1.3 "JetBrains Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--ink)}
+td:first-child{font-family:"Bricolage Grotesque",Arial,sans-serif;font-weight:700;white-space:nowrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px;margin-top:18px}
+.step{margin:0}
+.step img{display:block;width:100%;height:auto;border:1px solid var(--line);background:#fff;image-rendering:auto}
+.step img.px{image-rendering:pixelated}
+.step figcaption{margin-top:8px;font-size:14px;line-height:1.45}
+.step figcaption b{display:block;font:700 15px/1.3 "Bricolage Grotesque",Arial,sans-serif}
+.step figcaption code{font-size:11.5px}
+.n{font:500 11px "JetBrains Mono",monospace;color:var(--red);margin-right:6px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.card{border-top:2px solid var(--ink);padding-top:10px}
+ol.timeline{list-style:none;padding:0;margin:18px 0 0;border-left:3px solid var(--blue)}
+ol.timeline li{position:relative;padding:4px 0 16px 22px}
+ol.timeline li::before{content:"";position:absolute;left:-3px;top:15px;width:14px;height:2px;background:var(--blue)}
+ol.timeline .t{font:500 12px "JetBrains Mono",monospace;color:var(--red);display:block}
+.where{display:inline-block;font:500 11px/1 "JetBrains Mono",monospace;padding:3px 6px;border:1px solid currentColor;margin-left:6px;vertical-align:2px}
+.w-build{color:#7a5d00}.w-worker{color:var(--blue)}.w-main{color:var(--red)}.w-css{color:var(--muted)}
+.files{columns:2;column-gap:32px;font-size:14px}
+.files div{break-inside:avoid;margin-bottom:10px}
+@media (max-width:760px){main{padding:32px 16px 72px}.flow{min-width:0}.cols,.files{grid-template-columns:1fr;columns:1}td:first-child{white-space:normal}}
+</style>
+</head>
+<body>
+<main>
+<p class="kicker">gengyuanmax.github.io · docs/pipeline.html</p>
+<h1>印刷管线：从原稿到网页</h1>
+<p class="lede">网站上每一个非文字元素和每一个大字标题，都经过同一台“模拟 Riso 印刷机”：先把原稿分成墨量，再加网、转印、叠印，最后由浏览器挂到真实的页面上。本页用真实管线渲染的中间结果说明每一步。图像由 <code>scripts/render-pipeline-doc.mjs</code> 生成，管线改动后重新运行即可更新。</p>
+
+<h2>1. 总览</h2>
+<p>八个阶段。前六个是纯计算（<code>src/design/print-pipeline/</code>，可在 Node、浏览器主线程或 Web Worker 里运行，结果相同）；后两个负责把结果交给页面。</p>
+<svg class="flow" viewBox="0 0 1160 430" role="img" aria-labelledby="flowTitle">
+ <title id="flowTitle">管线八个阶段：原稿、分色、影调、加网、转印、叠印、发布、网页</title>
+ <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#231a2b"/></marker></defs>
+ <g font-family="Bricolage Grotesque, Arial, sans-serif">
+  <!-- lanes -->
+  <rect x="0" y="0" width="1160" height="430" fill="#f0ebdf"/>
+  <text x="8" y="22" font-size="12" font-family="JetBrains Mono, monospace" fill="#5a5466">纯计算 · src/design/print-pipeline/（Node / 主线程 / Worker 通用）</text>
+  <line x1="8" y1="30" x2="858" y2="30" stroke="#283eb5" stroke-width="2"/>
+  <text x="878" y="22" font-size="12" font-family="JetBrains Mono, monospace" fill="#5a5466">交给页面</text>
+  <line x1="878" y1="30" x2="1152" y2="30" stroke="#cf5037" stroke-width="2"/>
+  <!-- stage boxes -->
+  <g font-size="17" font-weight="700" fill="#231a2b">
+   <g transform="translate(8,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">1 原稿</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Source</text></g>
+   <g transform="translate(152,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">2 分色</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Separation</text></g>
+   <g transform="translate(296,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">3 影调</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Tone field</text></g>
+   <g transform="translate(440,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">4 加网</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Screen</text></g>
+   <g transform="translate(584,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">5 转印</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Transfer</text></g>
+   <g transform="translate(728,48)"><rect width="128" height="150" fill="#fff" stroke="#231a2b" stroke-width="1.5"/><text x="12" y="28">6 叠印</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Composite</text></g>
+   <g transform="translate(878,48)"><rect width="128" height="150" fill="#fff" stroke="#cf5037" stroke-width="1.5"/><text x="12" y="28">7 发布</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Publish</text></g>
+   <g transform="translate(1022,48)"><rect width="130" height="150" fill="#fff" stroke="#cf5037" stroke-width="1.5"/><text x="12" y="28">8 网页</text><text x="12" y="48" font-size="12" font-weight="400" fill="#5a5466">Web</text></g>
+  </g>
+  <!-- what each stage does -->
+  <g font-size="11.5" font-family="JetBrains Mono, monospace" fill="#231a2b">
+   <text x="20" y="122"><tspan x="20" dy="0">照片 RGBA</tspan><tspan x="20" dy="16">几何 SVG</tspan><tspan x="20" dy="16">文字字形</tspan><tspan x="20" dy="16">程序生成圆</tspan><tspan x="20" dy="16">CSS 线条</tspan></text>
+   <text x="164" y="122"><tspan x="164" dy="0">→ 每块版的</tspan><tspan x="164" dy="16">  墨量 0–1</tspan><tspan x="164" dy="16">darkness</tspan><tspan x="164" dy="16">separateSubject</tspan><tspan x="164" dy="16">separatePrintLab</tspan></text>
+   <text x="308" y="122"><tspan x="308" dy="0">平面 / 球面</tspan><tspan x="308" dy="16">光照 + 低频</tspan><tspan x="308" dy="16">墨量起伏</tspan><tspan x="308" dy="16">±.08，≥80px</tspan><tspan x="308" dy="16">makeToneField</tspan></text>
+   <text x="452" y="122"><tspan x="452" dy="0">AM 网点</tspan><tspan x="452" dy="16">版的角度/点形</tspan><tspan x="452" dy="16">三档网距</tspan><tspan x="452" dy="16">2 / 4 / 1/16em</tspan><tspan x="452" dy="16">screenSheet</tspan></text>
+   <text x="596" y="122"><tspan x="596" dy="0">纸面坐标上的</tspan><tspan x="596" dy="16">缺墨、细颗粒</tspan><tspan x="596" dy="16">滚筒(1440 周长)</tspan><tspan x="596" dy="16">套准偏移</tspan><tspan x="596" dy="16">paintSheet</tspan></text>
+   <text x="740" y="122"><tspan x="740" dy="0">墨 × 纸</tspan><tspan x="740" dy="16">multiply 叠印</tspan><tspan x="740" dy="16">朱红=参考版</tspan><tspan x="740" dy="16">蓝 / 黄 偏移</tspan><tspan x="740" dy="16">paintMaterial</tspan></text>
+   <text x="890" y="122"><tspan x="890" dy="0">PNG（构建时）</tspan><tspan x="890" dy="16">alpha 遮罩</tspan><tspan x="890" dy="16">canvas 像素</tspan><tspan x="890" dy="16">CSS 网点图</tspan><tspan x="890" dy="16">encodeAlphaPNG</tspan></text>
+   <text x="1034" y="122"><tspan x="1034" dy="0">DOM 文字+遮罩</tspan><tspan x="1034" dy="16">&lt;img&gt; / canvas</tspan><tspan x="1034" dy="16">印刷线条层</tspan><tspan x="1034" dy="16">纸纹 multiply</tspan><tspan x="1034" dy="16">首帧即最终</tspan></text>
+  </g>
+  <g stroke="#231a2b" stroke-width="1.5" marker-end="url(#arr)">
+   <line x1="136" y1="83" x2="150" y2="83"/><line x1="280" y1="83" x2="294" y2="83"/><line x1="424" y1="83" x2="438" y2="83"/><line x1="568" y1="83" x2="582" y2="83"/><line x1="712" y1="83" x2="726" y2="83"/><line x1="856" y1="83" x2="876" y2="83"/><line x1="1006" y1="83" x2="1020" y2="83"/>
+  </g>
+  <!-- shared inputs -->
+  <g font-size="12" font-family="JetBrains Mono, monospace">
+   <rect x="152" y="226" width="704" height="70" fill="#e6dfcf"/>
+   <text x="164" y="246" fill="#231a2b" font-weight="700">共享参数（整页一台印刷机）</text>
+   <text x="164" y="266" fill="#5a5466">版列表 plates.ts（朱红 a 参考 · 蓝 b 套准 · 黄 c） · 三档网距 screen.ts · 噪声预算 budget.ts</text>
+   <text x="164" y="284" fill="#5a5466">纸面坐标 onSheet(seed, origin)：同一位置永远同样的纸纹与缺墨，与元素无关</text>
+   <line x1="300" y1="226" x2="300" y2="200" stroke="#5a5466" stroke-dasharray="3 3"/><line x1="504" y1="226" x2="504" y2="200" stroke="#5a5466" stroke-dasharray="3 3"/><line x1="648" y1="226" x2="648" y2="200" stroke="#5a5466" stroke-dasharray="3 3"/><line x1="792" y1="226" x2="792" y2="200" stroke="#5a5466" stroke-dasharray="3 3"/>
+  </g>
+  <!-- where it runs -->
+  <g font-size="12" font-family="JetBrains Mono, monospace">
+   <text x="8" y="330" fill="#231a2b" font-weight="700">在哪里运行</text>
+   <rect x="8" y="342" width="490" height="30" fill="#f6e9b0"/><text x="18" y="362" fill="#231a2b">构建时 · sharp 脚本 → public/images/*.png（人像、About 拱门）</text>
+   <rect x="508" y="342" width="644" height="30" fill="#d5daf2"/><text x="518" y="362" fill="#231a2b">运行时 · Web Worker（文字纹理、色带、几何插图）</text>
+   <rect x="8" y="380" width="560" height="30" fill="#f4d3cb"/><text x="18" y="400" fill="#231a2b">运行时 · 主线程（测量、研究圆、人像画布、印刷线条、挂结果）</text>
+   <rect x="578" y="380" width="574" height="30" fill="#e6dfcf"/><text x="588" y="400" fill="#231a2b">纯 CSS · 首帧（姓名网点图、色带平涂、纸纹、无 JS 后备）</text>
+  </g>
+ </g>
+</svg>
+
+<h2>2. 每种元素走哪条路</h2>
+<p>同一台印刷机，不同原稿只是入口和出口不同。“—”表示这一步不做（例如文字不加网，只做转印）。</p>
+<div class="table-wrap"><table>
+ <thead><tr><th>元素</th><th>原稿</th><th>分色 / 影调</th><th>加网</th><th>转印 / 叠印</th><th>发布 → 网页</th><th>何时</th></tr></thead>
+ <tbody>
+  <tr><td>首页人像 + 圆</td><td>抠图照片 + 圆形几何</td><td><code>preparePortraitOriginals</code>：照片按百分位色阶；圆用球面影调</td><td>fine 2px，两块版</td><td>朱红 + 蓝叠印，纸面坐标转印</td><td>构建 PNG 作首帧；运行时 canvas 重印</td><td><span class="where w-build">构建</span><span class="where w-main">主线程</span></td></tr>
+  <tr><td>About 拱门照片</td><td><code>src/assets/about/</code> 原图</td><td><code>separateSubject</code>（亮度 + 暖色键），反向挖空</td><td>coarse 8px（display 档）</td><td>单蓝版</td><td><code>public/images/about-arch.png</code> → <code>&lt;img&gt;</code>，multiply 到纸上</td><td><span class="where w-build">构建</span></td></tr>
+  <tr><td>章节色带 / 项目底色</td><td>矩形</td><td><code>makeToneField</code> 平面影调</td><td>fine 2px</td><td>单版转印</td><td>alpha 遮罩 PNG → CSS <code>mask-image</code>；首帧先用平均墨量平涂</td><td><span class="where w-worker">Worker</span></td></tr>
+  <tr><td>几何插图（Mosaic、AViLA 等）</td><td>SVG 形状</td><td><code>svgCoverage</code> → 平面 / 球面影调</td><td>medium 4px</td><td>两墨叠印 + 套准</td><td>canvas 像素；印好前保持纸色</td><td><span class="where w-main">取样</span><span class="where w-worker">Worker</span></td></tr>
+  <tr><td>标题文字（≥24px）</td><td>真实 DOM 字形</td><td>—</td><td>—（实色）</td><td><code>printText</code>：同一转印，≤15%/12% 减墨</td><td>alpha 遮罩挂在每块墨层上；字形轮廓始终是 DOM</td><td><span class="where w-worker">Worker</span></td></tr>
+  <tr><td>姓名网点</td><td>DOM 字形</td><td>—</td><td>coarse 1/16em，<code>nameDots</code> 带点径/点位噪声</td><td>蓝版对红字 ≤1.25px 套准</td><td>首帧 CSS 网点图 <code>--dot-plate</code>，由字形裁切</td><td><span class="where w-css">CSS</span></td></tr>
+  <tr><td>首页研究圆</td><td>程序生成的三个圆</td><td>polygon 源（形状 + 焦点）</td><td><code>polygon-v1</code> 不规则网点</td><td>黄、朱红、蓝三版，页面版偏移</td><td>canvas，multiply；构建 PNG 只给无 JS</td><td><span class="where w-main">主线程</span></td></tr>
+  <tr><td>引导线、边框、色条</td><td>测量到的 CSS 盒子</td><td>—</td><td>—</td><td><code>printRule</code>（rule-v1）：转印 + ≤.35px 边缘起伏</td><td>小 canvas（线）或遮罩（伪元素、色块）</td><td><span class="where w-main">主线程</span></td></tr>
+  <tr><td>Print Labs 样张</td><td>原色图片</td><td>—（<code>insert</code> 配方，保留原色）</td><td>—</td><td>—</td><td><code>&lt;img&gt;</code> 叠放（<code>insert-stack.ts</code>）</td><td><span class="where w-css">静态</span></td></tr>
+ </tbody>
+</table></div>
+
+<h2>3. 逐步看：照片（About 拱门）</h2>
+<p>单墨照片最能看清每一步。黑色 = 墨，白色 = 纸。</p>
+<div class="steps">
+ <figure class="step"><img src="pipeline/a1-source.png" alt="原始照片裁切"><figcaption><b><span class="n">1</span>原稿</b>原图裁切到色块比例。原图只存在 <code>src/assets/</code>，不发布。</figcaption></figure>
+ <figure class="step"><img src="pipeline/a2-separation.png" alt="分色后的墨量"><figcaption><b><span class="n">2</span>分色 photo-subject-v1</b>墨量 = 暖色键 ×.95 + 亮度暗度 ×.28 + 局部细节。红岩最深，背景山地中间调，天空最浅。<code>separateSubject</code></figcaption></figure>
+ <figure class="step"><img src="pipeline/a3-knockout.png" alt="反向后的墨量"><figcaption><b><span class="n">3</span>反向挖空</b>用户选的处理：色块印墨，拱门是没印的部分。墨量 = 1.02 − 1.1 × 上一步。</figcaption></figure>
+ <figure class="step"><img src="pipeline/a4-screen.png" alt="加网后的网点"><figcaption><b><span class="n">4</span>加网</b>8 CSS px 的 AM 网点，蓝版角度；墨量决定点的大小。<code>screenSheet</code></figcaption></figure>
+ <figure class="step"><img src="pipeline/a5-transfer.png" alt="转印减墨场"><figcaption><b><span class="n">5</span>转印场</b>纸面坐标上的低频缺墨与滚筒条纹（此图拉伸了对比度，实际减墨 ≤15%）。深 = 减墨多。<code>sheetInk</code> · <code>sheetRoller</code></figcaption></figure>
+ <figure class="step"><img src="pipeline/a6-print.png" alt="最终印刷结果"><figcaption><b><span class="n">6</span>叠印到纸上</b>网点 × 转印强度 × 蓝墨，multiply 到纸色。<code>paintMaterial</code></figcaption></figure>
+ <figure class="step"><img class="px" src="pipeline/a6-print-zoom.png" alt="最终结果放大"><figcaption><b>放大 4×</b>同一张图的局部：点的大小随墨量变化，墨不是均匀的平色。</figcaption></figure>
+</div>
+
+<h2>4. 色带、文字、研究圆、线条</h2>
+<div class="cols">
+ <div class="card">
+  <h3>章节色带 · fine 2px 网点</h3>
+  <div class="steps" style="grid-template-columns:1fr 1fr 1fr;gap:12px">
+   <figure class="step"><img class="px" src="pipeline/b2-tone-zoom.png" alt="影调场放大"><figcaption><b>影调</b>平面光照 + 低频起伏（拉伸对比）。<code>makeToneField</code></figcaption></figure>
+   <figure class="step"><img class="px" src="pipeline/b3-screen-zoom.png" alt="网点放大"><figcaption><b>加网</b>2px 网点在任何 DPR 都按面积覆盖率计算，手机上不闪。</figcaption></figure>
+   <figure class="step"><img class="px" src="pipeline/b4-print-zoom.png" alt="印刷结果放大"><figcaption><b>印好</b>蓝墨 + 转印，作为 alpha 遮罩挂到色带上。</figcaption></figure>
+  </div>
+ </div>
+ <div class="card">
+  <h3>标题文字 · 只做转印</h3>
+  <div class="steps" style="grid-template-columns:1fr;gap:12px">
+   <figure class="step"><img src="pipeline/c2-transfer.png" alt="文字转印遮罩"><figcaption><b>转印遮罩</b>与图像同一张纸面上的缺墨、颗粒与滚筒（拉伸对比）。按 2 CSS px 采样，由 CSS 放大。<code>printText</code></figcaption></figure>
+   <figure class="step"><img class="px" src="pipeline/c3-print-zoom.png" alt="文字叠印放大"><figcaption><b>两墨叠印</b>朱红版与蓝版各自带遮罩，蓝版对红版错开 .75/.5px。字形轮廓始终是浏览器的真实文字。</figcaption></figure>
+  </div>
+ </div>
+ <div class="card">
+  <h3>首页研究圆 · polygon-v1</h3>
+  <div class="steps" style="grid-template-columns:1fr;gap:12px">
+   <figure class="step"><img src="pipeline/d-composite.png" alt="三版叠印的研究圆"><figcaption><b>三块版叠印</b>黄、朱红、蓝各一个圆，用不规则多边形网点（逐点墨量 / 走纸 / 纤维噪声，受预算约束），按印刷顺序 multiply。<code>screenPolygons</code></figcaption></figure>
+  </div>
+ </div>
+ <div class="card">
+  <h3>引导线与边框 · rule-v1</h3>
+  <div class="steps" style="grid-template-columns:1fr;gap:12px">
+   <figure class="step"><img class="px" src="pipeline/e-rule.png" alt="印刷线条放大"><figcaption><b>一条 3px 线，按 4 倍屏计算后再放大 3×</b>同样的转印，加上随低频噪声起伏 ≤.35px 的长边。CSS 边框、伪元素线条和小色块都用它印。<code>printRule</code> · <code>print-rules.ts</code></figcaption></figure>
+  </div>
+ </div>
+</div>
+
+<h2>5. 打开页面之后发生什么</h2>
+<ol class="timeline">
+ <li><span class="t">解析 HTML 时</span>内联脚本按网址选好分区、阅读模式（Poster / Compact），写入根节点。首帧就是最终分区，没有先显示别的再切换。<span class="where w-css">Base.astro</span></li>
+ <li><span class="t">首帧（约 0.2–0.4 秒）</span>文字、版式、姓名网点（CSS 网点图）、色带的平均墨量平涂、纸纹都已经是最终样子；构建时印好的人像与拱门图片直接显示。需要 JS 印刷的插图在印好前保持纸色。<span class="where w-css">CSS</span></li>
+ <li><span class="t">字体就绪</span>一次性读出所有元素的尺寸、字体和纸面坐标（先读后写，避免反复重排）。<span class="where w-main">print-material.ts</span></li>
+ <li><span class="t">派发任务</span>纯计算交给 Worker 池，按优先级排队：插图 → 色带 → 文字纹理。主线程保持可点击、可滚动。<span class="where w-worker">print-jobs.ts · print-worker.ts</span></li>
+ <li><span class="t">逐个挂上</span>Worker 返回 PNG 遮罩或像素，主线程挂到对应元素（<code>mask-image</code> / canvas）。同一个元素只用最新一次的结果（<code>createPrintMount</code>）。<span class="where w-main">主线程</span></li>
+ <li><span class="t">同时</span>印刷线条：测量所有 CSS 边框和色条，印到线条层；阅读树按层级粗细重画；研究圆和人像在主线程重印。<span class="where w-main">print-rules.ts · reading-flow.ts</span></li>
+ <li><span class="t">空闲时</span>预先印好看不见的分区，切过去时已经印好。<span class="where w-worker">Worker</span></li>
+ <li><span class="t">之后</span>改变窗口大小、切换模式、展开内容时只重印变化的部分（结果按内容缓存）。</li>
+</ol>
+
+<h2>6. 全局约束（为什么整页像一张纸）</h2>
+<div class="cols">
+ <div class="card"><h3>一张纸</h3><p>所有噪声都在<b>纸面坐标</b>上取样（<code>onSheet</code>）：同一个位置永远是同样的纸纹、缺墨、滚筒条纹，元素换位置、换尺寸都不会让纹理“跟着走”。滚筒周长固定为 1440 CSS px。</p></div>
+ <div class="card"><h3>一台印刷机</h3><p>一张版列表（<code>plates.ts</code>）：朱红 a 是参考版，蓝 b 和黄 c 按全局套准偏移。所有元素用同样的网角、点形和套准。</p></div>
+ <div class="card"><h3>三档网距</h3><p>fine 2px（色带、人像、细网）· medium 4px（几何插图）· coarse 1/16em（大字与姓名、About 照片）。不允许第四档（<code>screen.ts</code>）。</p></div>
+ <div class="card"><h3>噪声预算</h3><p>每种噪声都有上限（<code>budget.ts</code>）：加网前的墨量起伏 ±.08 且 ≥80px；转印缺墨 ≤.15、颗粒 ≤.12、滚筒 ≤.05；文字总减墨 ≤.15 / .12。超出就是故障，不是质感。</p></div>
+</div>
+<p>完整规则见 <code>docs/DESIGN_CONSTRAINTS.md</code>（尤其第 4、16–27 节）；新增印刷元素见 <code>docs/ADDING_A_PRINT_ELEMENT.md</code>。</p>
+
+<h2>7. 文件地图</h2>
+<div class="files">
+ <div><b>核心（纯计算）</b><br><code>print-pipeline/index.ts</code> 公共入口 · <code>definePrintElement</code><br><code>sources.ts</code> · <code>subject.ts</code> 分色<br><code>tone.ts</code> 影调 · <code>screen.ts</code> 网距<br><code>sheet.ts</code> 加网与转印 · <code>material.ts</code> 版与印刷机<br><code>text.ts</code> 文字 · <code>polygon.ts</code> 研究圆 · <code>rule.ts</code> 线条<br><code>plates.ts</code> · <code>budget.ts</code> · <code>noise.ts</code> · <code>png.ts</code> · <code>jobs.ts</code></div>
+ <div><b>浏览器（测量与发布）</b><br><code>client/print-material.ts</code> 文字、色带、插图调度<br><code>client/print-jobs.ts</code> · <code>print-worker.ts</code> Worker 池<br><code>client/print-rules.ts</code> · <code>print-guides.ts</code> 线条<br><code>client/reading-flow.ts</code> 阅读树<br><code>client/portrait-composition.ts</code> 人像 · <code>research-map.ts</code> 研究圆<br><code>print-pipeline/browser.ts</code> canvas / 遮罩工具</div>
+ <div><b>构建时</b><br><code>scripts/render-media.mjs</code> 总入口<br><code>render-portrait-composition.mjs</code> 人像<br><code>render-about-photo.mjs</code> 拱门<br><code>scripts/render-pipeline-doc.mjs</code> 本页图像</div>
+ <div><b>首帧（CSS）</b><br><code>print-pipeline/first-frame.ts</code> 姓名网点图、色带平涂墨量<br><code>styles/print-material.css</code> 纸纹、遮罩、线条层<br><code>styles/duotone-type.css</code> 两墨文字、套准<br><code>styles/reading-modes.css</code> Poster / Compact</div>
+</div>
+</main>
+</body>
+</html>
