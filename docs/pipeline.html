@@ -83,7 +83,7 @@ ol.timeline .t{font:500 12px "JetBrains Mono",monospace;color:var(--red);display
    <text x="164" y="122"><tspan x="164" dy="0">→ 每块版的</tspan><tspan x="164" dy="16">  墨量 0–1</tspan><tspan x="164" dy="16">darkness</tspan><tspan x="164" dy="16">separateSubject</tspan><tspan x="164" dy="16">separatePrintLab</tspan></text>
    <text x="308" y="122"><tspan x="308" dy="0">平面 / 球面</tspan><tspan x="308" dy="16">光照 + 低频</tspan><tspan x="308" dy="16">墨量起伏</tspan><tspan x="308" dy="16">±.08，≥80px</tspan><tspan x="308" dy="16">makeToneField</tspan></text>
    <text x="452" y="122"><tspan x="452" dy="0">AM 网点</tspan><tspan x="452" dy="16">版的角度/点形</tspan><tspan x="452" dy="16">三档网距</tspan><tspan x="452" dy="16">2 / 4 / 1/16em</tspan><tspan x="452" dy="16">screenSheet</tspan></text>
-   <text x="596" y="122"><tspan x="596" dy="0">纸面坐标上的</tspan><tspan x="596" dy="16">缺墨、细颗粒</tspan><tspan x="596" dy="16">滚筒(1440 周长)</tspan><tspan x="596" dy="16">套准偏移</tspan><tspan x="596" dy="16">paintSheet</tspan></text>
+   <text x="596" y="122"><tspan x="596" dy="0">纸面坐标上的</tspan><tspan x="596" dy="16">缺墨、细颗粒</tspan><tspan x="596" dy="16">滚筒(1440 周长)</tspan><tspan x="596" dy="16">prepareSheetTransfer</tspan></text>
    <text x="740" y="122"><tspan x="740" dy="0">墨 × 纸</tspan><tspan x="740" dy="16">multiply 叠印</tspan><tspan x="740" dy="16">朱红=参考版</tspan><tspan x="740" dy="16">蓝 / 黄 偏移</tspan><tspan x="740" dy="16">paintMaterial</tspan></text>
    <text x="890" y="122"><tspan x="890" dy="0">PNG（构建时）</tspan><tspan x="890" dy="16">alpha 遮罩</tspan><tspan x="890" dy="16">canvas 像素</tspan><tspan x="890" dy="16">CSS 网点图</tspan><tspan x="890" dy="16">encodeAlphaPNG</tspan></text>
    <text x="1034" y="122"><tspan x="1034" dy="0">DOM 文字+遮罩</tspan><tspan x="1034" dy="16">&lt;img&gt; / canvas</tspan><tspan x="1034" dy="16">印刷线条层</tspan><tspan x="1034" dy="16">纸纹 multiply</tspan><tspan x="1034" dy="16">首帧即最终</tspan></text>
@@ -199,5 +199,6 @@ ol.timeline .t{font:500 12px "JetBrains Mono",monospace;color:var(--red);display
  <div><b>首帧（CSS）</b><br><code>print-pipeline/first-frame.ts</code> 姓名网点图、色带平涂墨量<br><code>styles/print-material.css</code> 纸纹、遮罩、线条层<br><code>styles/duotone-type.css</code> 两墨文字、套准<br><code>styles/reading-modes.css</code> Poster / Compact</div>
 </div>
 </main>
+<p>阶段入口（2026-10-16）：composePlateCoverage 负责挖空与陷印；prepareSheetTransfer 负责着墨损耗；compositeRasterPlates 负责套准与叠色；renderSheet 串联后二者，paintSheet 为兼容名。导航的 wave / knurl 是加网几何，非滚筒减墨，不使用人工外轮廓 mask。</p>
 </body>
 </html>

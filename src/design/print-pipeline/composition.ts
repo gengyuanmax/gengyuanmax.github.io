@@ -18,7 +18,8 @@ function shift(mask:Float32Array,width:number,height:number,dx:number,dy:number)
  }
  return out;
 }
-export function compose(a:Field,b:Field,width:number,height:number,scale:number,op:Operation):Plate[]{
+/** Combine source coverage (knockout, trapping, etc.); no ink transfer or RGB mixing. */
+export function composePlateCoverage(a:Field,b:Field,width:number,height:number,scale:number,op:Operation):Plate[]{
  const A=a.print,B=b.print,MA=a.mask,MB=b.mask,plates:Plate[]=[];
  const add=(ink:Plate['ink'],coverage:Float32Array,opaque=false)=>{
   const existing=plates.find(p=>p.ink===ink&&!!p.opaque===opaque);
@@ -46,3 +47,6 @@ export function compose(a:Field,b:Field,width:number,height:number,scale:number,
  }
  return plates;
 }
+
+/** Compatibility alias for existing Element Lab callers. */
+export {composePlateCoverage as compose};

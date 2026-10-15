@@ -18,12 +18,13 @@ export function publishCanvas(target:HTMLCanvasElement,prepared:HTMLCanvasElemen
 export function cropSurface(input:HTMLCanvasElement,crop:{x:number;y:number;width:number;height:number},width:number,height:number){
  const c=surface(width,height);c.getContext('2d')!.drawImage(input,crop.x,crop.y,crop.width,crop.height,0,0,c.width,c.height);return c;
 }
-export type CanvasPlate={surface:HTMLCanvasElement;transform:Transform;transfer:number};
+/** Ink strength is a uniform multiplier, not a noise/transfer stage. */
+export type CanvasPlate={surface:HTMLCanvasElement;transform:Transform}&({inkStrength:number;transfer?:never}|{/** @deprecated Use inkStrength. */transfer:number;inkStrength?:never});
 const buffers=new WeakMap<HTMLCanvasElement,HTMLCanvasElement>();
 export function compositeCanvas(target:HTMLCanvasElement,paper:HTMLCanvasElement,layers:CanvasPlate[],width:number,height:number,dpr:number){
  let c=buffers.get(target);if(!c||c.width!==paper.width||c.height!==paper.height){c=surface(paper.width,paper.height);buffers.set(target,c);}
  const ctx=c.getContext('2d')!;ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(paper,0,0);
- for(const layer of layers){const t=layer.transform,cx=width/2,cy=height/2;ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=layer.transfer;ctx.globalCompositeOperation='multiply';ctx.translate(cx+t.x,cy+t.y);ctx.rotate(t.rotation*Math.PI/180);ctx.scale(t.scale,t.scale);ctx.translate(-cx,-cy);ctx.drawImage(layer.surface,0,0,width,height);ctx.restore();}
+ for(const layer of layers){const t=layer.transform,cx=width/2,cy=height/2;ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=layer.inkStrength??layer.transfer;ctx.globalCompositeOperation='multiply';ctx.translate(cx+t.x,cy+t.y);ctx.rotate(t.rotation*Math.PI/180);ctx.scale(t.scale,t.scale);ctx.translate(-cx,-cy);ctx.drawImage(layer.surface,0,0,width,height);ctx.restore();}
  publishCanvas(target,c);
 }
 export async function svgCoverage(markup:string,w:number,h:number){

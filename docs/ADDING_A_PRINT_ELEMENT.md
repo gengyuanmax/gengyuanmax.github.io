@@ -119,3 +119,16 @@ const src = screenPrintElement(definePrintElement({
 导航线条网使用 `line-v3`，经 `definePrintElement` / `screenPrintElement` 输出矢量 SVG。pitch、angle 读取共享 screen 配方，颜色继承朱红 token；coverage 控制线宽，不用透明度。当前仅用于研究子导航的单个移动指示块，不改变其他元素的点形。
 
 研究子导航线网按用户参考图使用近水平斜线、粗细起伏、硬边毛刺和局部断墨；复用共享 noise 的 seed、grain 与 starvation 参数。线网以一个 medium 单元为一个周期，不改照片和字形的网点频率。
+
+## 阶段命名与兼容入口（2026-10-16）
+
+- `composePlateCoverage`：原稿版面运算（挖空、陷印、交并），输出覆盖量，不处理油墨颜色；`compose` 仅为兼容别名。
+- `prepareSheetTransfer`：生成纸面着墨强度采样器，负责缺墨、颗粒和滚筒减墨，不处理形状或 RGB。
+- `compositeRasterPlates`：使用覆盖量、着墨采样器、套准与墨色执行最终合成，不生成噪声。
+- `renderSheet`：组合上述着墨与合成阶段。`paintSheet` 为兼容别名；`paintMaterial` 是兼容的整段渲染入口，并不是单独的着墨阶段。非 sheet 的历史配方保持原样。
+- Canvas 版参数 `inkStrength` 是均匀油墨强度，不是一个 Transfer 模块。旧 `transfer` 属性暂时兼容；新调用使用 `inkStrength`。文字仍使用自身有上限的 transfer 配方，不能为了统一名字重复施加一次。
+- `line-v3` 的 line / wave / knurl 是加网几何，不是滚筒条纹。原配方的波形、线宽起伏、毛边、断墨与随机序列保留；移除外围随机多边形 mask。SVG 自身的矩形承载边界仍存在，不另造破边轮廓。
+
+此次不调整参数或重排浮点运算；固定最新主分支的像素指纹覆盖精确/快速路径和 DPR 1/2，线网仅允许移除外围裁切，内部 path 指纹保持一致。
+
+导航使用 `finish:'rubbed'`；`lineFinishes` 集中保存毛边、线宽起伏与断墨倍率。SSR 与浏览器更新传入相同 finish。省略 finish 时仍是 original，历史基准不更新。

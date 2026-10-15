@@ -1,8 +1,7 @@
 import {valueNoise,salt,rng} from './noise.ts';
 import {spotT} from './noise.ts';
-import {noiseBudget,within,withinSigned} from './budget.ts';
+import {noiseBudget,within} from './budget.ts';
 import type {Press} from './material.ts';
-import type {PrintPlate,RGB} from './types.ts';
 export type Sheet={seed:number;origin:{x:number;y:number};height?:number;band?:number};
 /** Infinite paper coordinates: independent of crop bounds, DPR, role or element id. */
 const fields=new Map<number,ReturnType<typeof createFields>>();
@@ -72,35 +71,27 @@ export function screenSheet<Id extends string>(tone:Float32Array,w:number,h:numb
  if(!solid&&!fine&&p.edge>0&&scale>=2){const f=sheetFields(p.sheet!.seed);spreadRectangle(out,w,h,1,(x,y)=>f.edge(x/scale+origin.x,y/scale+origin.y),.3+.6*within(p.gain,noiseBudget.dotGain));}
  return out;
 }
-export function paintSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,h:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale:number){
- const {seed,origin}=p.sheet!,f=sheetFields(seed),out=new Uint8ClampedArray(w*h*4),budget=noiseBudget.transfer;
- // Plates shift relative to the reference only where an element prints more than one
- // of them; a single-plate element is its own reference (the approved look).
- const multi=new Set(plates.map(v=>v.ink)).size>1;
+/** Prepare ink-transfer strength in sheet coordinates. No plate geometry, color or blending.
+ * Keep the Float32 low-frequency grid and arithmetic order for pixel-identical output. */
+export function prepareSheetTransfer<Id extends string>(w:number,h:number,p:Press<Id>,scale:number){
+ const {seed,origin}=p.sheet!,f=sheetFields(seed),budget=noiseBudget.transfer;
  const fraction=within(p.holes,budget.grainArea),grainLoss=within(p.grain,budget.grainLoss),starve=within(p.starve,budget.starvation),roller=within((p.band||0)*.5,budget.roller);
- const shifts=plates.map(plate=>{const reg=multi?(plate.ink==='b'?p.offset:p.registration?.[plate.ink]??{x:0,y:0}):{x:0,y:0};return {dx:Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),dy:Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale),k:inks[plate.ink],cov:plate.coverage,opaque:plate.opaque};});
- const paper=inks.paper;
  // Low-frequency transfer (starvation and roller, features ≥32 CSS px). The exact path
  // samples it per pixel; the fast path samples a 2 CSS px grid and interpolates.
  const G=p.fast?Math.max(1,Math.round(2*scale)):1,gw=Math.ceil(w/G)+2,gh=Math.ceil(h/G)+2,slow=new Float32Array(gw*gh);
  for(let gy=0;gy<gh;gy++)for(let gx=0;gx<gw;gx++){const xx=gx*G/scale+origin.x,yy=gy*G/scale+origin.y,m=Math.max(0,Math.min(1,(sheetInk(seed,xx,yy)-.42)/.38));slow[gy*gw+gx]=(1-starve*m*m)*(1-roller*sheetRoller(p.sheet!,yy));}
- for(let y=0;y<h;y++){
+ return (x:number,y:number)=>{
   const fy=y/G,iy=Math.floor(fy),ty=fy-iy;
-  for(let x=0;x<w;x++){
    const xx=x/scale+origin.x,yy=y/scale+origin.y;
    let lowStrength:number;
    if(G===1)lowStrength=slow[y*gw+x];
    else{const fx=x/G,ix=Math.floor(fx),tx=fx-ix,a=slow[iy*gw+ix],b=slow[iy*gw+ix+1],c2=slow[(iy+1)*gw+ix],d=slow[(iy+1)*gw+ix+1];lowStrength=(a+(b-a)*tx)*(1-ty)+(c2+(d-c2)*tx)*ty;}
    // Absolute threshold, not a per-element histogram: cropping cannot change ink.
    const grain=fraction?Math.max(0,(fraction-f.fine(xx,yy))/fraction):0;
-   const strength=.96*(1-grainLoss*grain)*lowStrength;
-   let r=paper[0],g=paper[1],bl=paper[2];
-   for(const sh of shifts){const sx=x-sh.dx,sy=y-sh.dy;if(sx<0||sy<0||sx>=w||sy>=h)continue;
-    const t=sh.cov[sy*w+sx]*strength;if(!t)continue;const k=sh.k;
-    if(sh.opaque){r+=(k[0]-r)*t;g+=(k[1]-g)*t;bl+=(k[2]-bl)*t;}else{r*=1-t*(1-k[0]/255);g*=1-t*(1-k[1]/255);bl*=1-t*(1-k[2]/255);}
-   }
-   const i=(y*w+x)*4;out[i]=r;out[i+1]=g;out[i+2]=bl;out[i+3]=r===255&&g===255&&bl===255?0:255;
-  }
- }
- return out;
+   return .96*(1-grainLoss*grain)*lowStrength;
+ };
 }
+
+
+/** Compatibility name: this is the complete transfer + registration + composite render. */
+export {renderSheet as paintSheet} from './raster-composite.ts';

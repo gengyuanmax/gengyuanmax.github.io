@@ -8,7 +8,9 @@ const host=root?.querySelector<HTMLElement>('.he-artifact-groups');
 const controls=root?.querySelector<HTMLElement>('.he-artifact-controls');
 if(root&&host&&controls){
  const cards=new Map([...host.querySelectorAll<HTMLElement>('[data-content-id]')].map(el=>[el.dataset.contentId!.replace(/^artifact-/,''),el]));
- let mode:ArtifactMode='date',filter='all',config:DesignConfig=design;
+ let mode:ArtifactMode='date',filter='all',config:DesignConfig=design,renderTimer=0;
+ const syncChoice=()=>controls!.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.artifactMode===mode)));
+ function scheduleRender(){clearTimeout(renderTimer);renderTimer=window.setTimeout(render,matchMedia('(prefers-reduced-motion:reduce)').matches?0:170);}
  function render(){
   const sections=document.createDocumentFragment();
   let count=0;
@@ -29,11 +31,11 @@ if(root&&host&&controls){
   }
   if(!count){const empty=document.createElement('p');empty.textContent='No artifacts in this category.';sections.append(empty);}
   host!.replaceChildren(sections);root!.dispatchEvent(new CustomEvent('reading:layout'));
-  controls!.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.artifactMode===mode)));
+  syncChoice();
   controls!.querySelector<HTMLElement>('[data-artifact-status]')!.textContent=`${count} ${count===1?'artifact':'artifacts'}`;
  }
  controls.hidden=false;
- controls.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(button=>button.addEventListener('click',()=>{const next=button.dataset.artifactMode as ArtifactMode;if(next===mode)return;mode=next;render();}));
- controls.querySelector<HTMLSelectElement>('[data-artifact-filter]')!.addEventListener('change',event=>{const next=(event.target as HTMLSelectElement).value;if(next===filter)return;filter=next;render();});
+ controls.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(button=>button.addEventListener('click',()=>{const next=button.dataset.artifactMode as ArtifactMode;if(next===mode)return;mode=next;syncChoice();scheduleRender();}));
+ controls.querySelector<HTMLSelectElement>('[data-artifact-filter]')!.addEventListener('change',event=>{const next=(event.target as HTMLSelectElement).value;if(next===filter)return;filter=next;clearTimeout(renderTimer);render();});
  root.addEventListener('design:updated',event=>{config=(event as CustomEvent<DesignConfig>).detail;render();});
 }

@@ -16,11 +16,19 @@ test('two navigation screens have independent SVG definition IDs',()=>{
  assert.equal(new Set(ids).size,ids.length);
  for(const svg of screens)for(const [,id] of svg.matchAll(/url\(#([^)]*)\)/g))assert(svg.includes(`id="${id}"`));
 });
-test('roller textures share the line recipe; the default stays the original line screen',()=>{
+test('screen geometries share the line recipe; the default stays the original line screen',()=>{
  const render=texture=>screenPrintElement(definePrintElement({...recipe,...(texture?{texture}:{})}));
  assert.equal(render(),render('line'));
  assert.notEqual(render('knurl'),render('line'));assert.notEqual(render('wave'),render('line'));
  const knurl=render('knurl');
  for(const [,id] of knurl.matchAll(/url\(#([^)]*)\)/g))assert(knurl.includes(`id="${id}"`));
  assert.equal((knurl.match(/<rect /g)||[]).length,2);
+});
+
+test('navigation screens use no artificial silhouette mask or clipping polygon',()=>{
+ for(const texture of ['line','wave','knurl']){
+  const svg=screenPrintElement(definePrintElement({...recipe,texture}));
+  assert.doesNotMatch(svg, /clipPath|clip-path|<mask|<polygon/);
+  assert.match(svg, /<path d=/);
+ }
 });

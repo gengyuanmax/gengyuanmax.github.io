@@ -59,6 +59,7 @@ export function screenPlate<Id extends string>(tone:Float32Array,width:number,he
  for(let y=0;y<height;y++)out.set(mask.subarray(y*n,y*n+width),y*width);
  return out;
 }
+/** Compatibility render orchestrator: screening is already complete; applies transfer and composite. */
 export function paintMaterial<Id extends string>(plates:PrintPlate<Id>[],width:number,height:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale=1){
  if(p.sheet)return paintSheet(plates,width,height,inks,p,scale);
  const f=materialFields(width,height,scale,p),data=new Uint8ClampedArray(width*height*4);
