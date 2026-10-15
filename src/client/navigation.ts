@@ -1,4 +1,6 @@
-import { areaIds } from '../design/settings';
+import { areaIds,resolve,type DesignConfig } from '../design/settings';
+import {screen} from '../design/screen';
+import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root) {
  const pages=[...root.querySelectorAll<HTMLElement>('.he-page')];
@@ -7,21 +9,36 @@ if(root) {
  const header=root.querySelector<HTMLElement>('.he-nav-shell')!;
  const shortcuts=root.querySelector<HTMLElement>('.he-shortcuts')!;
  const links=[...root.querySelectorAll<HTMLAnchorElement>('[data-area-link]')];
- const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter')];
- let active=0, jump=0, scrollFrame=0, settle=0;
- function settled(){clearTimeout(settle);delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
+ const aboutNav=root.querySelector<HTMLElement>('.he-about-shortcuts')!;
+ const aboutSections=[...root.querySelectorAll<HTMLElement>('[data-about-section]')];
+ const chapters=[...root.querySelectorAll<HTMLElement>('.he-research-chapter, .he-publication-index')];
+ root.addEventListener('design:updated',event=>{
+  const lineSettings=resolve((event as CustomEvent<DesignConfig>).detail).values;
+  const recipe=screen('medium','a',lineSettings);
+  root.querySelectorAll('.he-chapter-indicator').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement({id:indicator.closest('.he-about-shortcuts')?'about-section-indicator':'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation})));
+ });
+ let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
+ let chapterTarget:string|null=null,chapterScrolling=false;
+ function releaseChapter(){clearTimeout(chapterIdle);chapterTarget=null;chapterScrolling=false;}
+ function settled(){clearTimeout(settle);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
  track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  function fit() {
-  viewport.style.height=pages[active].offsetHeight+'px';
-  root!.style.setProperty('--he-header-height',header.offsetHeight+'px');
+  const height=pages[active].offsetHeight+'px',navHeight=header.offsetHeight+'px',headerHeight=(header.offsetHeight+(active===1?shortcuts.offsetHeight:0))+'px';
+  if(root!.style.getPropertyValue('--he-nav-height')!==navHeight)root!.style.setProperty('--he-nav-height',navHeight);
+  if(viewport.style.height!==height)viewport.style.height=height;
+  if(root!.style.getPropertyValue('--he-header-height')!==headerHeight)root!.style.setProperty('--he-header-height',headerHeight);
  }
- function markChapter(id:string) { shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
+ function markAbout(id:string){const index=aboutSections.findIndex(s=>s.id===id);aboutNav.style.setProperty('--about-index',String(Math.max(0,index)));aboutNav.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.aboutLink===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+ function markChapter(id:string) { const index=chapters.findIndex(c=>c.id===id);shortcuts.style.setProperty('--chapter-index',String(Math.max(0,index)));shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
  function navigate(id:string, {history=true,scroll=true,focus=false}={}) {
-  const chapter=chapters.find(c=>c.id===id);
-  const index=chapter?1:pages.findIndex(p=>p.id===id);
+  const aboutSection=aboutSections.find(c=>c.id===id);
+  const chapter=chapters.find(c=>c.id===id)||aboutSection;
+  const index=aboutSection?3:chapter?1:pages.findIndex(p=>p.id===id);
   if(index<0)return;
+  if(chapter instanceof HTMLDetailsElement)chapter.open=true;
   clearTimeout(jump);
+  releaseChapter();
   const changed=index!==active;
   clearTimeout(settle);
   if(changed&&!reduced()){
@@ -33,25 +50,33 @@ if(root) {
   // Moving focus out of a panel precedes making that panel inert.
   const focused=document.activeElement;
   if(changed&&focused instanceof HTMLElement&&pages.some((p,i)=>i!==index&&p.contains(focused)))links[index].focus({preventScroll:true});
-  shortcuts.hidden=index!==1;
+  // At the page top, preserve the paper margin. Only reset when the user has
+  // scrolled past the site top, before changing the shortcut row or page height.
+  // Unconditional scrollIntoView moved a top-of-page header by the sheet margin.
+  if(scroll&&!chapter&&root!.getBoundingClientRect().top<0)root!.scrollIntoView({block:'start',behavior:'instant'});
   header.dataset.activeArea=pages[index].id;
   pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   track.style.transform=`translateX(-${index*100}%)`;
   fit();
   if(history&&location.hash!==`#${id}`)window.history.pushState(null,'',`#${id}`);
-  root!.querySelector('[data-navigation-status]')!.textContent=chapter?shortcuts.querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
-  if(chapter)markChapter(id);
-  if(scroll)jump=window.setTimeout(()=>{
+  root!.querySelector('[data-navigation-status]')!.textContent=chapter?(aboutSection?aboutNav:shortcuts).querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
+  if(aboutSection)markAbout(id);else if(chapter)markChapter(id);else if(index===1)markChapter(chapters[0].id);else if(index===3)markAbout(aboutSections[0].id);
+  if(scroll&&chapter){
+   // Keep the clicked destination selected while smooth scrolling crosses other
+   // chapters. Scrollspy must not pull the moving indicator backwards mid-flight.
+   chapterTarget=id;
+   jump=window.setTimeout(()=>{
+   chapterScrolling=true;
+   chapterIdle=window.setTimeout(releaseChapter,2000);
    fit();
-   if(chapter)chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
-   // The sticky header follows the viewport and is not a stable page-top anchor.
-   else root!.scrollIntoView({block:'start',behavior:'instant'});
+   chapter.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});
    if(focus&&chapter){
-    const heading=chapter.querySelector<HTMLElement>('h2')!;
+    const heading=chapter.querySelector<HTMLElement>('h2, summary')!;
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});
    }
   },changed&&!reduced()?490:0);
+  }
  }
  root.dataset.enhanced='true';
  if(import.meta.env.DEV)root.addEventListener('design:navigate',e=>navigate((e as CustomEvent<string>).detail,{history:false,scroll:false}));
@@ -59,14 +84,14 @@ if(root) {
  // Take over from the boot state in one step: navigating home first and then to the
  // URL's area would commit an intermediate transform and play a slide on load.
  let initial='home';try{initial=decodeURIComponent(location.hash.slice(1))||'home';}catch{}
- if(!pages.some(p=>p.id===initial)&&!chapters.some(c=>c.id===initial))initial='home';
+ if(!pages.some(p=>p.id===initial)&&!chapters.some(c=>c.id===initial)&&!aboutSections.some(c=>c.id===initial))initial='home';
  navigate(initial,{history:false,scroll:!!location.hash});
  delete root.dataset.booting;
  root.addEventListener('click',event=>{
   const target=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
   if(!target||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
   const id=target.hash.slice(1);
-  if(!pages.some(p=>p.id===id)&&!chapters.some(c=>c.id===id))return;
+  if(!pages.some(p=>p.id===id)&&!chapters.some(c=>c.id===id)&&!aboutSections.some(c=>c.id===id))return;
   event.preventDefault();navigate(id,{focus:event.detail===0});
  });
  links.forEach((a,i)=>a.addEventListener('keydown',event=>{
@@ -93,11 +118,22 @@ if(root) {
   if(Math.abs(total)>100){navigate(id);total=0;lastMove=now;}
  },{passive:false});
  window.addEventListener('scroll',()=>{
+  if(chapterTarget){
+   if(chapterScrolling){clearTimeout(chapterIdle);chapterIdle=window.setTimeout(releaseChapter,160);}
+   return;
+  }
+  if(active===3){if(scrollFrame)return;scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;if(chapterTarget)return;const edge=header.getBoundingClientRect().bottom+80;const reached=aboutSections.filter(s=>s.getBoundingClientRect().top<=edge);if(reached.length)markAbout(reached.reduce((a,b)=>a.getBoundingClientRect().top>b.getBoundingClientRect().top?a:b).id);});return;}
   if(active!==1||scrollFrame)return;
-  scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;let id=chapters[0].id;const edge=header.getBoundingClientRect().bottom+80;for(const c of chapters)if(c.getBoundingClientRect().top<=edge)id=c.id;markChapter(id);});
+  scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;if(chapterTarget)return;let id=chapters[0].id;const edge=header.getBoundingClientRect().bottom+shortcuts.offsetHeight+80;for(const c of chapters)if(c.getBoundingClientRect().top<=edge)id=c.id;markChapter(id);});
  },{passive:true});
+ // Manual scrolling immediately restores scrollspy ownership.
+ const interruptChapter=()=>{if(chapterTarget){clearTimeout(jump);releaseChapter();}};
+ window.addEventListener('wheel',interruptChapter,{passive:true});
+ window.addEventListener('touchstart',interruptChapter,{passive:true});
+ window.addEventListener('keydown',e=>{if(['PageUp','PageDown','Home','End','ArrowUp','ArrowDown',' '].includes(e.key))interruptChapter();});
+ window.addEventListener('scrollend',()=>{if(chapterScrolling)releaseChapter();});
  window.addEventListener('popstate',readHash);window.addEventListener('hashchange',readHash);
- const observer=new ResizeObserver(fit);[header,...pages].forEach(p=>observer.observe(p));
+ const observer=new ResizeObserver(fit);[header,shortcuts,...pages].forEach(p=>observer.observe(p));
  document.fonts.ready.then(fit);
  if(import.meta.env.DEV)import('./preview');
 }

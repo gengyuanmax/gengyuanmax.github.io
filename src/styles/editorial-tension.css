@@ -101,10 +101,10 @@
 
 /* About folio: Max's photograph of Delicate Arch printed in the blue plate
    (scripts/render-about-photo.mjs). It replaces the meaningless "04" numeral. */
-#personal-site .he-about-photo{margin:0 calc(-1 * var(--page-gutter) * var(--spread-bleed)) 0 0;align-self:end;grid-column:11/13;}
+#personal-site .he-about-photo{margin:0 calc(-1 * var(--page-gutter) * var(--spread-bleed)) 0 0;align-self:end;grid-column:10/13;}
 #personal-site .he-about-photo>img{display:block;width:100%;height:auto;mix-blend-mode:multiply;}
 @container(max-width:720px){
- #personal-site .he-about-masthead:has(.he-about-photo){grid-template-columns:minmax(0,1fr) 40%;align-items:end;}
+ #personal-site .he-about-masthead:has(.he-about-photo){grid-template-columns:minmax(110px,2fr) minmax(0,3fr);align-items:end;}
  #personal-site .he-about-masthead:has(.he-about-photo) h1{grid-column:1;}
  #personal-site .he-about-photo{grid-column:2;grid-row:1;min-height:0;margin-right:calc(-1 * var(--page-gutter) * var(--spread-bleed));}
 }
@@ -113,34 +113,34 @@
    identical full-width bars. 01 bleeds off the left edge, 02 off the right, 03 floats
    inside the grid; each keeps the shared plate, numeral and knockout title. */
 @container(min-width:721px){
- #personal-site .he-research-chapter.he-benchmark .he-chapter-heading{grid-column:1/10;}
- #personal-site .he-research-chapter.he-applications .he-chapter-heading{grid-column:4/13;padding-left:24px;}
- #personal-site .he-research-chapter.he-machines .he-chapter-heading{grid-column:2/11;padding-left:24px;}
- #personal-site .he-research-chapter.he-benchmark .he-chapter-heading>[data-style-element^="plate-"]{left:calc(-1 * var(--page-gutter) * var(--spread-bleed));right:0;width:auto;}
- #personal-site .he-research-chapter.he-applications .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
- #personal-site .he-research-chapter.he-machines .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading .he-chapter-number{margin-left:0;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading{grid-column:1/10;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading{grid-column:4/13;padding-left:24px;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading{grid-column:2/11;padding-left:24px;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading>[data-style-element^="plate-"]{left:calc(-1 * var(--page-gutter) * var(--spread-bleed));right:0;width:auto;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{margin-left:0;}
 }
 @container(max-width:720px){
  /* Without the left bleed the numeral needs its own room, or "02" is cropped to "0". */
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading .he-chapter-number{font-size:90px;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{font-size:90px;}
 }
 @container(max-width:720px){
  #personal-site .he-research-chapter .he-chapter-heading{padding-right:12px;}
  #personal-site .he-research-chapter .he-chapter-heading h2{overflow-wrap:normal;font-size:clamp(21px,5.2cqw,36px);}
- #personal-site .he-research-chapter.he-benchmark .he-chapter-heading{margin-right:9%;}
- #personal-site .he-research-chapter.he-applications .he-chapter-heading{margin-left:9%;padding-left:10px;}
- #personal-site .he-research-chapter.he-machines .he-chapter-heading{margin-left:4%;margin-right:5%;padding-left:10px;}
- #personal-site .he-research-chapter.he-benchmark .he-chapter-heading>[data-style-element^="plate-"]{right:0;width:auto;}
- #personal-site .he-research-chapter.he-applications .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
- #personal-site .he-research-chapter.he-machines .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading .he-chapter-number{margin-left:0;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading{margin-right:9%;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading{margin-left:9%;padding-left:10px;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading{margin-left:4%;margin-right:5%;padding-left:10px;}
+ #personal-site .he-research-chapter:nth-child(1) .he-chapter-heading>[data-style-element^="plate-"]{right:0;width:auto;}
+ #personal-site .he-research-chapter:nth-child(2) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:calc(-1 * var(--page-gutter) * var(--spread-bleed));width:auto;}
+ #personal-site .he-research-chapter:nth-child(3) .he-chapter-heading>[data-style-element^="plate-"]{left:0;right:0;width:auto;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{margin-left:0;}
 }
 @container(max-width:720px){
  /* Without the left bleed the numeral needs its own room, or "02" is cropped to "0". */
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
- #personal-site .he-research-chapter:is(.he-applications,.he-machines) .he-chapter-heading .he-chapter-number{font-size:90px;}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading{grid-template-columns:86px minmax(0,1fr);}
+ #personal-site .he-research-chapter:is(:nth-child(2),:nth-child(3)) .he-chapter-heading .he-chapter-number{font-size:90px;}
 }
 
 /* One type scale across the four areas (user, 2026-10-15). Page titles share a single

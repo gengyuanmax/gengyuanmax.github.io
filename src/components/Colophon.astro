@@ -3,10 +3,10 @@ import {profile} from '../data/content';
 import {design} from '../config/design';
 import {resolve,fontFamilies} from '../design/settings';
 const s=resolve(design).values;
-const fonts=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(' · ');
+const fonts=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(', ');
 ---
 <footer class="he-colophon" aria-label="Colophon">
- <p class="he-colophon-print"><span class="he-colophon-inks" aria-hidden="true"><i/><i/></span>Blue &amp; orange · yellow research overprints.</p>
+ <p class="he-colophon-print"><span class="he-colophon-inks" aria-hidden="true"><i/><i/></span>Blue &amp; orange, yellow research overprints.</p>
  <p>Set in <span data-colophon-fonts>{fonts}</span>.</p>
  <div class="he-colophon-bottom"><p>© 2026 {profile.name.join(' ')}<br/>Site updated <time datetime="2026-10-14">Oct 2026</time></p>
  <nav aria-label="Colophon links">{profile.contacts.filter(link=>['Email','Scholar','GitHub'].includes(link.label)).map(link=><a href={link.href}>{link.label} ↗</a>)}<a href="https://gengyuanmax.github.io/print-labs/">Print Labs ↗</a></nav></div>
@@ -16,6 +16,6 @@ const fonts=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key 
  document.querySelector('#personal-site')?.addEventListener('design:updated',event=>{
   const s=resolve((event as CustomEvent<DesignConfig>).detail).values;
   const label=document.querySelector('[data-colophon-fonts]');
-  if(label)label.textContent=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(' · ');
+  if(label)label.textContent=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(', ');
  });
 </script>

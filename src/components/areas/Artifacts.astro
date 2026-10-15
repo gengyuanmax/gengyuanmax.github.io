@@ -11,6 +11,7 @@ import PrintTitle from '../PrintTitle.astro';
 import PrintMotif from '../PrintMotif.astro';
 import PrintWord from '../PrintWord.astro';
 import MediaPlaceholder from '../MediaPlaceholder.astro';
+import {formatMonth} from '../../data/dates';
 import {artifacts,artifactCategories,sectionCopy} from '../../data/content';
 import {artifactGroups,preferredResource,resourceEntries} from '../../data/catalog';
 import {artifactComposition,placements} from '../../config/compositions';
@@ -30,7 +31,7 @@ const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-i
  <span class="he-reading-marker" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
  {item.id==='a'&&<div class="he-print-lab-overview"><a class="he-insert-stack" href={item.links?.page} style={`--stack-height:${stackHeight.toFixed(4)}`} aria-label="Explore Print Labs: print texture, layout, paper objects and elements">{printLabStack.map(sheet=><img class="he-insert-sheet" data-insert-sheet={sheet.id} src={sheet.src} style={sheet.style} width="249" height="320" alt="" loading="lazy" decoding="async"/>)}</a></div>}
  {item.id==='b'&&<PrintMotif id="mark-paper"/>}{item.id==='d'&&<PrintMotif id="mark-wikitilo"/>}{item.id==='e'&&<PrintMotif id="mark-mevtr"/>}
- {item.previewRatio&&<MediaPlaceholder ratio={item.previewRatio} label="[Artifact preview]"/>}<p class="he-item-meta">{item.featured&&<strong>Selected · </strong>}{item.form} · {item.publishedAt?<time datetime={item.publishedAt}>{item.publishedAt}</time>:item.metadata}</p><h2>{resource?<a href={resource.href}><PrintWord id={wordIds[item.id]} area="artifacts" text={item.title}/><span class="he-external-mark" aria-hidden="true"> ↗</span></a>:item.title}</h2><p class="he-artifact-description"><EmphasisText text={item.description} phrase={bodyEmphasis.artifacts[item.id]}/></p><div class="he-project-resources">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{kind==='page'?'Explore':kind==='github'?'GitHub':kind==='arxiv'?'arXiv':kind==='dataset'?'Dataset':kind}</a>)}</div>
+ {item.previewRatio&&<MediaPlaceholder ratio={item.previewRatio} label="[Artifact preview]"/>}<p class="he-item-meta">{item.featured&&<strong>Selected, </strong>}{item.form}, {item.publishedAt?<time datetime={item.publishedAt}>{formatMonth(item.publishedAt)}</time>:item.metadata}</p><h2>{resource?<a href={resource.href}><PrintWord id={wordIds[item.id]} area="artifacts" text={item.title}/><span class="he-external-mark" aria-hidden="true"> ↗</span></a>:item.title}</h2><p class="he-artifact-description"><EmphasisText text={item.description} phrase={bodyEmphasis.artifacts[item.id]}/></p><div class="he-project-resources">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{kind==='page'?'Explore':kind==='github'?'GitHub':kind==='arxiv'?'arXiv':kind==='dataset'?'Dataset':kind}</a>)}</div>
  </Styled>;
 })}</div>}</div>
 
