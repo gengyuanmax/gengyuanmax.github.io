@@ -99,4 +99,24 @@
  #personal-site[data-reading="compact"] .he-about-body .he-about-reviewing{grid-column:5/9;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
  #personal-site[data-reading="compact"] .he-about-body .he-about-outside{grid-column:9/13;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
  #personal-site[data-reading="compact"] .he-about-body .he-about-contact{grid-column:1/-1;grid-row:5;margin-top:calc(var(--baseline) * 2.5);}
+ /* Rows (user, 2026-10-15: follow the grid in rows as well as columns; break it only when
+    needed). Modules side by side share their top line and their heading line. */
+ /* Home: News starts its heading on the same line as the research heading beside it. */
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-news{padding-top:36px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-divider-news{top:calc(36px + 14px);}
+ /* Artifacts: one art slot per row; art hangs from the slot's bottom so meta and titles align. */
+ /* A column of blocks: margins must not collapse into the art slot. */
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{display:flex;flex-direction:column;align-items:stretch;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{align-self:flex-start;}
+ #personal-site[data-reading="compact"] .he-artifact-spread{--art-slot:calc(var(--baseline) * 26);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-object{height:calc(var(--baseline) * 14);margin:calc(var(--art-slot) - var(--baseline) * 14) 0 0;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{width:154px;height:var(--art-slot);margin:0;overflow:visible;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-item-meta{margin-top:calc(var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact:not(:has(>.he-print-object,>.he-print-lab-overview))>.he-item-meta{margin-top:calc(var(--art-slot) + var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact h2{margin-top:var(--baseline);}
+ /* About: every module heading uses one structure, so headings in a row share a line. */
+ #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading{display:flex;align-items:flex-end;gap:calc(var(--baseline) * 2);min-height:0;padding:0 0 calc(var(--baseline) * 1.5);margin:0 0 calc(var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading h2{margin:0;padding:0;}
+ #personal-site[data-reading="compact"] .he-about-body .he-personal-heading{align-items:flex-end;}
+ #personal-site[data-reading="compact"] .he-about-body .he-personal-heading>.he-print-object{height:calc(var(--baseline) * 4);flex-basis:56px;width:56px;}
 }

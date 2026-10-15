@@ -3,9 +3,9 @@ import {definePrintElement,screenPrintElement} from '../design/print-pipeline/in
 import {screen} from '../design/screen';
 import {design} from '../config/design';
 import {resolve} from '../design/settings';
-const {id='chapter-indicator'}=Astro.props;
+const {id='chapter-indicator',texture='line',class:className='he-chapter-indicator'}=Astro.props as {id?:string;texture?:'line'|'knurl'|'wave';class?:string};
 const lineSettings=resolve(design).values;
 const recipe=screen('medium','a',lineSettings);
-const chapterScreen=screenPrintElement(definePrintElement({id,profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation}));
+const chapterScreen=screenPrintElement(definePrintElement({id,profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation,texture}));
 ---
-<span class="he-chapter-indicator" aria-hidden="true" set:html={chapterScreen}/>
+<span class={className} data-line-id={id} data-line-texture={texture} aria-hidden="true" set:html={chapterScreen}/>

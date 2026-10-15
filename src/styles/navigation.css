@@ -70,3 +70,11 @@
 
 #personal-site .he-shortcuts .he-shortcut-number{flex-shrink:0;white-space:nowrap;word-break:normal;overflow-wrap:normal;}
 #personal-site .he-shortcuts .he-shortcut-label{min-width:0;white-space:normal;word-break:normal;overflow-wrap:normal;text-wrap:balance;}
+
+/* Sub-navigation roller textures (user, 2026-10-15): one engraving, three rolls.
+   Research: straight lines (moving block). Artifacts: diamond knurl under the chosen
+   ordering. About: wavy roll (moving block, set in ChapterIndicator's texture). */
+#personal-site .he-artifact-controls button{isolation:isolate;}
+#personal-site .he-mode-indicator{position:absolute;z-index:-1;left:-4px;right:-4px;bottom:2px;height:16px;color:var(--red-ink);pointer-events:none;opacity:0;}
+#personal-site .he-mode-indicator svg{display:block;width:100%;height:100%;}
+#personal-site .he-artifact-controls button[aria-pressed="true"] .he-mode-indicator{opacity:1;}

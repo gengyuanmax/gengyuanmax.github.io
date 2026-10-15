@@ -71,9 +71,9 @@
 #personal-site .he-artifact {position:relative;isolation:isolate;}
 #personal-site .he-artifact-spread {row-gap:70px;}
 #personal-site .he-artifact h2 {font-family:var(--display-face);line-height:1.05;}
-#personal-site .he-artifact-controls {border-block:0;border-top:3px solid var(--ink);padding:16px 0 10px;margin-bottom:40px;gap:14px 32px;}
+#personal-site .he-artifact-controls {border-block:0;padding:16px 0 10px;margin-bottom:40px;gap:14px 32px;}
 #personal-site .he-artifact-controls button {position:relative;background:none!important;color:var(--ink)!important;padding:8px 2px;margin-right:20px;}
-#personal-site .he-artifact-controls button[aria-pressed="true"]::after {content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--red-ink);}
+/* The chosen ordering is marked by the knurled roller texture (navigation.css .he-mode-indicator). */
 #personal-site .he-artifact-controls select {border:0;border-bottom:2px solid var(--ink);background:transparent;padding-inline:8px 20px;}
 #personal-site .he-artifact-group-label {font:750 34px/1.1 var(--display-face);letter-spacing:-.03em;border:0;border-left:8px solid var(--red-ink);padding:0 0 0 14px;}
 #personal-site .he-print-lab-spread {position:relative;isolation:isolate;grid-template-columns:1.2fr 1fr 1fr .9fr;gap:12px;align-items:end;padding:10px 0 30px;}
@@ -89,7 +89,7 @@
 #personal-site [data-content-id="artifact-b"] > .he-print-object {height:145px;}
 #personal-site [data-content-id="artifact-b"] h2 {font-size:clamp(32px,4.5cqw,54px);}
 #personal-site [data-content-id="artifact-b"] .he-item-meta {border:0;padding:0;}
-#personal-site [data-content-id="artifact-c"] {padding-left:18px;border-left:6px solid var(--blue-ink);}
+/* artifact-c no longer carries a side rule: no side rules (divider system, editorial-tension.css). */
 #personal-site [data-content-id="artifact-c"] h2 {font-size:clamp(28px,3.3cqw,42px);}
 #personal-site [data-content-id="artifact-c"] .he-type-a {display:none;}
 #personal-site [data-content-id="artifact-c"] .he-type-b {color:var(--ink);}

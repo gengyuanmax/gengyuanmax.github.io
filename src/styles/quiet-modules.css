@@ -38,7 +38,7 @@
 #personal-site .he-about-body .he-timeline h3 {font:600 19px/1.4 var(--reading-face);margin:0;}
 #personal-site .he-timeline-content p {font-size:var(--body-size);line-height:1.65;margin-top:8px;}
 #personal-site .he-timeline-content p + p {margin-top:10px;}
-#personal-site .he-about-contact {position:relative;margin-top:4px;padding-top:12px!important;border-top:2px solid var(--ink)!important;}
+#personal-site .he-about-contact {position:relative;margin-top:4px;padding-top:12px!important;border-top:2px solid var(--blue-ink)!important;}
 #personal-site .he-about-contact .he-contact {margin-top:4px;gap:14px 24px;}
 
 /* Quiet side notes. The small closing motif belongs to Outside research. */
@@ -49,7 +49,6 @@
 #personal-site .he-about-personal .he-heading-tick {width:18px;flex-basis:18px;height:2px;}
 #personal-site .he-about-personal p {font-size:14px;line-height:1.75;max-width:38ch;}
 #personal-site .he-about-funding > .he-item-meta {font:500 13px/1.8 var(--metadata-face);color:var(--ink);margin-top:6px;}
-#personal-site .he-about-reviewing {margin-left:24px;border-left:2px solid var(--blue-ink);padding-left:16px;}
 #personal-site .he-about-reviewing .he-heading-tick {display:none;}
 #personal-site .he-personal-heading {display:flex;align-items:center;gap:12px;}
 #personal-site .he-personal-heading .he-quiet-heading {flex:1;}
