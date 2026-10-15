@@ -305,3 +305,7 @@ Artifacts 槽位调整为 6/5、4/6、6 列，作品标题上限统一 44px，Pr
 About 正文移除重复姓名标题；照片下方添加纵向章节目录（Experience、Education、Funding、Reviewing、Outside research、Contact），沿用研究目录的 line-v3 朱红选中块，保持原有章节编号。
 
 Research 次级目录编号 01/02/03 不收缩、不拆行；文字标签独立排版，允许按词换成两行，不连带压缩编号。
+
+## G/Z 标识（2026-10-15 用户选定）
+
+采用 Element Lab 等宽 G/Z 标记：粉色 G、蓝色 Z，横向中心距 28px，Z 上移 4px，105% 字号，放大网点，挖空＋陷印，1.5mm 套色错位。此品牌原稿保留原色，作为双墨规则的明确局部例外，不改全站色板。透明静态图用于 favicon、触屏图标及页脚署名；不叠加运行时印刷效果。批准的透明原稿与配方在 src/assets/brand，scripts/render-brand.mjs 只裁切透明留白并输出尺寸变体。

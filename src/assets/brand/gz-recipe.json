@@ -1,0 +1,32 @@
+{
+  "canvas": [
+    640,
+    400
+  ],
+  "palette": "riso",
+  "operation": "trap",
+  "misregistrationMm": 1.5,
+  "elements": {
+    "a": {
+      "text": "G",
+      "font": "mono",
+      "ink": "a",
+      "size": 105,
+      "rot": 0,
+      "x": 306,
+      "y": 200,
+      "dots": "giant"
+    },
+    "b": {
+      "text": "Z",
+      "font": "mono",
+      "ink": "b",
+      "size": 105,
+      "rot": 0,
+      "x": 334,
+      "y": 196,
+      "dots": "giant"
+    }
+  },
+  "note": "28px horizontal separation; Z raised 4px. Ink assignments swapped: G pink, Z blue. Other parameters unchanged."
+}

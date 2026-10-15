@@ -88,3 +88,6 @@
  #personal-site .he-about-body .he-about-module{grid-row:auto;}
  #personal-site .he-about-intro{grid-column:1/-1;}
 }
+
+#personal-site .he-colophon .he-brand-mark{flex:none;padding:0;margin-right:8px;text-decoration:none;}
+#personal-site .he-brand-mark img{display:block;width:48px;height:auto;}
