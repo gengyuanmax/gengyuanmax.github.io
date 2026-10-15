@@ -53,14 +53,11 @@
 #personal-site .he-about-experience .he-module-index {position:absolute;left:calc(-1 * var(--page-gutter) * var(--spread-bleed));top:0;font-size:148px;line-height:.85;height:100px;overflow:hidden;color:var(--red-ink);}
 #personal-site .he-about-experience .he-quiet-heading h2 {position:relative;font-size:39px;}
 #personal-site .he-about-experience .he-heading-tick {display:none;}
-#personal-site .he-about-education .he-quiet-heading {display:block;padding:0 0 10px;border-bottom:4px solid var(--blue-ink);}
+#personal-site .he-about-education .he-quiet-heading {display:block;padding:0 0 10px;}
 #personal-site .he-about-education .he-module-index {display:block;font-size:112px;line-height:.85;margin-left:-24px;margin-bottom:-8px;}
 #personal-site .he-about-education .he-quiet-heading h2 {position:relative;margin-left:34px;background:var(--paper);width:fit-content;padding:6px 0 0 8px;}
 #personal-site .he-about-body .he-timeline::before {width:3px;}
 #personal-site .he-about-body .he-timeline li::before {width:9px;height:9px;border:0;background:var(--blue-ink);}
-#personal-site .he-about-funding {border-top:4px solid var(--red-ink);padding-top:16px;}
-#personal-site .he-about-outside {border-block-width:3px;}
-#personal-site .he-about-contact {border-top-width:3px!important;}
 
 @container(min-width:1001px){
  #personal-site .he-name {margin-left:calc(-.6 * var(--page-gutter) * var(--spread-bleed));}
@@ -156,3 +153,9 @@
 #personal-site .he-page .he-about-education .he-quiet-heading h2{margin-left:0;padding:0;}
 #personal-site .he-page :is(.he-about-contact,.he-about-education) .he-quiet-heading{display:flex;align-items:flex-end;gap:20px;}
 #personal-site .he-page .he-about-module .he-module-index{color:var(--ink);}
+
+/* One divider system (user, 2026-10-15): page mastheads carry no rule (Home and Research
+   already dropped theirs), module headings carry no rule, and About's later modules are
+   separated by the same single blue top rule (Contact's rule lives in quiet-modules.css).
+   No side rules, no closing rules. */
+#personal-site .he-about-body :is(.he-about-funding,.he-about-reviewing,.he-about-outside){border-top:2px solid var(--blue-ink);padding-top:calc(var(--baseline) * 2);}

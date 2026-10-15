@@ -15,7 +15,7 @@ if(root) {
  root.addEventListener('design:updated',event=>{
   const lineSettings=resolve((event as CustomEvent<DesignConfig>).detail).values;
   const recipe=screen('medium','a',lineSettings);
-  root.querySelectorAll('.he-chapter-indicator').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement({id:indicator.closest('.he-about-shortcuts')?'about-section-indicator':'chapter-indicator',profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation})));
+  root.querySelectorAll<HTMLElement>('[data-line-id]').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement({id:indicator.dataset.lineId!,profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation,texture:indicator.dataset.lineTexture as 'line'|'knurl'|'wave'})));
  });
  let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
  let chapterTarget:string|null=null,chapterScrolling=false;

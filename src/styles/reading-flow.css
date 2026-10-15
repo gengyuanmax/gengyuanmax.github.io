@@ -55,9 +55,9 @@
 #personal-site :is(.he-about-funding,.he-about-reviewing) .he-quiet-heading h2 {font-size:30px;}
 #personal-site .he-about-funding > .he-item-meta {font:500 13px/1.8 var(--metadata-face);margin-top:18px;}
 #personal-site .he-about-funding > p:last-child {font-size:calc(var(--body-size) + 3px);line-height:1.45;margin-top:18px;max-width:32ch;}
-#personal-site .he-about-reviewing {margin-left:0;padding-left:24px;}
+#personal-site .he-about-reviewing {margin-left:0;padding-left:0;}
 #personal-site .he-about-reviewing > p {max-width:34ch;line-height:1.55;}
-#personal-site .he-about-outside {position:relative;padding:30px 0 24px;border-block:1.5px solid var(--blue-ink);}
+#personal-site .he-about-outside {position:relative;}
 #personal-site .he-about-outside .he-quiet-heading h2 {font-size:32px;}
 #personal-site .he-personal-heading > .he-print-object {flex-basis:110px;width:110px;height:76px;margin-top:-64px;}
 #personal-site .he-about-outside > p {font-size:calc(var(--body-size) + 4px);line-height:1.5;max-width:43ch;}

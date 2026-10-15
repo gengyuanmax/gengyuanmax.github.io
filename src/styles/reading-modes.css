@@ -18,12 +18,12 @@
  /* Mastheads: one title size, less air. */
  /* #personal-site is the query container, so the tokens are set on its pages. */
  #personal-site[data-reading="compact"] :is(.he-page,.he-nav-shell){--page-title-size:clamp(40px,5.6cqw,72px);--module-index-size:clamp(48px,5cqw,72px);}
- #personal-site[data-reading="compact"] .he-page{padding-top:24px;padding-bottom:32px;}
+ #personal-site[data-reading="compact"] .he-page{padding-top:calc(var(--baseline) * 3);padding-bottom:calc(var(--baseline) * 4);}
  #personal-site[data-reading="compact"] :is(.he-research-masthead,.he-artifacts-masthead){margin-bottom:8px;row-gap:8px;min-height:0;}
  #personal-site[data-reading="compact"] .he-about-masthead{min-height:0;}
 
  /* Research: chapter bands half height; two projects side by side per chapter. */
- #personal-site[data-reading="compact"] .he-research-chapter{row-gap:24px;margin-top:8px;}
+ #personal-site[data-reading="compact"] .he-research-chapter{row-gap:calc(var(--baseline) * 3);margin-top:var(--baseline);}
  #personal-site[data-reading="compact"] .he-research-chapter .he-chapter-heading{min-height:104px;padding-top:16px;padding-bottom:16px;grid-template-columns:150px minmax(0,1fr);margin-bottom:0;}
  #personal-site[data-reading="compact"] .he-chapter-heading .he-chapter-number{font-size:104px;height:88px;line-height:.85;margin-bottom:-16px;}
  #personal-site[data-reading="compact"] .he-chapter-heading h2{font-size:clamp(24px,2.6cqw,34px);}
@@ -34,16 +34,16 @@
  #personal-site[data-reading="compact"] .he-project-imprint h3{font-size:clamp(24px,2.4cqw,32px);}
  #personal-site[data-reading="compact"] :is(.he-project-feature,.he-machine-feature) h3{font-size:clamp(30px,3.2cqw,44px);}
  #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{max-width:46%;}
- #personal-site[data-reading="compact"] .he-project-description{max-width:52ch;}
+ #personal-site[data-reading="compact"] .he-project-description{max-width:calc((100% + var(--column-gap)) * 5 / 6 - var(--column-gap));}
 
  /* Artifacts: three per row, same printed objects at a smaller scale. */
- #personal-site[data-reading="compact"] .he-artifact-spread{row-gap:40px;}
+ #personal-site[data-reading="compact"] .he-artifact-spread{row-gap:calc(var(--baseline) * 5);}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{grid-column:auto/span 4;grid-row:auto;margin-top:0;align-self:start;}
  #personal-site[data-reading="compact"] .he-artifact h2{font-size:clamp(26px,2.6cqw,36px);}
- #personal-site[data-reading="compact"] .he-print-lab-overview{width:min(100%,220px);float:none;margin:0 0 12px;}
+ #personal-site[data-reading="compact"] .he-print-lab-overview{width:min(100%,220px);float:none;margin:0 0 calc(var(--baseline) * 1.5);}
 
  /* About: same modules, tighter rhythm. */
- #personal-site[data-reading="compact"] .he-about-body{row-gap:40px;margin-top:20px;}
+ #personal-site[data-reading="compact"] .he-about-body{row-gap:calc(var(--baseline) * 5);margin-top:calc(var(--baseline) * 3);}
  #personal-site[data-reading="compact"] .he-about-body .he-timeline li{padding-top:12px;padding-bottom:14px;}
 
  /* Home: smaller name and research index so News reaches the first screen. */
@@ -54,7 +54,7 @@
     compact size must be !important to win over those inline declarations. */
  #personal-site[data-reading="compact"],#personal-site[data-reading="compact"] [style*="--body-size"]{--body-size:15px!important;}
  #personal-site[data-reading="compact"] .he-project .he-project-description{line-height:1.6;margin-top:6px;}
- #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{height:140px;width:56%;max-width:none;margin-left:0;}
+ #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{height:140px;width:calc((100% - var(--column-gap)) / 2);max-width:none;margin-left:0;}
  #personal-site[data-reading="compact"] .he-artifact>.he-print-object{height:112px;max-width:200px;}
  #personal-site[data-reading="compact"] [data-content-id="artifact-b"]>.he-print-object{height:104px;}
  #personal-site[data-reading="compact"] [data-content-id="artifact-d"]>.he-print-object{height:112px;margin-bottom:8px;}
@@ -72,16 +72,18 @@
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research{--home-branch-layout:stack;grid-column:1/7;grid-row:auto;grid-template-columns:repeat(6,minmax(0,1fr));}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-brand{grid-column:1/-1;grid-row:1;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-brand h2{font-size:calc(var(--home-brand-size) * .6);}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/-1;grid-row:2;padding:24px 0 0;margin:0;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .research-map{max-width:520px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/-1;grid-row:2;padding:calc(var(--baseline) * 3) 0 0;margin:0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .research-map{max-width:none;margin-inline:0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news{grid-column:7/13;grid-row:auto;align-self:start;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news h2{font-size:30px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li{grid-template-columns:7ch minmax(0,1fr);gap:16px;padding:12px 0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:var(--column-gap);row-gap:0;padding:calc(var(--baseline) * 1.5) 0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news .he-date{grid-column:1;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li p{grid-column:2/-1;max-width:none;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li p{font-size:15px;line-height:1.5;}
 
  /* About: masthead and body share one 12-column grid so the photograph and the section
     index sit beside the title and intro, and Experience / Education reach the first screen. */
- #personal-site[data-reading="compact"] .he-page:has(>.he-about-masthead){display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);row-gap:20px;align-items:start;}
+ #personal-site[data-reading="compact"] .he-page:has(>.he-about-masthead){display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);row-gap:calc(var(--baseline) * 2.5);align-items:start;}
  #personal-site[data-reading="compact"] :is(.he-about-masthead,.he-about-body){display:contents;}
  #personal-site[data-reading="compact"] .he-about-masthead h1{grid-column:1/8;grid-row:1;align-self:end;padding-bottom:0;}
  #personal-site[data-reading="compact"] .he-about-masthead .he-about-photo{grid-column:11/13;grid-row:1/3;align-self:start;}
@@ -91,10 +93,30 @@
  #personal-site[data-reading="compact"] .he-about-body .he-about-module{margin-top:0;}
  #personal-site[data-reading="compact"] .he-about-body .he-about-intro{grid-column:1/8;grid-row:2;}
  #personal-site[data-reading="compact"] .he-about-intro>p{font-size:17px;line-height:1.6;margin-top:0;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-experience{grid-column:1/8;grid-row:3;margin-top:20px;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-education{grid-column:8/13;grid-row:3;margin-top:20px;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-funding{grid-column:1/5;grid-row:4;margin-top:20px;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-reviewing{grid-column:5/9;grid-row:4;margin-top:20px;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-outside{grid-column:9/13;grid-row:4;margin-top:20px;}
- #personal-site[data-reading="compact"] .he-about-body .he-about-contact{grid-column:1/-1;grid-row:5;margin-top:20px;}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-experience{grid-column:1/8;grid-row:3;margin-top:calc(var(--baseline) * 2.5);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-education{grid-column:8/13;grid-row:3;margin-top:calc(var(--baseline) * 2.5);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-funding{grid-column:1/5;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-reviewing{grid-column:5/9;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-outside{grid-column:9/13;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-contact{grid-column:1/-1;grid-row:5;margin-top:calc(var(--baseline) * 2.5);}
+ /* Rows (user, 2026-10-15: follow the grid in rows as well as columns; break it only when
+    needed). Modules side by side share their top line and their heading line. */
+ /* Home: News starts its heading on the same line as the research heading beside it. */
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-news{padding-top:36px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-divider-news{top:calc(36px + 14px);}
+ /* Artifacts: one art slot per row; art hangs from the slot's bottom so meta and titles align. */
+ /* A column of blocks: margins must not collapse into the art slot. */
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{display:flex;flex-direction:column;align-items:stretch;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{align-self:flex-start;}
+ #personal-site[data-reading="compact"] .he-artifact-spread{--art-slot:calc(var(--baseline) * 26);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-object{height:calc(var(--baseline) * 14);margin:calc(var(--art-slot) - var(--baseline) * 14) 0 0;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{width:154px;height:var(--art-slot);margin:0;overflow:visible;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-item-meta{margin-top:calc(var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact:not(:has(>.he-print-object,>.he-print-lab-overview))>.he-item-meta{margin-top:calc(var(--art-slot) + var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact h2{margin-top:var(--baseline);}
+ /* About: every module heading uses one structure, so headings in a row share a line. */
+ #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading{display:flex;align-items:flex-end;gap:calc(var(--baseline) * 2);min-height:0;padding:0 0 calc(var(--baseline) * 1.5);margin:0 0 calc(var(--baseline) * 2);}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading h2{margin:0;padding:0;}
+ #personal-site[data-reading="compact"] .he-about-body .he-personal-heading{align-items:flex-end;}
+ #personal-site[data-reading="compact"] .he-about-body .he-personal-heading>.he-print-object{height:calc(var(--baseline) * 4);flex-basis:56px;width:56px;}
 }

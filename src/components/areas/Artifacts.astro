@@ -1,4 +1,5 @@
 ---
+import ChapterIndicator from '../ChapterIndicator.astro';
 import {definePrintElement,screenPrintElement} from '../../design/print-pipeline/index';
 import {insertStack,stackHeight} from '../../design/insert-stack';
 import {design} from '../../config/design';
@@ -21,7 +22,7 @@ const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-i
 <GridGuides/>
 <header class="he-artifacts-masthead"><PrintTitle id="artifacts-title" area="artifacts" lines={["Artifacts"]}/><p>{sectionCopy.artifacts}</p></header>
 <div class="he-artifact-controls" hidden>
- <div role="group" aria-label="Artifact ordering"><button type="button" data-artifact-mode="date" aria-pressed="true">By date</button><button type="button" data-artifact-mode="category" aria-pressed="false">By category</button></div>
+ <div role="group" aria-label="Artifact ordering"><button type="button" data-artifact-mode="date" aria-pressed="true"><ChapterIndicator id="artifact-mode-date" texture="knurl" class="he-mode-indicator"/>By date</button><button type="button" data-artifact-mode="category" aria-pressed="false"><ChapterIndicator id="artifact-mode-category" texture="knurl" class="he-mode-indicator"/>By category</button></div>
  <label>Category <select data-artifact-filter><option value="all">All</option>{Object.entries(artifactCategories).map(([id,label])=><option value={id}>{label}</option>)}</select></label>
  <span class="he-announcement" data-artifact-status role="status"/>
 </div>
