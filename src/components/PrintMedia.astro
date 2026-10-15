@@ -4,7 +4,7 @@ import Styled from './Styled.astro';
 import {assets} from '../data/assets';
 const asset=assets['portrait-canyon'];
 ---
-<Styled as="figure" id="home-portrait" area="home" class="he-portrait" data-flow-label="肖像">
+<Styled as="figure" id="home-portrait" area="home" class="he-portrait" data-flow-label="肖像" style={`--media-ratio:${(portraitViewport.height/portraitViewport.width).toFixed(5)}`}>
  <img src={compositionAsset} width={portraitViewport.width} height={portraitViewport.height} alt={asset.alt} fetchpriority="high" draggable="false"/>
  <canvas class="he-portrait-composition" aria-hidden="true"/>
 </Styled>

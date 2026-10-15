@@ -13,7 +13,7 @@ import {profile,experience,education,service} from '../../data/content';
 const row=(name:string)=>`--item-row:${placements[`about-${name}` as keyof typeof placements].row}`;
 import {aboutPhoto} from '../../config/about-photo';
 ---
-<header class="he-about-masthead"><PrintTitle id="about-title" area="about" lines={["About me"]}/><figure class="he-about-folio he-about-photo" aria-hidden="true"><img src={aboutPhoto.output} width={aboutPhoto.width*aboutPhoto.scale} height={Math.round(aboutPhoto.width*aboutPhoto.scale*aboutPhoto.crop.height/aboutPhoto.crop.width)} alt="" decoding="async"/></figure></header>
+<header class="he-about-masthead"><PrintTitle id="about-title" area="about" lines={["About me"]}/><figure class="he-about-folio he-about-photo" aria-hidden="true" style={`--media-ratio:${(aboutPhoto.crop.height/aboutPhoto.crop.width).toFixed(5)}`}><img src={aboutPhoto.output} width={aboutPhoto.width*aboutPhoto.scale} height={Math.round(aboutPhoto.width*aboutPhoto.scale*aboutPhoto.crop.height/aboutPhoto.crop.width)} alt="" decoding="async"/></figure></header>
 <div class="he-about-body">
  <nav class="he-about-shortcuts" aria-label="About sections"><ChapterIndicator id="about-section-indicator" texture="wave"/>{aboutSections.map(s=><a href={`#${s.id}`} data-about-link={s.id}><span aria-hidden="true">{s.mark}</span>{s.label}</a>)}</nav>
  <Styled as="section" id="about-intro" area="about" class="he-about-module he-about-intro" style={row('intro')}>
