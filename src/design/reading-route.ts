@@ -61,11 +61,11 @@ export function readingTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail
  * leave their parent with a curve; every stem ends in a station ring. Like a real line it
  * is not ruler-straight: the trunk steps sideways at 45° before each chapter band it
  * crosses (`jog` px, alternating), and a bus follows its stations' heights with 45° steps
- * instead of hanging every stem from one level. Pieces are grouped per tile (trunk, then
+ * instead of hanging every stem from one level; differences under `flat` px stay level. Pieces are grouped per tile (trunk, then
  * one tile per row) so they print separately. */
 export interface MetroPiece {points:{x:number;y:number}[];weight:number}
 export interface MetroTile {paths:MetroPiece[];stations:{x:number;y:number;radius:number;ring:number}[]}
-export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=6,branch=4,radius=14,station=7,ring=2.5,jog=0}:{rail?:number;gap?:number;trunk?:number;branch?:number;radius?:number;station?:number;ring?:number;jog?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
+export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=6,branch=4,radius=14,station=7,ring=2.5,jog=0,flat=32}:{rail?:number;gap?:number;trunk?:number;branch?:number;radius?:number;station?:number;ring?:number;jog?:number;flat?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
  if(!anchors.length)return {tiles:[],knockouts:[],trunkX:rail};
  const rows=new Map<string,ReadingAnchor[]>();
  for(const a of anchors){const row=rows.get(a.row)||[];row.push(a);rows.set(a.row,row);}
@@ -94,7 +94,8 @@ export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-
   const pts=[{x:tx,y:bus.y-radius},{x:tx,y:bus.y}];let cy=bus.y;
   const levels:number[]=[];
   for(const s of stems){
-   const level=s.y-gap,dy=level-cy,px=pts[pts.length-1].x;
+   // Small differences stay level: the stem absorbs them (no hump for a few px).
+   const want=s.y-gap,level=Math.abs(want-cy)<flat?cy:want,dy=level-cy,px=pts[pts.length-1].x;
    if(Math.abs(dy)>.5){
     const x1=s.x-straight,x0=Math.max(px+straight,x1-Math.abs(dy));
     if(x1>x0+1){pts.push({x:x0,y:cy},{x:x1,y:cy+Math.sign(dy)*(x1-x0)});cy+=Math.sign(dy)*(x1-x0);}

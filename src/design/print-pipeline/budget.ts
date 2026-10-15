@@ -22,8 +22,9 @@ export const noiseBudget={
  /** Printed guide lines (rule-v1): edge wander in CSS px and its smallest feature. */
  rule:{edge:.35,wave:14},
  /** Worn plate edges (wear-v1): inset depth in CSS px, missing-dot share at the edge, and
-  * the inset's smallest feature in CSS px. */
- wear:{depth:2.5,speckle:.75,wave:9},
+  * the inset's smallest feature in CSS px. Kept small (user, 2026-10-16): real print
+  * wear, but a high-quality press — the edge is alive, never ragged. */
+ wear:{depth:1.2,speckle:.35,wave:12},
  /** Midtone dot gain added to the tone curve before screening. */
  dotGain:.4,
  /** Shared paper texture strength. */
