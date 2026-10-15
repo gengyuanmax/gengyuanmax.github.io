@@ -1,6 +1,6 @@
 import { areaIds,resolve,type DesignConfig } from '../design/settings';
 import {screen} from '../design/screen';
-import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
+import {definePrintElement,screenPrintElement,type LineElement} from '../design/print-pipeline/index';
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root) {
  const pages=[...root.querySelectorAll<HTMLElement>('.he-page')];
@@ -15,7 +15,7 @@ if(root) {
  root.addEventListener('design:updated',event=>{
   const lineSettings=resolve((event as CustomEvent<DesignConfig>).detail).values;
   const recipe=screen('medium','a',lineSettings);
-  root.querySelectorAll<HTMLElement>('[data-line-id]').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement({id:indicator.dataset.lineId!,profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation,texture:indicator.dataset.lineTexture as 'line'|'knurl'|'wave'})));
+  root.querySelectorAll<HTMLElement>('[data-line-id]').forEach(indicator=>indicator.innerHTML=screenPrintElement(definePrintElement<LineElement>({id:indicator.dataset.lineId!,profile:'line-v3',finish:'rubbed',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation,texture:indicator.dataset.lineTexture as 'line'|'knurl'|'wave'})));
  });
  let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
  let chapterTarget:string|null=null,chapterScrolling=false;

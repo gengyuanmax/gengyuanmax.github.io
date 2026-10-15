@@ -120,3 +120,17 @@
  #personal-site[data-reading="compact"] .he-about-body .he-personal-heading{align-items:flex-end;}
  #personal-site[data-reading="compact"] .he-about-body .he-personal-heading>.he-print-object{height:calc(var(--baseline) * 4);flex-basis:56px;width:56px;}
 }
+
+/* One persistent marker per control group; selection never changes layout. */
+#personal-site [data-moving-group]{position:relative;isolation:isolate;}
+#personal-site .he-view-toggle[data-moving-group]{position:absolute;}
+#personal-site [data-moving-indicator]{position:absolute;left:0;top:0;pointer-events:none;visibility:hidden;height:3px;background:var(--red-ink);}
+#personal-site [data-marker-ready] > [data-moving-indicator]{visibility:visible;}
+#personal-site [data-marker-motion] > [data-moving-indicator]{transition:transform 160ms cubic-bezier(.2,.8,.2,1),width 160ms cubic-bezier(.2,.8,.2,1);}
+#personal-site .he-nav > [data-moving-indicator]{height:max(4px,var(--geometry-stroke));}
+#personal-site .he-nav[data-marker-ready] a::after,
+#personal-site .he-view-toggle[data-marker-ready] button::after{content:none;}
+#personal-site [data-moving-group="ordering"]{display:flex;align-items:center;}
+#personal-site [data-moving-group="ordering"] > [data-moving-indicator]{height:16px;background:none;z-index:-1;}
+#personal-site [data-moving-indicator] .he-mode-indicator{inset:0;height:100%;opacity:1;}
+@media(prefers-reduced-motion:reduce){#personal-site [data-marker-motion] > [data-moving-indicator]{transition:none;}}

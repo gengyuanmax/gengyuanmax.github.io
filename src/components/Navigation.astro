@@ -7,14 +7,14 @@ import {resolve,styleText} from '../design/settings';
 
 ---
 <header class="he-nav-shell">
-  <nav class="he-nav" aria-label="主导航">{navigation.map((item,i)=>{
+  <nav class="he-nav" data-moving-group="main" aria-label="主导航">{navigation.map((item,i)=>{
    const id=`nav-${item.id}`;
    return <a href={`#${item.id}`} data-area-link={item.id} data-label={item.label} aria-controls={item.id} data-style-element={id} data-style-area-owner={item.id} style={styleText(resolve(design,item.id,id).values,design)}>
     <svg class="he-nav-plate" aria-hidden="true"><rect class="he-nav-plate-a" width="100%" height="100%"/><rect class="he-nav-plate-b" width="100%" height="100%"/></svg>
     <span class="he-nav-signature" aria-hidden="true"><span>SIG</span><b>{String.fromCharCode(65+i)}</b></span>
     <span class="he-nav-label"><InkText text={item.label}/></span>
-  </a>;})}</nav>
-  <div class="he-view-toggle" role="group" aria-label="Reading mode"><button type="button" data-reading-choice="poster" aria-pressed="false">Poster</button><button type="button" data-reading-choice="compact" aria-pressed="false">Compact</button></div>
+  </a>;})}<span class="he-shared-indicator" data-moving-indicator aria-hidden="true"/></nav>
+  <div class="he-view-toggle" data-moving-group="reading" role="group" aria-label="Reading mode"><button type="button" data-reading-choice="poster" aria-pressed="false">Poster</button><button type="button" data-reading-choice="compact" aria-pressed="false">Compact</button><span class="he-shared-indicator" data-moving-indicator aria-hidden="true"/></div>
  <GridGuides/>
  <script is:inline>
   /* Same state navigation.ts sets, applied while parsing so the first frame already shows it. */

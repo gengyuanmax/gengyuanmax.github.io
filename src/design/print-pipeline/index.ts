@@ -1,4 +1,4 @@
-import {lineScreen,type LineTexture} from './line-screen.ts';
+import {lineScreen,type LineTexture,type LineFinish} from './line-screen.ts';
 import {printText,type TextRecipe} from './text.ts';
 /** Public entry: adapters supply originals, registered profiles own screening.
  * Versioned kernels preserve existing visual recipes during staged migration. */
@@ -8,7 +8,7 @@ import type {ProceduralSource,RasterSource,Dot} from './types.ts';
 export type PolygonElement={id:string;profile:'polygon-v1';width:number;height:number;seed:number;plate:string;source:ProceduralSource;screen:PolygonScreen};
 export type MaterialElement<Id extends string=string>={id:string;profile:'material-v1';width:number;height:number;scale:number;plate:Id;source:RasterSource;press:Press<Id>;origin?:{x:number;y:number};solid?:boolean;textRecipe?:TextRecipe};
 export type InsertElement={id:string;profile:'insert';source:{kind:'graphic';src:string}};
-export type LineElement={id:string;profile:'line-v3';source:{kind:'shape'};pitch:number;angle:number;coverage:number;seed:number;grain:number;starvation:number;texture?:LineTexture};
+export type LineElement={id:string;profile:'line-v3';source:{kind:'shape'};pitch:number;angle:number;coverage:number;seed:number;grain:number;starvation:number;finish?:LineFinish;texture?:LineTexture};
 export type PrintElement=PolygonElement|MaterialElement|InsertElement|LineElement;
 export function definePrintElement<T extends PrintElement>(element:T):Readonly<T>{
  if(!element.id.trim())throw new Error('Print element requires a stable id');
@@ -31,7 +31,7 @@ export function screenPrintElement<Id extends string>(e:Readonly<MaterialElement
 export function screenPrintElement(e:Readonly<InsertElement>):string;
 export function screenPrintElement(e:Readonly<LineElement>):string;
 export function screenPrintElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
- if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation,e.id,e.texture);
+ if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation,e.id,e.texture,e.finish);
  if(e.profile==='insert')return e.source.src;
  if(e.profile==='polygon-v1')return screenPolygons(e.source,e.width,e.height,e.seed,e.plate,e.screen);
  if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],{transfer:{grain:e.press.grain,starve:e.press.starve,holes:e.press.holes,band:e.press.band},...e.textRecipe},e.press.sheet);

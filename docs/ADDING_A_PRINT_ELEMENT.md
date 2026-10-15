@@ -130,3 +130,5 @@ const src = screenPrintElement(definePrintElement({
 - `line-v3` 的 line / wave / knurl 是加网几何，不是滚筒条纹。原配方的波形、线宽起伏、毛边、断墨与随机序列保留；移除外围随机多边形 mask。SVG 自身的矩形承载边界仍存在，不另造破边轮廓。
 
 此次不调整参数或重排浮点运算；固定最新主分支的像素指纹覆盖精确/快速路径和 DPR 1/2，线网仅允许移除外围裁切，内部 path 指纹保持一致。
+
+导航使用 `finish:'rubbed'`；`lineFinishes` 集中保存毛边、线宽起伏与断墨倍率。SSR 与浏览器更新传入相同 finish。省略 finish 时仍是 original，历史基准不更新。
