@@ -3,7 +3,7 @@
     640,
     400
   ],
-  "palette": "riso",
+  "palette": "blueVermilion",
   "operation": "trap",
   "misregistrationMm": 1.5,
   "elements": {
@@ -28,5 +28,10 @@
       "dots": "giant"
     }
   },
-  "note": "28px horizontal separation; Z raised 4px. Ink assignments swapped: G pink, Z blue. Other parameters unchanged."
+  "note": "28px horizontal separation; Z raised 4px. Homepage inks: G vermilion (secondary), Z blue (primary). Other parameters unchanged.",
+  "colors": {
+    "paper": "#f0ebdf",
+    "a": "#cf5037",
+    "b": "#283eb5"
+  }
 }
