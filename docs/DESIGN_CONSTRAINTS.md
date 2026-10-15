@@ -266,3 +266,14 @@
 - 全站标题只用 Bricolage Grotesque。三个分区的页面大标题（Research 的 "Visual Intelligence"、"Artifacts"、"About me"）统一为一个字号 `--page-title-size`（`clamp(40px,9.4cqw,120px)`，1440 下 120px），字重、字宽、光学尺寸沿用标题设置；首页姓名保持自己的尺寸。
 - About 的模块标题（Gengyuan Zhang、Experience、Education、Funding、Reviewing、Outside research、Contact）统一为 `--module-title-size`（26–34px）；模块编号 01/02/03 统一为同一种 display 数字 `--module-index-size`（64–112px），都放在标题左侧并底部对齐。原来 Contact 的 "03" 是等宽小字，已改为与 01/02 一致。
 - 规则集中在 `editorial-tension.css` 末尾的 “One type scale” 段，覆盖各分区旧的单独字号。
+
+## 26. 阅览模式：Poster / Compact（用户，2026-10-15）
+
+- 两种模式共用同一套组件和印刷元素，只改尺寸与排布：
+  - **Poster**：原来的画报式排版，一次一个大的印刷物件。
+  - **Compact**：同样的网点、色带、引导线和印刷标记，缩小排紧。研究页每章两个项目并排、色带高度减半；Artifacts 每行三个；页面大标题 72px；About 和首页收紧间距。
+- 默认：宽度 ≥900px 的设备为 Compact，手机为 Poster；读者的选择存入 `localStorage('reading-mode')`。模式在首帧前由 `Base.astro` 的内联脚本写到 `#personal-site[data-reading]`，没有先显示一种再切换。
+- 切换在导航右上角（Poster / Compact 两个小标签，当前项下有印刷红条）；手机（≤720px）不显示，始终是 Poster。
+- 规则集中在 `src/styles/reading-modes.css`（最后加载）。`#personal-site` 本身是查询容器，所以 Compact 的字号变量写在 `.he-page` 上。
+- 1440 画布现在有两种模式：Poster 仍是编辑主版本；Compact 是同一版本的紧凑排布，审稿时两种都要看。
+- 主题是另一个独立维度：`#personal-site[data-theme]`，目前只有 `light`。将来做黑夜模式时，纸张换成深色纸，墨不能再用 multiply 叠到深色纸上，要改用印刷管线已有的不透明墨（`opaque` 版）或荧光/白墨，并为每种墨定义深色纸上的颜色。

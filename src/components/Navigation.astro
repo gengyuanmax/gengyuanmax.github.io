@@ -13,12 +13,13 @@ import {resolve,styleText} from '../design/settings';
     <span class="he-nav-number" aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span>
     <span class="he-nav-label"><InkText text={item.label}/></span>
   </a>;})}</nav>
+  <div class="he-view-toggle" role="group" aria-label="Reading mode"><button type="button" data-reading-choice="poster" aria-pressed="false">Poster</button><button type="button" data-reading-choice="compact" aria-pressed="false">Compact</button></div>
   <nav class="he-shortcuts" aria-label="Research 三个方向快速定位">{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span>{p.short}</a>)}</nav>
  <GridGuides/>
  <script is:inline>
   /* Same state navigation.ts sets, applied while parsing so the first frame already shows it. */
   (()=>{const header=document.currentScript.parentElement,area=header.closest('#personal-site')?.dataset.bootArea;if(!area)return;
-   header.dataset.activeArea=area;header.querySelectorAll('[data-area-link]').forEach(a=>{if(a.dataset.areaLink===area)a.setAttribute('aria-current','page');});
+   header.dataset.activeArea=area;const mode=header.closest('#personal-site').dataset.reading;header.querySelectorAll('[data-reading-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.readingChoice===mode)));header.querySelectorAll('[data-area-link]').forEach(a=>{if(a.dataset.areaLink===area)a.setAttribute('aria-current','page');});
    const shortcuts=header.querySelector('.he-shortcuts');if(shortcuts)shortcuts.hidden=area!=='research';
    header.closest('#personal-site').style.setProperty('--he-header-height',header.offsetHeight+'px');})();
  </script>
