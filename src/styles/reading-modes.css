@@ -48,4 +48,41 @@
 
  /* Home: smaller name and research index so News reaches the first screen. */
  #personal-site[data-reading="compact"] .he-home .he-name{font-size:clamp(56px,7cqw,96px);}
+
+ /* Compact also scales the reading text and the printed objects, not only titles. */
+ #personal-site[data-reading="compact"]{--body-size:15px;}
+ #personal-site[data-reading="compact"] .he-project .he-project-description{line-height:1.6;margin-top:6px;}
+ #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{height:140px;width:56%;max-width:none;margin-left:0;}
+ #personal-site[data-reading="compact"] .he-artifact>.he-print-object{height:112px;max-width:200px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-b"]>.he-print-object{height:104px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-d"]>.he-print-object{height:112px;margin-bottom:8px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-e"]>.he-print-object{height:96px;margin:0 0 8px 24px;}
+ #personal-site[data-reading="compact"] .he-print-lab-overview{width:min(100%,160px);}
+ #personal-site[data-reading="compact"] .he-artifact-description{font-size:15px;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{grid-column:auto/span 3;}
+ #personal-site[data-reading="compact"] .he-artifact h2{font-size:clamp(22px,2.1cqw,30px);}
+
+ /* Home: profile row, then the research index and News side by side. */
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-bio{font-size:18px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-portrait[data-material]{max-width:180px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout="main"]{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout="main"]>.he-home-profile{grid-column:1/-1;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research{--home-branch-layout:stack;grid-column:1/7;grid-row:auto;grid-template-columns:repeat(6,minmax(0,1fr));}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-brand{grid-column:1/-1;grid-row:1;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-brand h2{font-size:calc(var(--home-brand-size) * .6);}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/-1;grid-row:2;padding:24px 0 0;margin:0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .research-map{max-width:520px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news{grid-column:7/13;grid-row:auto;align-self:start;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news h2{font-size:30px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li{grid-template-columns:7ch minmax(0,1fr);gap:16px;padding:12px 0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li p{font-size:15px;line-height:1.5;}
+
+ /* About: smaller photograph; the three short modules share one row. */
+ #personal-site[data-reading="compact"] .he-about-photo{grid-column:11/13;}
+ #personal-site[data-reading="compact"] .he-about-shortcuts{grid-auto-rows:30px;}
+ #personal-site[data-reading="compact"] .he-about-intro>p{font-size:17px;line-height:1.6;}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-funding{grid-column:1/5;grid-row:3;margin-top:0;}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-reviewing{grid-column:5/9;grid-row:3;margin-top:0;}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-outside{grid-column:9/13;grid-row:3;margin-top:0;}
+ #personal-site[data-reading="compact"] .he-about-body .he-about-contact{grid-row:4;}
 }
