@@ -1,6 +1,6 @@
 import {separateOriginal} from './sources.ts';
 import {makeToneField} from './tone.ts';
-import {compose} from './composition.ts';
+import {composePlateCoverage} from './composition.ts';
 import {screenOriginal} from './index.ts';
 import {paintMaterial,type Press} from './material.ts';
 import type {Operation} from '../element-composition.ts';
@@ -14,7 +14,7 @@ export function preparePortraitOriginals(input:PortraitOriginals){
  const geometryTone=press.tone?makeToneField(shape.tones[0],width,height,scale,input.kind,press.tone,press.seed):shape.tones[0];
  const a={mask:shape.mask,print:screenOriginal('home-portrait:geometry',{kind:'shape',mask:shape.mask,tone:geometryTone},width,height,'a',press,scale,origin)};
  const b={mask:photo.mask,print:screenOriginal('home-portrait:photo',{kind:'photo',mask:photo.mask,tone:photo.tones[0]},width,height,'b',press,scale,origin)};
- return {width,height,a,b,geometryTone,plates:compose(a,b,width,height,input.geometryScale,input.operation),press,scale};
+ return {width,height,a,b,geometryTone,plates:composePlateCoverage(a,b,width,height,input.geometryScale,input.operation),press,scale};
 }
 export function paintPortraitOriginals(prepared:ReturnType<typeof preparePortraitOriginals>,inks:{a:RGB;b:RGB;paper:RGB}){
  return paintMaterial(prepared.plates,prepared.width,prepared.height,inks,prepared.press,prepared.scale);

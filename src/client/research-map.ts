@@ -34,7 +34,7 @@ if(root&&map){
    if(!progress)continue;
    const target=targetTransforms(active)[id],from=transitionFrom?.[id]??target,t={x:from.x+(target.x-from.x)*transitionProgress,y:from.y+(target.y-from.y)*transitionProgress,rotation:from.rotation+(target.rotation-from.rotation)*transitionProgress,scale:from.scale+(target.scale-from.scale)*transitionProgress};
    const ease=1-(1-progress)**3;
-   layers.push({surface:states[id][state],transfer:researchTransfer,transform:{...t,x:t.x+(1-ease)*6,y:t.y+(1-ease)*6}});
+   layers.push({surface:states[id][state],inkStrength:researchTransfer,transform:{...t,x:t.x+(1-ease)*6,y:t.y+(1-ease)*6}});
   }
   compositeCanvas(canvas,paper,layers,recipe.width,recipe.height,dpr);
   if(s.researchAnchors==='on'){

@@ -1,6 +1,6 @@
 import {rng,salt,valueNoise} from './noise.ts';
-/** Roller textures share one engraving: straight lines (Research), a diamond knurl of two
- * crossing passes (Artifacts) and a wavy roll (About). 'line' is the original recipe. */
+/** Screen geometries share one engraving: straight lines (Research), a diamond knurl of two
+ * crossing passes (Artifacts) and a wave screen (About). 'line' is the original recipe. */
 export type LineTexture='line'|'knurl'|'wave';
 /** Seeded, hard-edged line engraving. A repeat spans many screen cells so each
  * line has independent pressure, ragged edges and occasional dry ink breaks. */
@@ -30,12 +30,5 @@ export function lineScreen(pitch:number,angle:number,coverage:number,seed:number
   }
   flush();
  }
- // A seeded, inset silhouette prevents the screen from ending at the SVG's
- // rectangular viewport. Normalized coordinates preserve rough edges at any size.
- const edge=rng(salt(seed,'navigation-outline-v3')),outline:string[]=[];
- for(let i=0;i<=32;i++)outline.push(`${(.025+i*.95/32).toFixed(4)},${(.05+edge()*.15).toFixed(4)}`);
- for(let i=1;i<=6;i++)outline.push(`${(.94+edge()*.04).toFixed(4)},${(.16+i*.1).toFixed(4)}`);
- for(let i=32;i>=0;i--)outline.push(`${(.025+i*.95/32).toFixed(4)},${(.80+edge()*.15).toFixed(4)}`);
- for(let i=6;i>=1;i--)outline.push(`${(.02+edge()*.04).toFixed(4)},${(.16+i*.1).toFixed(4)}`);
- return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><defs><clipPath id="${prefix}-ink-edge" clipPathUnits="objectBoundingBox"><polygon points="${outline.join(' ')}"/></clipPath><pattern id="${prefix}-line-screen" patternUnits="userSpaceOnUse" width="${tile}" height="${height}" patternTransform="rotate(${angle})"><path d="${paths.join('')}" fill="currentColor"/></pattern>${knurl?`<pattern id="${prefix}-line-cross" href="#${prefix}-line-screen" patternTransform="rotate(${angle-60})"/>`:''}</defs><rect width="100%" height="100%" clip-path="url(#${prefix}-ink-edge)" fill="url(#${prefix}-line-screen)"/>${knurl?`<rect width="100%" height="100%" clip-path="url(#${prefix}-ink-edge)" fill="url(#${prefix}-line-cross)"/>`:''}</svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><defs><pattern id="${prefix}-line-screen" patternUnits="userSpaceOnUse" width="${tile}" height="${height}" patternTransform="rotate(${angle})"><path d="${paths.join('')}" fill="currentColor"/></pattern>${knurl?`<pattern id="${prefix}-line-cross" href="#${prefix}-line-screen" patternTransform="rotate(${angle-60})"/>`:''}</defs><rect width="100%" height="100%" fill="url(#${prefix}-line-screen)"/>${knurl?`<rect width="100%" height="100%" fill="url(#${prefix}-line-cross)"/>`:''}</svg>`;
 }

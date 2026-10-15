@@ -67,3 +67,7 @@ export {separateSubject,subjectSeparation,raggedFrame,raggedFrameRecipe,type Sub
 export {pagePlates,plateTables,referencePlate,type PagePlate,type PlateInk} from './plates.ts';
 export {routeCoverage,roundedPath,routeVersion,type Point as RoutePoint,type RouteStation,type RoutePath} from './route.ts';
 export {wearEdges,wearVersion,type Wear} from './wear.ts';
+
+export {composePlateCoverage} from './composition.ts';
+export {prepareSheetTransfer} from './sheet.ts';
+export {renderSheet,compositeRasterPlates} from './raster-composite.ts';
