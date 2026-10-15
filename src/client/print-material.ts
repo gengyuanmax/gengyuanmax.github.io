@@ -116,7 +116,7 @@ if(root){
   for(const el of [...grounds,...bands])metrics.set(el,measure(el));
   const hidden=new Map([...fields,...lines,...grounds,...bands].map(el=>[el,offscreen(el)]));
   // Write phase for type state, all at once.
-  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);}
+  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.closest('[data-style-element="home-name"]')?'display':textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);}
   // Illustrations stay paper until printed, while type and grounds already show their
   // final ink and only gain texture: print the visible illustrations first.
   for(const svg of fields){
@@ -128,7 +128,7 @@ if(root){
    const job=()=>{
     const tasks:Promise<void>[]=[];const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
     for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
-     const dotted=size>=72&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
+     const dotted=(size>=72||el.closest('[data-style-element="home-name"]'))&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
      // The dotted plate is painted by CSS (--dot-plate) from the first frame; a JS mask would replace it.
      if(dotted){if(layer.dataset.materialMask){layer.style.removeProperty('mask-image');layer.style.removeProperty('mask-size');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();}
       recordScreen(layer,elementPress(pressSettings(s,typeScreenLevel(size)!,size),owner?.dataset.styleElement||'shared-type','title',size),ink,size);continue;}

@@ -113,3 +113,7 @@ const src = screenPrintElement(definePrintElement({
 `tests/fixtures/name-v3.png` 是 0.37 半径、无网点噪声、.5px 套准方案的旧候选快照。2026-10-14 用户要求姓名网点加噪声和偏移后，当前页面与它不一致是预期结果；新快照须经用户认可后再替换。1440×1000、DPR1、默认已保存配置、Home顶部、字体和材质完成后截图。执行 `npm run test:name-visual -- /absolute/path/to/home.png`；裁切姓名区域，单通道差异超过20的像素占比不得超过0.5%。失败保存实际裁切到 `/tmp/name-visual-actual.png`。不得自动更新基准；确认视觉变更后才手动替换 PNG 和配方说明。
 
 此命令消费真实浏览器截图，不会自行启动浏览器；每次改文字渲染或CSS都必须另行捕获当前页面再运行。`npm test` 保证网点无随机缺失、硬边、边缘裁切以及文字墨量上限，但不能替代浏览器快照。
+
+导航线条网使用 `line-v3`，经 `definePrintElement` / `screenPrintElement` 输出矢量 SVG。pitch、angle 读取共享 screen 配方，颜色继承朱红 token；coverage 控制线宽，不用透明度。当前仅用于研究子导航的单个移动指示块，不改变其他元素的点形。
+
+研究子导航线网按用户参考图使用近水平斜线、粗细起伏、硬边毛刺和局部断墨；复用共享 noise 的 seed、grain 与 starvation 参数。线网以一个 medium 单元为一个周期，不改照片和字形的网点频率。

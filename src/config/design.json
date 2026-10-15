@@ -50,7 +50,8 @@
       "titleDotPitch": 0.0625,
       "titleDotRadius": 0.37,
       "titleLayerX": 0,
-      "titleLayerY": 0
+      "titleLayerY": 0,
+      "displayScale": 0.85
     },
     "home-portrait": {
       "imageMask": "source",
@@ -139,6 +140,15 @@
       "groundWidth": 100,
       "groundBleed": 0,
       "groundEdge": "cut"
+    },
+    "research-title": {
+      "displayScale": 0.85
+    },
+    "artifacts-title": {
+      "displayScale": 0.85
+    },
+    "about-title": {
+      "displayScale": 0.85
     }
   }
 }

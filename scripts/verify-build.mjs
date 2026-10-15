@@ -7,7 +7,7 @@ assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
 for(const [,id]of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(id),`Missing target: ${id}`);
 for(const [,value]of html.matchAll(/aria-(?:controls|labelledby)="([^"]+)"/g))for(const id of value.split(/\s+/))assert(ids.includes(id),`Missing ARIA target: ${id}`);
 assert.equal((html.match(/data-area-link=/g)||[]).length,4);
-assert.equal((html.match(/data-chapter=/g)||[]).length,3);
+assert.equal((html.match(/data-chapter=/g)||[]).length,4);
 assert.equal((html.match(/data-content-id="artifact-/g)||[]).length,5);
 assert(!html.includes('data-enhanced'),'Static page must remain readable without JS');
 assert(!html.includes(' inert'),'Server HTML must not hide sections without JS');
@@ -26,7 +26,7 @@ async function walk(dir){const result=[];for(const entry of await fs.readdir(dir
 const files=await walk('dist');
 for(const file of files.filter(f=>/\.(html|js|css)$/.test(f))){const body=await fs.readFile(file,'utf8');assert(!body.includes('X-Design-Token')&&!body.includes('/__design/config')&&!body.includes('本地设计台')&&!body.includes('design:layout-study')&&!body.includes('he-layout-research')&&!body.includes('he-screen-audit-layer')&&!body.includes('homepage-layout-study')&&!body.includes('design-preview=current')&&!body.includes('当前调整预览'),`Authoring code leaked: ${file}`);}
 for(const [,src]of html.matchAll(/(?:src|href)="(\/(?:_astro|images)\/[^"?#]+)"/g))await fs.access('dist'+src);
-console.log(`Build verified: ${ids.length} unique IDs, four areas, three shortcuts, five interleaved artifacts, no authoring route or editor code.`);
+console.log(`Build verified: ${ids.length} unique IDs, four areas, four shortcuts, five interleaved artifacts, no authoring route or editor code.`);
 
 assert(!html.includes('noindex'),'Production homepage must be indexable');
 assert(html.includes('<title>Gengyuan Zhang</title>'),'Use the public page title');

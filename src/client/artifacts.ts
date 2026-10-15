@@ -33,7 +33,7 @@ if(root&&host&&controls){
   controls!.querySelector<HTMLElement>('[data-artifact-status]')!.textContent=`${count} ${count===1?'artifact':'artifacts'}`;
  }
  controls.hidden=false;
- controls.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.artifactMode as ArtifactMode;render();}));
- controls.querySelector<HTMLSelectElement>('[data-artifact-filter]')!.addEventListener('change',event=>{filter=(event.target as HTMLSelectElement).value;render();});
+ controls.querySelectorAll<HTMLButtonElement>('[data-artifact-mode]').forEach(button=>button.addEventListener('click',()=>{const next=button.dataset.artifactMode as ArtifactMode;if(next===mode)return;mode=next;render();}));
+ controls.querySelector<HTMLSelectElement>('[data-artifact-filter]')!.addEventListener('change',event=>{const next=(event.target as HTMLSelectElement).value;if(next===filter)return;filter=next;render();});
  root.addEventListener('design:updated',event=>{config=(event as CustomEvent<DesignConfig>).detail;render();});
 }

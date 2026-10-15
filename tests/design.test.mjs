@@ -51,12 +51,12 @@ test('colour separation retains channel information; duotone uses luminance',()=
  assert(Math.abs(duoA[0][0]-duoB[0][0])<.004);
 });
 test('editorial overrides stay on the grid and cannot silently add columns',()=>{
- const c=config();c.elements['artifact-b']={itemSpan:4};assert.throws(()=>validateConfig(c));
+ const c=config();c.elements['artifact-b']={itemSpan:6};assert.throws(()=>validateConfig(c));
  c.elements['artifact-b']={itemStart:9,itemSpan:4,itemOffset:0};validateConfig(c);
  assert.equal(resolve(c,'artifacts','artifact-b').values.itemOffset,0);
- assert.equal(resolve(c,'artifacts','artifact-a').values.itemSpan,8);
- assert.deepEqual(editorialBounds(c,'artifact-a'),{startMin:1,startMax:1,spanMax:8});
- c.elements['artifact-b'].itemStart=8;assert.throws(()=>validateConfig(c),/overlap|重叠/);
+ assert.equal(resolve(c,'artifacts','artifact-a').values.itemSpan,6);
+ assert.deepEqual(editorialBounds(c,'artifact-a'),{startMin:1,startMax:3,spanMax:8});
+ c.elements['artifact-b'].itemStart=6;assert.throws(()=>validateConfig(c),/overlap|重叠/);
  c.elements['artifact-b'].itemStart=1.5;assert.throws(()=>validateConfig(c));
 });
 test('crop keeps focal point inside original at extremes',()=>{

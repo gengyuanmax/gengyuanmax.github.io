@@ -1,0 +1,11 @@
+---
+import {definePrintElement,screenPrintElement} from '../design/print-pipeline/index';
+import {screen} from '../design/screen';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+const {id='chapter-indicator'}=Astro.props;
+const lineSettings=resolve(design).values;
+const recipe=screen('medium','a',lineSettings);
+const chapterScreen=screenPrintElement(definePrintElement({id,profile:'line-v3',source:{kind:'shape'},pitch:recipe.pitch,angle:recipe.angle,coverage:.30,seed:lineSettings.seed,grain:lineSettings.grain,starvation:lineSettings.starvation}));
+---
+<span class="he-chapter-indicator" aria-hidden="true" set:html={chapterScreen}/>

@@ -13,7 +13,7 @@ const root=document.querySelector<HTMLElement>('#personal-site');
 if(root){
  let config:DesignConfig=design,timer=0;
  const hostSelector='.he-page,.he-nav-shell,.he-colophon';
- const skip=(el:Element)=>!!el.closest('.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,[data-style-element="grid"]');
+ const skip=(el:Element)=>!!el.closest('.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,[data-style-element="grid"]');
  const ink=(c:string)=>!!c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)&&!/^rgb\(240, 235, 223\)$/.test(c);
  const groundLike=(el:Element)=>el.matches('.he-project-ground,.he-divider-band,[data-material-mask],.he-type-a,.he-type-b,img,canvas,svg,svg *');
  function host(el:Element){return el.closest<HTMLElement>(hostSelector)||root!;}
@@ -45,6 +45,7 @@ if(root){
   return {borders,blocks,pseudos};
  }
  function draw(){
+  if(root!.dataset.navigating)return;
   try{
    root!.dataset.rulesMeasure='';
    const {borders,blocks,pseudos}=measure();
@@ -68,9 +69,10 @@ if(root){
    void Promise.all(pending).then(()=>{root!.dataset.rulesReady='';root!.dataset.rulesPasses=String(Number(root!.dataset.rulesPasses||0)+1);},()=>{root!.dataset.rulesMeasure='';});
   }catch(error){root!.dataset.rulesMeasure='';console.warn('Keeping CSS rules.',error);}
  }
- const schedule=()=>{clearTimeout(timer);timer=window.setTimeout(draw,root!.dataset.rulesReady===undefined?16:120);};
+ const schedule=()=>{clearTimeout(timer);if(root!.dataset.navigating)return;timer=window.setTimeout(draw,root!.dataset.rulesReady===undefined?16:120);};
  const observer=new ResizeObserver(schedule);root.querySelectorAll('.he-page,.he-nav-shell').forEach(el=>observer.observe(el));
  root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
+ root.addEventListener('navigation:settled',schedule);
  root.addEventListener('toggle',schedule,true);root.addEventListener('reading:layout',schedule);
  // State that adds or moves a mark (a pressed filter's bar, an opened details) reprints.
  new MutationObserver(schedule).observe(root,{subtree:true,attributes:true,attributeFilter:['aria-pressed','aria-expanded','open','hidden','data-artifact-view']});

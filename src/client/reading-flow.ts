@@ -8,9 +8,10 @@ if(root){
  let config:DesignConfig=design;
  const observed=new Set<Element>();
  let frame=0;
- const schedule=()=>{clearTimeout(frame);frame=window.setTimeout(draw,16);};
+ const schedule=()=>{clearTimeout(frame);if(!root!.dataset.navigating)frame=window.setTimeout(draw,16);};
  const observer=new ResizeObserver(schedule);
  function draw(){
+  if(root!.dataset.navigating)return;
   const live=new Set<Element>();
   root!.querySelectorAll<HTMLElement>('[data-reading-host]').forEach(host=>{
    const rect=host.getBoundingClientRect();
@@ -56,6 +57,7 @@ if(root){
   });
   for(const el of observed)if(!live.has(el)){observer.unobserve(el);observed.delete(el);}
  }
+ root.addEventListener('navigation:settled',schedule);
  root.addEventListener('reading:layout',schedule);
  root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
  root.addEventListener('toggle',schedule,true);
