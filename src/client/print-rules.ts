@@ -68,7 +68,7 @@ if(root){
    void Promise.all(pending).then(()=>{root!.dataset.rulesReady='';root!.dataset.rulesPasses=String(Number(root!.dataset.rulesPasses||0)+1);},()=>{root!.dataset.rulesMeasure='';});
   }catch(error){root!.dataset.rulesMeasure='';console.warn('Keeping CSS rules.',error);}
  }
- const schedule=()=>{clearTimeout(timer);timer=window.setTimeout(()=>requestAnimationFrame(draw),root!.dataset.rulesReady===undefined?0:120);};
+ const schedule=()=>{clearTimeout(timer);timer=window.setTimeout(draw,root!.dataset.rulesReady===undefined?16:120);};
  const observer=new ResizeObserver(schedule);root.querySelectorAll('.he-page,.he-nav-shell').forEach(el=>observer.observe(el));
  root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
  root.addEventListener('toggle',schedule,true);root.addEventListener('reading:layout',schedule);

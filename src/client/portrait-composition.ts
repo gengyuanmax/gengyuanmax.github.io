@@ -14,7 +14,8 @@ const fallback=figure?.querySelector<HTMLImageElement>('img');
 if(root&&figure&&canvas&&fallback){
  let config:DesignConfig=design,frame=0,loaded=false;const mount=createPrintMount();
  const input=new Image();input.onload=()=>{loaded=true;schedule();};input.src=recipe.photoSource.cutout;
- function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(render);}
+ // Layout work, not animation: a timeout runs even when no frame is being produced.
+ function schedule(){clearTimeout(frame);frame=window.setTimeout(render,16);}
  function render(){
   if(!figure||!canvas||!fallback)return;
   const s=resolve(config,'home','home-portrait').values;
@@ -25,7 +26,7 @@ if(root&&figure&&canvas&&fallback){
    const palette=getPalette(config,s.palette),dpr=Math.max(window.devicePixelRatio||1,1);
    const choice:CompositionChoice={op:s.compositionOperation as Operation,shape:s.compositionShape,pitch:s.compositionPitch,mis:s.compositionMis};
    const width=Math.round(fallback.clientWidth*dpr),fullWidth=Math.round(width*recipe.sheet.width/view.width);
-   let press=elementPress(pressSettings({...s,registration:resolve(config).values.registration,registrationY:resolve(config).values.registrationY},portraitScreenLevel),'home-portrait','image');
+   let press=elementPress(pressSettings({...s,registration:resolve(config).values.registration,registrationY:resolve(config).values.registrationY},portraitScreenLevel),'home-portrait','image');press={...press,fast:true};
    const position=paperOrigin(fallback,home!),unit=fallback.clientWidth/view.width;
    const origin={x:position.x-view.x*unit,y:position.y-view.y*unit};
    press=onSheet(press,resolve(config).values.seed,origin,home!.offsetHeight);

@@ -39,10 +39,29 @@ const subsamples=4;
 export function screenSheet<Id extends string>(tone:Float32Array,w:number,h:number,ink:Id,p:Press<Id>,scale:number,origin:{x:number;y:number},solid:boolean){
  const out=new Float32Array(w*h),angle=p.angles[ink]*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
  const shape=p.shapes[ink],fine=!solid&&!binaryCell(p.pitch,scale),step=1/(subsamples*scale);
+ // Fast path (runtime only): the same 4×4 point samples, but the cosine dot field is
+ // stepped by rotation (angle addition) instead of two cos() calls per sample. Results
+ // equal the exact path up to floating-point rounding.
+ const name=shape as string,rotate=fine&&!!p.fast&&(name==='round'||name==='ellipse'),TAU=Math.PI*2,ew=name==='ellipse'?.55:1;
+ const rot=(d:number)=>[Math.cos(TAU*d),Math.sin(TAU*d)] as const;
+ const [cux,sux]=rot(step*c/p.pitch),[cqx,sqx]=rot(-step*s/p.pitch),[cuy,suy]=rot(step*s/p.pitch),[cqy,sqy]=rot(step*c/p.pitch);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const t=tone[y*w+x];if(!t)continue;const v=Math.min(1,t+within(p.gain,noiseBudget.dotGain)*.32*4*t*(1-t));
   if(solid){out[y*w+x]=t;continue;}
   if(!fine){const xx=x/scale+origin.x,yy=y/scale+origin.y;out[y*w+x]=Number(v>spotT(shape,(xx*c+yy*s)/p.pitch,(-xx*s+yy*c)/p.pitch));continue;}
+  if(rotate){
+   const x0=x/scale+origin.x+step/2,y0=y/scale+origin.y+step/2,u0=(x0*c+y0*s)/p.pitch,q0=(-x0*s+y0*c)/p.pitch;
+   let ru=Math.cos(TAU*u0),rsu=Math.sin(TAU*u0),rq=Math.cos(TAU*q0),rsq=Math.sin(TAU*q0),inked=0;
+   for(let sy=0;sy<subsamples;sy++){
+    let cu=ru,su=rsu,cq=rq,sq=rsq;
+    for(let sx=0;sx<subsamples;sx++){
+     const value=ew===1?1-(cu+cq+2)/4:1-(cu+ew*cq+1.55)/3.1;if(v>value)inked++;
+     const nu=cu*cux-su*sux;su=su*cux+cu*sux;cu=nu;const nq=cq*cqx-sq*sqx;sq=sq*cqx+cq*sqx;cq=nq;
+    }
+    const nu=ru*cuy-rsu*suy;rsu=rsu*cuy+ru*suy;ru=nu;const nq=rq*cqy-rsq*sqy;rsq=rsq*cqy+rq*sqy;rq=nq;
+   }
+   out[y*w+x]=inked/(subsamples*subsamples);continue;
+  }
   // Area coverage of the same AM lattice: hard dot geometry, resolved below the pixel.
   let inked=0;const x0=x/scale+origin.x+step/2,y0=y/scale+origin.y+step/2;
   for(let sy=0;sy<subsamples;sy++)for(let sx=0;sx<subsamples;sx++){const xx=x0+sx*step,yy=y0+sy*step;if(v>spotT(shape,(xx*c+yy*s)/p.pitch,(-xx*s+yy*c)/p.pitch))inked++;}
@@ -58,14 +77,30 @@ export function paintSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,h
  // Plates shift relative to the reference only where an element prints more than one
  // of them; a single-plate element is its own reference (the approved look).
  const multi=new Set(plates.map(v=>v.ink)).size>1;
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-  const xx=x/scale+origin.x,yy=y/scale+origin.y,low=sheetInk(seed,xx,yy),m=Math.max(0,Math.min(1,(low-.42)/.38));
-  // Absolute threshold, not a per-element histogram: cropping cannot change ink.
-  const fraction=within(p.holes,budget.grainArea),fine=f.fine(xx,yy),grain=fraction?Math.max(0,(fraction-fine)/fraction):0;
-  const strength=.96*(1-within(p.grain,budget.grainLoss)*grain)*(1-within(p.starve,budget.starvation)*m*m)*(1-within((p.band||0)*.5,budget.roller)*sheetRoller(p.sheet!,yy)),col=[...inks.paper];
-  for(const plate of plates){const reg=multi?(plate.ink==='b'?p.offset:p.registration?.[plate.ink]??{x:0,y:0}):{x:0,y:0},sx=x-Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),sy=y-Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale);if(sx<0||sy<0||sx>=w||sy>=h)continue;
-   const t=plate.coverage[sy*w+sx]*strength,k=inks[plate.ink];for(let channel=0;channel<3;channel++)col[channel]=plate.opaque?col[channel]+(k[channel]-col[channel])*t:col[channel]*(1-t*(1-k[channel]/255));
+ const fraction=within(p.holes,budget.grainArea),grainLoss=within(p.grain,budget.grainLoss),starve=within(p.starve,budget.starvation),roller=within((p.band||0)*.5,budget.roller);
+ const shifts=plates.map(plate=>{const reg=multi?(plate.ink==='b'?p.offset:p.registration?.[plate.ink]??{x:0,y:0}):{x:0,y:0};return {dx:Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),dy:Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale),k:inks[plate.ink],cov:plate.coverage,opaque:plate.opaque};});
+ const paper=inks.paper;
+ // Low-frequency transfer (starvation and roller, features ≥32 CSS px). The exact path
+ // samples it per pixel; the fast path samples a 2 CSS px grid and interpolates.
+ const G=p.fast?Math.max(1,Math.round(2*scale)):1,gw=Math.ceil(w/G)+2,gh=Math.ceil(h/G)+2,slow=new Float32Array(gw*gh);
+ for(let gy=0;gy<gh;gy++)for(let gx=0;gx<gw;gx++){const xx=gx*G/scale+origin.x,yy=gy*G/scale+origin.y,m=Math.max(0,Math.min(1,(sheetInk(seed,xx,yy)-.42)/.38));slow[gy*gw+gx]=(1-starve*m*m)*(1-roller*sheetRoller(p.sheet!,yy));}
+ for(let y=0;y<h;y++){
+  const fy=y/G,iy=Math.floor(fy),ty=fy-iy;
+  for(let x=0;x<w;x++){
+   const xx=x/scale+origin.x,yy=y/scale+origin.y;
+   let lowStrength:number;
+   if(G===1)lowStrength=slow[y*gw+x];
+   else{const fx=x/G,ix=Math.floor(fx),tx=fx-ix,a=slow[iy*gw+ix],b=slow[iy*gw+ix+1],c2=slow[(iy+1)*gw+ix],d=slow[(iy+1)*gw+ix+1];lowStrength=(a+(b-a)*tx)*(1-ty)+(c2+(d-c2)*tx)*ty;}
+   // Absolute threshold, not a per-element histogram: cropping cannot change ink.
+   const grain=fraction?Math.max(0,(fraction-f.fine(xx,yy))/fraction):0;
+   const strength=.96*(1-grainLoss*grain)*lowStrength;
+   let r=paper[0],g=paper[1],bl=paper[2];
+   for(const sh of shifts){const sx=x-sh.dx,sy=y-sh.dy;if(sx<0||sy<0||sx>=w||sy>=h)continue;
+    const t=sh.cov[sy*w+sx]*strength;if(!t)continue;const k=sh.k;
+    if(sh.opaque){r+=(k[0]-r)*t;g+=(k[1]-g)*t;bl+=(k[2]-bl)*t;}else{r*=1-t*(1-k[0]/255);g*=1-t*(1-k[1]/255);bl*=1-t*(1-k[2]/255);}
+   }
+   const i=(y*w+x)*4;out[i]=r;out[i+1]=g;out[i+2]=bl;out[i+3]=r===255&&g===255&&bl===255?0:255;
   }
-  const i=(y*w+x)*4;out[i]=col[0];out[i+1]=col[1];out[i+2]=col[2];out[i+3]=col.every(v=>v===255)?0:255;
- }return out;
+ }
+ return out;
 }
