@@ -50,7 +50,9 @@
  #personal-site[data-reading="compact"] .he-home .he-name{font-size:clamp(56px,7cqw,96px);}
 
  /* Compact also scales the reading text and the printed objects, not only titles. */
- #personal-site[data-reading="compact"]{--body-size:15px;}
+ /* Areas and elements carry --body-size inline from the design settings (18px), so the
+    compact size must be !important to win over those inline declarations. */
+ #personal-site[data-reading="compact"],#personal-site[data-reading="compact"] [style*="--body-size"]{--body-size:15px!important;}
  #personal-site[data-reading="compact"] .he-project .he-project-description{line-height:1.6;margin-top:6px;}
  #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{height:140px;width:56%;max-width:none;margin-left:0;}
  #personal-site[data-reading="compact"] .he-artifact>.he-print-object{height:112px;max-width:200px;}
