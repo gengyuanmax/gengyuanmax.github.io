@@ -314,7 +314,7 @@ Research 次级目录编号 01/02/03 不收缩、不拆行；文字标签独立�
 
 - 两种模式共用同一套组件和印刷元素，只改尺寸与排布：
   - **Poster**：原来的画报式排版，一次一个大的印刷物件。
-  - **Compact**：同样的网点、色带、引导线和印刷标记，缩小排紧。不只标题变小：正文 `--body-size` 由设计设置的 18px 降到 15px（设置以内联变量写在各分区上，Compact 用 !important 覆盖），研究插图高 140px、作品插图约 110px、首页人像 180px、About 照片占两栏。排版也重排：首页在姓名一行之下，研究圆（visual intelligence）与 News 左右两栏并列；研究页每章两个项目并排、色带高度减半；Artifacts 每行四个；About 的 Funding / Reviewing / Outside research 并为一行三栏；页面大标题 72px。（用户 2026-10-15 修订：原先只缩了标题，正文和图片没变。）
+  - **Compact**：同样的网点、色带、引导线和印刷标记，缩小排紧。不只标题变小：正文 `--body-size` 由设计设置的 18px 降到 15px（设置以内联变量写在各分区上，Compact 用 !important 覆盖），研究插图高 140px、作品插图约 110px、首页人像 180px、About 照片占两栏。排版也重排：首页在姓名一行之下，研究圆（visual intelligence）与 News 左右两栏并列；研究页每章两个项目并排、色带高度减半；Artifacts 每行四个；About 的标题栏和正文合成一个 12 栏网格：标题与简介在左，章节目录（行高 24px）和照片在右并排，Experience / Education 进入首屏（1440×900 下约从 340px 开始），Funding / Reviewing / Outside research 并为一行三栏；页面大标题 72px。（用户 2026-10-15 修订：原先只缩了标题，正文和图片没变。）
 - 默认：宽度 ≥900px 的设备为 Compact，手机为 Poster；读者的选择存入 `localStorage('reading-mode')`。模式在首帧前由 `Base.astro` 的内联脚本写到 `#personal-site[data-reading]`，没有先显示一种再切换。
 - 切换在导航右上角（Poster / Compact 两个小标签，当前项下有印刷红条）；手机（≤720px）不显示，始终是 Poster。
 - 规则集中在 `src/styles/reading-modes.css`（最后加载）。`#personal-site` 本身是查询容器，所以 Compact 的字号变量写在 `.he-page` 上。
