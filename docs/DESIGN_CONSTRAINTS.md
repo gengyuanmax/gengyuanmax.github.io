@@ -332,7 +332,7 @@ Research 次级目录编号 01/02/03 不收缩、不拆行；文字标签独立�
 
 ## 26b. 子导航的滚轮轧纹（用户，2026-10-15）
 
-- 三个分区的子导航选中块用同一个 line-v3 雕刻配方（同网距、朱红网角、30% 覆盖、共享 seed/grain/starvation），只换轧纹：Research 直线（原配方，输出逐字节不变），Artifacts 菱形滚花（两道线在 15° 与 −45° 交叉，单道线更细，总墨量相近），About 波纹（每块两次完整波动，保证无缝重复）。
+- 三个分区的子导航选中块用同一个 line-v3 雕刻配方（同网距、朱红网角、30% 覆盖、共享 seed/grain/starvation），只换轧纹：Research 直线（原配方，输出逐字节不变），Artifacts 菱形滚花（两道线在 15° 与 −45° 交叉，单道线更细，总墨量相近），About 波纹（每块 8 次完整波动、振幅 0.6 个线距，保证无缝重复且与 Research 直线一眼可分）。
 - 参数是 `definePrintElement({profile:'line-v3',texture})`，`ChapterIndicator` 的 `texture` 属性传入；设计台更新时按 `data-line-texture` 重印。Artifacts 的 By date / By category 不再用实心朱红条，选中项下印滚花块。
 
 ## 27. 渲染性能（2026-10-15）
