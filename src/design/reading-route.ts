@@ -55,3 +55,31 @@ export function readingTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail
  }
  return {ink,knockouts};
 }
+
+/** The reading tree drawn as metro lines (user, 2026-10-16): the same trunk, buses and
+ * stems as readingTree, but each piece is a continuous line whose bends are rounded and
+ * whose branches leave their parent with a curve; every stem ends in a station ring.
+ * Pieces are grouped per tile (trunk, then one tile per row) so they print separately. */
+export interface MetroPiece {points:{x:number;y:number}[];weight:number}
+export interface MetroTile {paths:MetroPiece[];stations:{x:number;y:number;radius:number;ring:number}[]}
+export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=6,branch=4,radius=14,station=7,ring=2.5}:{rail?:number;gap?:number;trunk?:number;branch?:number;radius?:number;station?:number;ring?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
+ if(!anchors.length)return {tiles:[],knockouts:[],trunkX:rail};
+ const rows=new Map<string,ReadingAnchor[]>();
+ for(const a of anchors){const row=rows.get(a.row)||[];row.push(a);rows.set(a.row,row);}
+ const buses=[...rows.values()].map(items=>({items:[...items].sort((a,b)=>a.x-b.x),y:Math.min(...items.map(a=>a.y))-gap})).sort((a,b)=>a.y-b.y);
+ let left=rail-trunk/2;
+ for(const b of bands)if(b.left!==undefined&&b.left<=left+trunk&&(b.right??Infinity)>=left&&left-b.left<bandInset)left=b.left+bandInset;
+ const x=left+trunk/2;
+ const crossing=bands.filter(b=>(b.left??-Infinity)<=x+trunk/2&&(b.right??Infinity)>=x-trunk/2).sort((a,b)=>a.top-b.top);
+ const top=Math.min(buses[0].y-12,...crossing.filter(b=>b.bottom<=buses[0].y).map(b=>b.top)),last=buses.at(-1)!.y;
+ const knockouts:Rect[]=crossing.filter(b=>b.bottom>top&&b.top<last).map(b=>({x:x-trunk/2,y:Math.max(top,b.top),width:trunk,height:Math.min(last,b.bottom)-Math.max(top,b.top),level:0}));
+ const tiles:MetroTile[]=[{paths:[{points:[{x,y:top},{x,y:last-radius}],weight:trunk}],stations:[]}];
+ for(const bus of buses){
+  const stems=bus.items,end=stems.at(-1)!;
+  // The bus leaves the trunk with a curve and turns down into its last station.
+  const paths:MetroPiece[]=[{points:[{x,y:bus.y-radius},{x,y:bus.y},{x:end.x,y:bus.y},{x:end.x,y:end.y}],weight:branch}];
+  for(const s of stems.slice(0,-1))paths.push({points:[{x:s.x-radius,y:bus.y},{x:s.x,y:bus.y},{x:s.x,y:s.y}],weight:branch});
+  tiles.push({paths,stations:stems.map(s=>({x:s.x,y:s.y,radius:station,ring}))});
+ }
+ return {tiles,knockouts,trunkX:x};
+}

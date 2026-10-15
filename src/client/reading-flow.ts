@@ -1,4 +1,5 @@
-import {readingTree,timelineGuides,type ReadingAnchor,type ReadingBand} from '../design/reading-route';
+import {metroTree,timelineGuides,type ReadingAnchor,type ReadingBand} from '../design/reading-route';
+import {paintMetro} from './print-routes';
 import {paintGuides} from './print-guides';
 import {paperOrigin} from '../design/print-pipeline/browser';
 import {design} from '../config/design';
@@ -11,6 +12,7 @@ if(root){
  let stale=false;
  const schedule=()=>{clearTimeout(frame);if(root!.dataset.navigating){stale=true;return;}frame=window.setTimeout(draw,16);};
  const observer=new ResizeObserver(schedule);
+ const STATION=8;
  function draw(){
   if(root!.dataset.navigating)return;
   const live=new Set<Element>();
@@ -25,16 +27,17 @@ if(root){
     const box=marker.getBoundingClientRect();
     const row=getComputedStyle(card).gridRowStart;
     const chapter=card.closest('.he-research-chapter')?.id||'spread';
-    return {x:box.left-rect.left+box.width/2,y:box.top-rect.top,row:row==='auto'?`single-${i}`:`${chapter}-${row}`};
+    // The station ring sits at the marker's left end, centred on its line.
+    return {x:box.left-rect.left+STATION,y:box.top-rect.top+box.height/2,row:row==='auto'?`single-${i}`:`${chapter}-${row}`};
    });
    const headers=[...host.querySelectorAll<HTMLElement>('.he-chapter-heading')];
    const grounds=headers.map(h=>h.querySelector<HTMLElement>(':scope > [data-style-element^="plate-"]')||h);
    const bands:ReadingBand[]=headers.map((h,i)=>{const b=h.getBoundingClientRect(),g=grounds[i].getBoundingClientRect();return {top:b.top-rect.top,bottom:b.bottom-rect.top,left:g.left-rect.left,right:g.right-rect.left};});
-   const weight=parseFloat(getComputedStyle(host).getPropertyValue('--reading-weight'))||1.5;
-   const origin={x:rect.left+scrollX,y:rect.top+scrollY};
-   const {ink,knockouts}=readingTree(anchors,bands,{weight,dpr:Math.max(1,devicePixelRatio||1),origin});
+   const metro=parseFloat(getComputedStyle(host).getPropertyValue('--metro-weight'))||8;
+   const {tiles,knockouts}=metroTree(anchors,bands,{trunk:metro,branch:Math.round(metro*.67),station:STATION,ring:3});
    const page=host.closest<HTMLElement>('.he-page')||root!;
-   paintGuides(layer,ink,paperOrigin(host,page),config);
+   layer.querySelectorAll(':scope > canvas.he-guide').forEach(c=>c.remove());
+   paintMetro(layer,tiles,paperOrigin(host,page),page.offsetHeight,config,`route-${host.closest('.he-page')?.id||'host'}`);
    // Knockouts live inside the band they cut, above its ink and below its type.
    headers.forEach((h,i)=>{
     h.querySelectorAll(':scope > .he-route-knockout').forEach(k=>k.remove());
