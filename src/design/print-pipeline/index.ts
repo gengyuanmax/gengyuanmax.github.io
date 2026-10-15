@@ -66,3 +66,4 @@ export {runMaskJob,runFieldJob,type MaskJob,type FieldJob,type MaskResult,type F
 export {separateSubject,subjectSeparation,raggedFrame,raggedFrameRecipe,type SubjectRecipe,type FrameRecipe} from './subject.ts';
 export {pagePlates,plateTables,referencePlate,type PagePlate,type PlateInk} from './plates.ts';
 export {routeCoverage,roundedPath,routeVersion,type Point as RoutePoint,type RouteStation,type RoutePath} from './route.ts';
+export {wearEdges,wearVersion,type Wear} from './wear.ts';

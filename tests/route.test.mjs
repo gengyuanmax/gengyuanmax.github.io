@@ -31,3 +31,11 @@ test('the metro tree keeps the reading tree: one trunk, one tile per row, a stat
  // Every piece is horizontal, vertical or 45°.
  for(const tile of t.tiles)for(const p of tile.paths)for(let i=1;i<p.points.length;i++){const dx=Math.abs(p.points[i].x-p.points[i-1].x),dy=Math.abs(p.points[i].y-p.points[i-1].y);assert.ok(dx<1e-9||dy<1e-9||Math.abs(dx-dy)<1e-9);}
 });
+test('the metro tree steps at 45° to lower stations and jogs before later bands',()=>{
+ const t=metroTree([{x:100,y:300,row:'a'},{x:600,y:380,row:'a'},{x:100,y:1000,row:'b'}],[{top:0,bottom:120,left:-60,right:900},{top:700,bottom:820,left:-60,right:900}],{jog:12});
+ const trunk=t.tiles[0].paths[0].points;
+ assert.ok(trunk.some(p=>Math.abs(p.x-(t.trunkX-12))<1e-9),'the trunk steps aside');
+ const bus=t.tiles[1].paths[0].points;
+ for(let i=1;i<bus.length;i++){const dx=Math.abs(bus[i].x-bus[i-1].x),dy=Math.abs(bus[i].y-bus[i-1].y);assert.ok(dx<1e-9||dy<1e-9||Math.abs(dx-dy)<1e-9);}
+ assert.ok(bus.some((p,i)=>i>0&&Math.abs(p.x-bus[i-1].x)>0&&Math.abs(p.x-bus[i-1].x)===Math.abs(p.y-bus[i-1].y)),'a 45° step to the lower station');
+});

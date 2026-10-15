@@ -34,8 +34,10 @@ if(root){
    const grounds=headers.map(h=>h.querySelector<HTMLElement>(':scope > [data-style-element^="plate-"]')||h);
    const bands:ReadingBand[]=headers.map((h,i)=>{const b=h.getBoundingClientRect(),g=grounds[i].getBoundingClientRect();return {top:b.top-rect.top,bottom:b.bottom-rect.top,left:g.left-rect.left,right:g.right-rect.left};});
    const metro=parseFloat(getComputedStyle(host).getPropertyValue('--metro-weight'))||8;
-   const {tiles,knockouts}=metroTree(anchors,bands,{trunk:metro,branch:Math.round(metro*.67),station:STATION,ring:3});
    const page=host.closest<HTMLElement>('.he-page')||root!;
+   // The trunk may step aside into the page margin only where the margin has room for it.
+   const margin=rect.left-page.getBoundingClientRect().left,jog=Math.max(0,Math.min(14,margin-18-metro-12));
+   const {tiles,knockouts}=metroTree(anchors,bands,{trunk:metro,branch:Math.round(metro*.67),station:STATION,ring:3,jog});
    layer.querySelectorAll(':scope > canvas.he-guide').forEach(c=>c.remove());
    paintMetro(layer,tiles,paperOrigin(host,page),page.offsetHeight,config,`route-${host.closest('.he-page')?.id||'host'}`);
    // Knockouts live inside the band they cut, above its ink and below its type.

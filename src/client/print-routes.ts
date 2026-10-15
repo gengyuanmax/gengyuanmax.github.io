@@ -3,10 +3,11 @@ import {onSheet,pressSettings,elementPress,routeVersion} from '../design/print-p
 import {toneSettings} from '../design/tone-field';
 import {resolve,type DesignConfig} from '../design/settings';
 import type {MetroTile} from '../design/reading-route';
-/** Metro-line guides printed like every other ground: their geometry (route-v2) is the
- * coverage of a plane that the shared material pipeline screens (fine tier) and
- * transfers on the page sheet, in a worker. Each tile is a box whose mask is the print. */
-export const routeTone=.9;
+/** Metro-line guides printed through the shared material pipeline: their geometry
+ * (route-v2) is the coverage, printed solid (a dense line, not a screen) with worn edges
+ * (wear-v1) and the same transfer on the page sheet, in a worker. Each tile is a box
+ * whose mask is the print. */
+export const routeTone=.95;
 const decode=(url:string)=>{const i=new Image();i.src=url;return i.decode().catch(()=>{});};
 export function paintMetro(layer:HTMLElement,tiles:MetroTile[],origin:{x:number;y:number},pageHeight:number,config:DesignConfig,identity:string,radius=14){
  const dpr=Math.max(1,devicePixelRatio||1),s=resolve(config).values,existing=[...layer.querySelectorAll<HTMLElement>(':scope > .he-route')];
