@@ -62,5 +62,6 @@ export {dotPitch,dotPlateImage,groundFirstCoverage} from './first-frame.ts';
 export {noiseBudget} from './budget.ts';
 export {rng,salt} from './noise.ts';
 export {printRule,ruleVersion,type RuleTransfer} from './rule.ts';
+export {runMaskJob,runFieldJob,type MaskJob,type FieldJob,type MaskResult,type FieldResult} from './jobs.ts';
 export {separateSubject,subjectSeparation,raggedFrame,raggedFrameRecipe,type SubjectRecipe,type FrameRecipe} from './subject.ts';
 export {pagePlates,plateTables,referencePlate,type PagePlate,type PlateInk} from './plates.ts';

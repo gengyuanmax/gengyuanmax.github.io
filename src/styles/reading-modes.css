@@ -1,0 +1,51 @@
+/* Reading modes (user, 2026-10-15).
+   - poster: the editorial layout, one large printed object at a time (unchanged).
+   - compact: the same printed elements, smaller and tighter, so a desktop screen
+     shows several projects at once. Phones (≤720px) always read as poster.
+   The mode lives in #personal-site[data-reading] (set before first paint); theme is a
+   separate axis, #personal-site[data-theme], reserved for a later dark mode. */
+
+/* Toggle: two small printed labels at the top right of the navigation. */
+#personal-site .he-view-toggle{position:absolute;top:18px;right:var(--page-gutter);display:flex;gap:14px;z-index:3;}
+#personal-site .he-view-toggle button{position:relative;padding:2px 0 6px;border:0;background:none;font:500 11px/1.4 var(--metadata-face);color:var(--blue-ink);cursor:pointer;letter-spacing:.02em;}
+#personal-site .he-view-toggle button[aria-pressed="true"]{color:var(--ink);}
+#personal-site .he-view-toggle button[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--red-ink);}
+#personal-site .he-view-toggle button:focus-visible{outline:2px solid var(--blue-ink);outline-offset:4px;}
+@container(max-width:720px){#personal-site .he-view-toggle{display:none;}}
+@media print{#personal-site .he-view-toggle{display:none;}}
+
+@container(min-width:721px){
+ /* Mastheads: one title size, less air. */
+ /* #personal-site is the query container, so the tokens are set on its pages. */
+ #personal-site[data-reading="compact"] :is(.he-page,.he-nav-shell){--page-title-size:clamp(40px,5.6cqw,72px);--module-index-size:clamp(48px,5cqw,72px);}
+ #personal-site[data-reading="compact"] .he-page{padding-top:24px;padding-bottom:32px;}
+ #personal-site[data-reading="compact"] :is(.he-research-masthead,.he-artifacts-masthead){margin-bottom:8px;row-gap:8px;min-height:0;}
+ #personal-site[data-reading="compact"] .he-about-masthead{min-height:0;}
+
+ /* Research: chapter bands half height; two projects side by side per chapter. */
+ #personal-site[data-reading="compact"] .he-research-chapter{row-gap:24px;margin-top:8px;}
+ #personal-site[data-reading="compact"] .he-research-chapter .he-chapter-heading{min-height:104px;padding-top:16px;padding-bottom:16px;grid-template-columns:150px minmax(0,1fr);margin-bottom:0;}
+ #personal-site[data-reading="compact"] .he-chapter-heading .he-chapter-number{font-size:104px;height:88px;line-height:.85;margin-bottom:-16px;}
+ #personal-site[data-reading="compact"] .he-chapter-heading h2{font-size:clamp(24px,2.6cqw,34px);}
+ #personal-site[data-reading="compact"] .he-research-chapter>.he-project{grid-row:2;margin-top:0;align-self:start;padding-bottom:0;}
+ #personal-site[data-reading="compact"] .he-research-chapter>.he-project:nth-of-type(odd){grid-column:1/7;}
+ #personal-site[data-reading="compact"] .he-research-chapter>.he-project:nth-of-type(even){grid-column:7/13;}
+ #personal-site[data-reading="compact"] .he-research-chapter>.he-project:nth-of-type(n+3){grid-row:auto;}
+ #personal-site[data-reading="compact"] .he-project-imprint h3{font-size:clamp(24px,2.4cqw,32px);}
+ #personal-site[data-reading="compact"] :is(.he-project-feature,.he-machine-feature) h3{font-size:clamp(30px,3.2cqw,44px);}
+ #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{max-width:46%;}
+ #personal-site[data-reading="compact"] .he-project-description{max-width:52ch;}
+
+ /* Artifacts: three per row, same printed objects at a smaller scale. */
+ #personal-site[data-reading="compact"] .he-artifact-spread{row-gap:40px;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{grid-column:auto/span 4;grid-row:auto;margin-top:0;align-self:start;}
+ #personal-site[data-reading="compact"] .he-artifact h2{font-size:clamp(26px,2.6cqw,36px);}
+ #personal-site[data-reading="compact"] .he-print-lab-overview{width:min(100%,220px);float:none;margin:0 0 12px;}
+
+ /* About: same modules, tighter rhythm. */
+ #personal-site[data-reading="compact"] .he-about-body{row-gap:40px;margin-top:20px;}
+ #personal-site[data-reading="compact"] .he-about-body .he-timeline li{padding-top:12px;padding-bottom:14px;}
+
+ /* Home: smaller name and research index so News reaches the first screen. */
+ #personal-site[data-reading="compact"] .he-home .he-name{font-size:clamp(56px,7cqw,96px);}
+}

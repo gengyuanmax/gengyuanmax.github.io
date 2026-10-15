@@ -4,11 +4,24 @@ const smooth=(t:number)=>{const v=Math.max(0,Math.min(1,t));return v*v*(3-2*v);}
 export function salt(seed:number,key:string){for(const c of key)seed=Math.imul(seed^c.charCodeAt(0),16777619);return seed>>>0;}
 /** Continuous seeded value noise; four octaves form an fBm field in CSS pixels.
  * Lattice randomness uses Print Lab's original mulberry32 PRNG. */
+/** Exactly rng(salt(seed,`${x}:${y}`))() for integer x, y — the original lattice value —
+ * without building the string: the FNV-style salt walks the decimal digits directly. */
+const digits=new Int32Array(12);
+function hashInt(h:number,n:number){
+ if(n<0){h=Math.imul(h^45,16777619);n=-n;}
+ let k=0;do{digits[k++]=48+n%10;n=Math.floor(n/10);}while(n>0);
+ while(k>0)h=Math.imul(h^digits[--k],16777619);
+ return h;
+}
+export function latticeValue(seed:number,x:number,y:number){
+ let h=hashInt(seed,x);h=Math.imul(h^58,16777619);h=hashInt(h,y);
+ let a=(h>>>0)|0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;
+}
 export function valueNoise(seed:number,cell:number){
- // Lattice values are unchanged (seeded by the "x:y" key). Lookups use a numeric key and
- // reuse the last cell's four corners, since neighbouring pixels almost always share it.
+ // Lattice values are unchanged (latticeValue ≡ rng(salt(seed,"x:y"))()). Lookups reuse
+ // the last cell's four corners, since neighbouring pixels almost always share it.
  const cache=new Map<number,number>(),bias=1<<20,span=2**21;
- const value=(x:number,y:number)=>{const key=(x+bias)*span+(y+bias);let v=cache.get(key);if(v===undefined){v=rng(salt(seed,`${x}:${y}`))();cache.set(key,v);}return v;};
+ const value=(x:number,y:number)=>{const key=(x+bias)*span+(y+bias);let v=cache.get(key);if(v===undefined){v=latticeValue(seed,x,y);if(cache.size>200000)cache.clear();cache.set(key,v);}return v;};
  let cx=NaN,cy=NaN,a=0,b=0,c=0,d=0;
  return (x:number,y:number)=>{x/=cell;y/=cell;const ix=Math.floor(x),iy=Math.floor(y);
   if(ix!==cx||iy!==cy){cx=ix;cy=iy;a=value(ix,iy);b=value(ix+1,iy);c=value(ix,iy+1);d=value(ix+1,iy+1);}

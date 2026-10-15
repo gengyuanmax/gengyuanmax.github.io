@@ -1,4 +1,5 @@
 import type {Dot,Transform} from './types.ts';
+import {encodeAlphaPNG} from './png.ts';
 export {createPrintMount} from './mount.ts';
 export function surface(width:number,height:number){const c=document.createElement('canvas');c.width=width;c.height=height;return c;}
 export function pixelSurface(data:Uint8ClampedArray,width:number,height:number){
@@ -77,10 +78,10 @@ export function paintAlpha(target:HTMLCanvasElement,alpha:Float32Array,width:num
  for(let i=0;i<alpha.length;i++){const j=i*4;img.data[j]=color[0];img.data[j+1]=color[1];img.data[j+2]=color[2];img.data[j+3]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);}
  ctx.putImageData(img,0,0);
 }
-/** Encode an alpha mask as a PNG blob URL off the main thread, for CSS mask-image. */
+/** Encode an alpha mask (0..1) as a PNG blob URL for CSS mask-image, in JS: no canvas
+ * readback on the main thread. */
 export function alphaMaskBlob(alpha:Float32Array,width:number,height:number){
- const c=surface(width,height),ctx=c.getContext('2d')!,img=ctx.createImageData(width,height);
- for(let i=0;i<alpha.length;i++)img.data[i*4+3]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);
- ctx.putImageData(img,0,0);
- return new Promise<string>((done,fail)=>c.toBlob(b=>b?done(URL.createObjectURL(b)):fail(new Error('mask encode failed'))));
+ const bytes=new Uint8Array(alpha.length);for(let i=0;i<alpha.length;i++)bytes[i]=Math.round(Math.max(0,Math.min(1,alpha[i]))*255);
+ return Promise.resolve(alphaMaskURL(bytes,width,height));
 }
+export function alphaMaskURL(alpha:Uint8Array,width:number,height:number){return URL.createObjectURL(new Blob([encodeAlphaPNG(alpha,width,height)],{type:'image/png'}));}

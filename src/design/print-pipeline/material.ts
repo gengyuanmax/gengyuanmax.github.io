@@ -12,7 +12,7 @@ import {plateTables,type PlateInk} from './plates.ts';
  * web elements. All distances below are CSS pixels, independent of object size.
  * The native square noise functions are reused; only their sampling scale changes. */
 export const materialVersion='print-lab-e1c9d82-sheet-v2';
-export type Press<Id extends string=PlateInk> = {sheet?:Sheet;band?:number;level:ScreenLevel;shapes:Record<Id,ScreenShape>;pitch:number;angles:Record<Id,number>;registration?:Partial<Record<Id,{x:number;y:number}>>;gain:number;grain:number;starve:number;cluster:number;edge:number;holes:number;seed:number;offset:{x:number;y:number};patch?:number;role?:'title'|'field'|'image';tone?:ToneSettings};
+export type Press<Id extends string=PlateInk> = {/** Runtime fast path (analytic dot edges, coarse-grid low-frequency transfer); see sheet.ts. */fast?:boolean;sheet?:Sheet;band?:number;level:ScreenLevel;shapes:Record<Id,ScreenShape>;pitch:number;angles:Record<Id,number>;registration?:Partial<Record<Id,{x:number;y:number}>>;gain:number;grain:number;starve:number;cluster:number;edge:number;holes:number;seed:number;offset:{x:number;y:number};patch?:number;role?:'title'|'field'|'image';tone?:ToneSettings};
 export function pressSettings(s:Settings,level:ScreenLevel='medium',fontSize=128):Press{
  // Pitch comes from the screen tier; angle, shape and registration from the page's plate list.
  const pitch=screen(level,'a',s,fontSize).pitch,plates=plateTables(s);
