@@ -9,8 +9,8 @@ export function lineScreen(pitch:number,angle:number,coverage:number,seed:number
  const period=pitch,tile=128,rows=8,height=period*rows;
  const random=rng(salt(seed,'navigation-line-v2')),pressure=valueNoise(salt(seed,'navigation-pressure'),12);
  const knurl=texture==='knurl',rough=.15+Math.min(.2,grain)*2,half=period*coverage/(knurl?3.2:2),paths:string[]=[];
- // Two full periods across the tile keep the wave seamless at the repeat.
- const wave=(x:number)=>texture==='wave'?Math.sin(2*Math.PI*2*x/tile)*period*.32:0;
+ // Eight whole waves across the tile keep the roll seamless at the repeat.
+ const wave=(x:number)=>texture==='wave'?Math.sin(2*Math.PI*8*x/tile)*period*.6:0;
  const fmt=(v:number)=>v.toFixed(2);
  for(let row=0;row<rows;row++){
   const top:string[]=[],bottom:string[]=[];
