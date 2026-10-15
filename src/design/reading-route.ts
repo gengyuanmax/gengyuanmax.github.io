@@ -55,3 +55,57 @@ export function readingTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail
  }
  return {ink,knockouts};
 }
+
+/** The reading tree drawn as metro lines (user, 2026-10-16): the same trunk, buses and
+ * stems as readingTree, as continuous lines whose bends are rounded and whose branches
+ * leave their parent with a curve; every stem ends in a station ring. Like a real line it
+ * is not ruler-straight: the trunk steps sideways at 45° before each chapter band it
+ * crosses (`jog` px, alternating), and a bus follows its stations' heights with 45° steps
+ * instead of hanging every stem from one level. Pieces are grouped per tile (trunk, then
+ * one tile per row) so they print separately. */
+export interface MetroPiece {points:{x:number;y:number}[];weight:number}
+export interface MetroTile {paths:MetroPiece[];stations:{x:number;y:number;radius:number;ring:number}[]}
+export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=6,branch=4,radius=14,station=7,ring=2.5,jog=0}:{rail?:number;gap?:number;trunk?:number;branch?:number;radius?:number;station?:number;ring?:number;jog?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
+ if(!anchors.length)return {tiles:[],knockouts:[],trunkX:rail};
+ const rows=new Map<string,ReadingAnchor[]>();
+ for(const a of anchors){const row=rows.get(a.row)||[];row.push(a);rows.set(a.row,row);}
+ const buses=[...rows.values()].map(items=>({items:[...items].sort((a,b)=>a.x-b.x),y:Math.min(...items.map(a=>a.y))-gap})).sort((a,b)=>a.y-b.y);
+ let left=rail-trunk/2;
+ for(const b of bands)if(b.left!==undefined&&b.left<=left+trunk&&(b.right??Infinity)>=left&&left-b.left<bandInset)left=b.left+bandInset;
+ const x=left+trunk/2;
+ const crossing=bands.filter(b=>(b.left??-Infinity)<=x+trunk/2+jog&&(b.right??Infinity)>=x-trunk/2-jog).sort((a,b)=>a.top-b.top);
+ const top=Math.min(buses[0].y-12,...crossing.filter(b=>b.bottom<=buses[0].y).map(b=>b.top)),last=buses.at(-1)!.y;
+ // The trunk: straight, except a 45° side step just above each band it crosses after the first.
+ const trunkPts=[{x,y:top}];let cx=x;
+ crossing.forEach((b,k)=>{
+  if(k===0||!jog||b.top<=top+jog+radius*2||b.top>=last)return;
+  const nx=k%2?x-jog:x,dy=Math.abs(nx-cx);if(!dy)return;
+  const y0=b.top-12-dy;trunkPts.push({x:cx,y:y0},{x:nx,y:y0+dy});cx=nx;
+ });
+ trunkPts.push({x:cx,y:last-radius});
+ const xAt=(y:number)=>{let v=trunkPts[0].x;for(let i=1;i<trunkPts.length;i++){const a=trunkPts[i-1],b=trunkPts[i];if(y>=a.y&&y<=b.y){v=b.y===a.y?b.x:a.x+(b.x-a.x)*(y-a.y)/(b.y-a.y);break;}if(y>b.y)v=b.x;}return v;};
+ const knockouts:Rect[]=crossing.filter(b=>b.bottom>top&&b.top<last).map(b=>{const kx=xAt((b.top+b.bottom)/2);return {x:kx-trunk/2,y:Math.max(top,b.top),width:trunk,height:Math.min(last,b.bottom)-Math.max(top,b.top),level:0 as const};});
+ const tiles:MetroTile[]=[{paths:[{points:trunkPts,weight:trunk}],stations:[]}];
+ const straight=radius+station;
+ for(const bus of buses){
+  const stems=bus.items,tx=xAt(bus.y);
+  // The bus leaves the trunk with a curve, steps at 45° to each station's own level and
+  // turns down into its last station; other stations hang from it on short stems.
+  const pts=[{x:tx,y:bus.y-radius},{x:tx,y:bus.y}];let cy=bus.y;
+  const levels:number[]=[];
+  for(const s of stems){
+   const level=s.y-gap,dy=level-cy,px=pts[pts.length-1].x;
+   if(Math.abs(dy)>.5){
+    const x1=s.x-straight,x0=Math.max(px+straight,x1-Math.abs(dy));
+    if(x1>x0+1){pts.push({x:x0,y:cy},{x:x1,y:cy+Math.sign(dy)*(x1-x0)});cy+=Math.sign(dy)*(x1-x0);}
+    if(Math.abs(level-cy)>.5){pts.push({x:x1,y:cy},{x:x1,y:level});cy=level;}
+   }
+   pts.push({x:s.x,y:cy});levels.push(cy);
+  }
+  const end=stems.at(-1)!;pts.push({x:end.x,y:end.y});
+  const paths:MetroPiece[]=[{points:pts,weight:branch}];
+  stems.slice(0,-1).forEach((s,i)=>paths.push({points:[{x:s.x-radius,y:levels[i]},{x:s.x,y:levels[i]},{x:s.x,y:s.y}],weight:branch}));
+  tiles.push({paths,stations:stems.map(s=>({x:s.x,y:s.y,radius:station,ring}))});
+ }
+ return {tiles,knockouts,trunkX:x};
+}

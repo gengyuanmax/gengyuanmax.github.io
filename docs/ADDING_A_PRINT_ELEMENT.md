@@ -53,6 +53,8 @@ const dots = screenPrintElement(element);
 
 完整在用例子：`src/design/research-render.ts` 只声明几何原稿、参数和状态；`src/client/research-map.ts` 保留链接、动画时序和调试锚点。SVG 原稿可以使用 `svgCoverage` 后经 `makeToneField` / `screenOriginal`；同一个几何不应无故切换已批准的加网配方。
 
+线条类不另写噪声：直线分隔线用 `rule-v1`（`client/print-guides.ts`）；地铁式引导线由 `route.ts` 只提供几何覆盖率，作为 `MaskJob.route` 交给与色带相同的平面加网与转印（`client/print-routes.ts`）。
+
 ## 照片原稿
 
 ```ts
