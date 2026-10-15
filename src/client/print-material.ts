@@ -26,10 +26,13 @@ if(root){
  type Metrics={cw:number;ch:number;fontSize:number;styleKey:string;origin:{x:number;y:number};pageHeight:number};
  let metrics=new Map<Element,Metrics>();
  function measure(el:HTMLElement):Metrics{
-  const page=(el.closest<HTMLElement>('.he-page')||root!),cs=getComputedStyle(el);
+  // The navigation is its own sheet: measured against the site root, its sheet height
+  // changed with every page switch and reprinted (flashed) every tab label.
+  const page=(el.closest<HTMLElement>('.he-page,.he-nav-shell')||root!),cs=getComputedStyle(el);
   return {cw:el.clientWidth||el.offsetWidth,ch:el.clientHeight||el.offsetHeight,fontSize:parseFloat(cs.fontSize),styleKey:[cs.fontFamily,cs.fontSize,cs.fontWeight,cs.fontVariationSettings,cs.letterSpacing].join('|'),origin:paperOrigin(el,page),pageHeight:page.offsetHeight};
  }
  const metricsOf=(el:HTMLElement)=>{let m=metrics.get(el);if(!m){m=measure(el);metrics.set(el,m);}return m;};
+const decodeImage=(url:string)=>{const image=new Image();image.src=url;return image.decode().catch(()=>{});};
  async function textureMask(el:HTMLElement,ink:'a'|'b',s:ReturnType<typeof resolve>['values']){
   const ground=el.matches('.he-project-ground,.he-divider-band');
   // Solid type only carries low-frequency transfer (features ≥32 CSS px; its 1px grain
@@ -49,6 +52,8 @@ if(root){
    const r=await printMask({kind:'mask',w,h,dpr,ground,groundOpacity:s.groundOpacity,tone:toneSettings(s),identity,ink,press:p,origin,fontSize,radius:s.titleDotRadius,proof:import.meta.env.DEV});
    if(import.meta.env.DEV&&r.tone&&r.screened)rememberTone(identity,r.tone,r.screened,w,h,dpr);
    const url=URL.createObjectURL(new Blob([r.png as BlobPart],{type:'image/png'}));
+   // Swap only a decoded mask: an undecoded mask-image paints nothing for a frame.
+   await decodeImage(url);
    if(!ticket.commit(()=>{const previous=el.dataset.maskUrl;el.style.maskImage=`url(${url})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';el.dataset.maskUrl=url;if(previous)URL.revokeObjectURL(previous);}))URL.revokeObjectURL(url);
   }catch(error){console.warn('Keeping the unprinted ink.',error);}
  }

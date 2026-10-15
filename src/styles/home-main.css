@@ -76,11 +76,15 @@
 #personal-site .he-divider-plate-a{background:var(--red-ink);}
 #personal-site .he-divider-plate-b{background:var(--blue-ink);transform:translate(var(--press-reg-x),var(--press-reg-y));}
 #personal-site .he-divider-pass[data-divider-ink="b"]{mix-blend-mode:multiply;}
-#personal-site .he-divider-news{top:14px;height:28px;}
+#personal-site .he-divider-news{top:var(--baseline,8px);height:calc(var(--baseline,8px) * 4);}
 #personal-site .he-divider-band{position:absolute;inset:0;display:block;}
 #personal-site .he-divider-band[data-material-mask="true"]{background:var(--blue-ink);}
 #personal-site .he-divider-band[data-material-mask="true"] svg{display:none;}
-#personal-site .he-home[data-home-dividers="print"] .he-news h2{position:relative;z-index:1;justify-self:start;background:var(--paper);padding-right:16px;min-height:42px;}
+/* News sits on its screened band the way Element Lab overlaps two plates: the band runs
+   under the word and the two inks overprint it (multiply), with no paper box around
+   the heading. */
+#personal-site .he-home[data-home-dividers="print"] .he-news h2{position:relative;z-index:1;justify-self:start;background:none;padding-right:0;min-height:calc(var(--baseline,8px) * 6);}
+#personal-site .he-home[data-home-dividers="print"] .he-news h2 .he-print-word{-webkit-text-stroke:0;}
 #personal-site [data-print-state="waiting"] .he-divider-pass{clip-path:inset(0 100% 0 0);}
 #personal-site[data-type-proof="red"] [data-divider-ink="b"],
 #personal-site[data-type-proof="blue"] [data-divider-ink="a"]{visibility:hidden;}

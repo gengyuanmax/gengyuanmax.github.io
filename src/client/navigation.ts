@@ -20,7 +20,12 @@ if(root) {
  let active=0, jump=0, scrollFrame=0, settle=0, chapterIdle=0;
  let chapterTarget:string|null=null,chapterScrolling=false;
  function releaseChapter(){clearTimeout(chapterIdle);chapterTarget=null;chapterScrolling=false;}
- function settled(){clearTimeout(settle);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
+ // Hiding the outgoing page and revealing the incoming one restyles two whole page
+ // trees; doing it while the slide starts cost ~50ms of style and layout in its first
+ // frames. The pages are swapped for assistive technology when the slide lands.
+ let hiddenFor=-1;
+ function applyHidden(index:number){if(hiddenFor===index)return;hiddenFor=index;pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});}
+ function settled(){clearTimeout(settle);applyHidden(active);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
  track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  function fit() {
@@ -58,7 +63,7 @@ if(root) {
   // Unconditional scrollIntoView moved a top-of-page header by the sheet margin.
   if(scroll&&!chapter&&root!.getBoundingClientRect().top<0)root!.scrollIntoView({block:'start',behavior:'instant'});
   header.dataset.activeArea=pages[index].id;
-  pages.forEach((p,i)=>{p.inert=i!==index;p.setAttribute('aria-hidden',String(i!==index));});
+  if(!slides)applyHidden(index);
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   track.style.transform=`translateX(-${index*100}%)`;
   fit();
