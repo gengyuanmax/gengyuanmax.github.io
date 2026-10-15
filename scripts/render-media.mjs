@@ -1,3 +1,4 @@
+import './render-brand.mjs';
 import {renderPortraitPlates} from './render-portrait-plates.mjs';
 import {renderPortraitComposition} from './render-portrait-composition.mjs';
 import {renderAboutPhoto} from './render-about-photo.mjs';
