@@ -1,0 +1,1 @@
+import{o as e,r as t}from"./settings.xbF2HSM_.js";document.querySelector(`#personal-site`)?.addEventListener(`design:updated`,n=>{let r=e(n.detail).values,i=document.querySelector(`[data-colophon-fonts]`);i&&(i.textContent=[r.displayFont,r.bodyFont,r.metadataFont].map(e=>t[e].split(`,`)[0].replaceAll(`"`,``)).join(`, `))});
