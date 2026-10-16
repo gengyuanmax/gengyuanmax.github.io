@@ -1,9 +1,10 @@
+import {definePrintElement,screenPrintElement} from '../src/design/print-pipeline/index.ts';
 import sharp from 'sharp';
 import fs from 'node:fs/promises';
 // Approved Element Lab render, exported with ink coverage as alpha.
 // Crop only transparent margins; do not re-screen or recolor the logo.
 const source=new URL('../src/assets/brand/gz-sheet.png',import.meta.url);
-const mark=await sharp(source.pathname).trim({background:'#00000000',threshold:0}).png().toBuffer();
+const mark=await sharp(screenPrintElement(definePrintElement({id:'brand-original',profile:'insert',source:{kind:'graphic',src:source.pathname}}))).trim({background:'#00000000',threshold:0}).png().toBuffer();
 await fs.writeFile(new URL('../public/images/gz-logo.png',import.meta.url),mark);
 const {width,height}=await sharp(mark).metadata();
 const side=Math.max(width,height)+12;

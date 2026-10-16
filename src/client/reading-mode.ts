@@ -3,6 +3,7 @@
  * Layout observers (print masks, reading tree, printed rules) follow the new layout. */
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root){
+ const phone=matchMedia('(max-width:720px)');
  const buttons=[...root.querySelectorAll<HTMLButtonElement>('[data-reading-choice]')];
  const sync=()=>buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.readingChoice===root.dataset.reading)));
  buttons.forEach(b=>b.addEventListener('click',()=>{
@@ -10,6 +11,11 @@ if(root){
   root.dataset.reading=mode;try{localStorage.setItem('reading-mode',mode);}catch{}
   sync();root.dispatchEvent(new CustomEvent('reading:layout'));
  }));
+ phone.addEventListener('change',()=>{
+  let saved:string|null=null;try{saved=localStorage.getItem('reading-mode');}catch{}
+  root.dataset.reading=phone.matches?'poster':saved==='poster'||saved==='compact'?saved:matchMedia('(min-width:900px)').matches?'compact':'poster';
+  sync();root.dispatchEvent(new CustomEvent('reading:layout'));
+ });
  sync();
 }
 export {};

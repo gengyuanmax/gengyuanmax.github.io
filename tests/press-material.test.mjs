@@ -10,10 +10,10 @@ test('separate elements crop the same page-anchored screen at both ink angles',(
   for(let y=0;y<30;y++)for(let x=0;x<30;x++)assert.equal(crop[y*30+x],full[(y+22)*80+x+15]);
  }
 });
-test('Print Lab spreading changes edge shape without adding ink to an empty plate',()=>{
+test('disabled transfer expansion ignores legacy edge and gain settings',()=>{
  const tone=new Float32Array(100*100).fill(.25);
  const clean=screenPlate(tone,100,100,'b',press),worn=screenPlate(tone,100,100,'b',{...press,gain:.2,edge:.65});
- assert(worn.reduce((a,b)=>a+b,0)>clean.reduce((a,b)=>a+b,0));
+ assert.deepEqual(worn,clean);
  assert.equal(screenPlate(new Float32Array(10000),100,100,'a',{...press,edge:1}).some(v=>v!==0),false);
 });
 test('fine grain affects at most four percent and never punches holes',()=>{

@@ -26,7 +26,7 @@ test('name dots vary like print but stay inside the dot budget: none removed, me
  assert.equal(dots.length,24*24);
  const radii=dots.map(d=>d.r);assert.ok(Math.max(...radii)-Math.min(...radii)>base*.12,'dots are not visibly varied');
  for(const [k,d] of dots.entries()){const i=k%24,j=Math.floor(k/24);
-  assert.ok(d.r>=base*(1-b.radius)-1e-9&&d.r<=base*(1+b.radius)+1e-9,`radius ${d.r}`);
+  assert.ok(d.r>=base*(1-b.radius)-1e-9&&d.r<=base+1e-9,`radius ${d.r}`);
   assert.ok(Math.abs(d.x-(i+.5)*16)<=b.shift*16+1e-9&&Math.abs(d.y-(j+.5)*16)<=b.shift*16+1e-9,'shift');
  }
  // Neighbours never touch: the lattice still reads as separate dots.

@@ -12,6 +12,8 @@ export const aboutPhoto={
  screen:'coarse' as const,displaySize:128,
  /** User choice (2026-10-15): a blue box with the arch knocked out, like the old "04". */
  treatment:'knockout' as const,
+ /** Shared material recipe: subtle plate wear, intact dots, quieter transfer. */
+ press:{sourceWear:{depth:1.2,speckle:.21,cropBoundary:true},edge:0,gain:.08,grain:.04,starve:.06,holes:.02},
  /** Reference sheet position (About masthead at 1440); static prints use a fixed origin. */
  origin:{x:1000,y:150},
 };

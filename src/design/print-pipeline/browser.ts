@@ -1,3 +1,4 @@
+import {registrationFrame} from './registration.ts';
 import type {Dot,Transform} from './types.ts';
 import {encodeAlphaPNG} from './png.ts';
 export {createPrintMount} from './mount.ts';
@@ -24,7 +25,7 @@ const buffers=new WeakMap<HTMLCanvasElement,HTMLCanvasElement>();
 export function compositeCanvas(target:HTMLCanvasElement,paper:HTMLCanvasElement,layers:CanvasPlate[],width:number,height:number,dpr:number){
  let c=buffers.get(target);if(!c||c.width!==paper.width||c.height!==paper.height){c=surface(paper.width,paper.height);buffers.set(target,c);}
  const ctx=c.getContext('2d')!;ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(paper,0,0);
- for(const layer of layers){const t=layer.transform,cx=width/2,cy=height/2;ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=layer.inkStrength??layer.transfer;ctx.globalCompositeOperation='multiply';ctx.translate(cx+t.x,cy+t.y);ctx.rotate(t.rotation*Math.PI/180);ctx.scale(t.scale,t.scale);ctx.translate(-cx,-cy);ctx.drawImage(layer.surface,0,0,width,height);ctx.restore();}
+ for(const layer of layers){const {cx,cy,x,y,rotation,scale}=registrationFrame(layer.transform,width,height);ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=layer.inkStrength??layer.transfer;ctx.globalCompositeOperation='multiply';ctx.translate(x,y);ctx.rotate(rotation*Math.PI/180);ctx.scale(scale,scale);ctx.translate(-cx,-cy);ctx.drawImage(layer.surface,0,0,width,height);ctx.restore();}
  publishCanvas(target,c);
 }
 export async function svgCoverage(markup:string,w:number,h:number){

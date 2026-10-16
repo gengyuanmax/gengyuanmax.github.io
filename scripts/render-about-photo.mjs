@@ -15,7 +15,7 @@ export async function renderAboutPhoto(config){
  const knockout=photo.treatment==='knockout',frame=knockout?box:raggedFrame(W,H,photo.scale,seed);
  // Knockout inverts the separation: sky and land carry the ink, the lit rock is paper.
  const tone=separated.tone.map((t,i)=>knockout?Math.max(0,Math.min(.97,1.02-1.1*t)):t*frame[i]);
- const press=onSheet(elementPress(pressSettings(s,photo.screen,photo.displaySize),'about-photo','image'),seed,photo.origin,1440);
+ const press=onSheet({...elementPress(pressSettings(s,photo.screen,photo.displaySize),'about-photo','image'),...photo.press},seed,photo.origin,1440);
  const coverage=screenOriginal('about-photo',{kind:'photo',mask:frame,tone},W,H,'b',press,photo.scale,photo.origin);
  // White paper is the neutral carrier: the page multiplies the ink onto its own paper.
  const rgba=paintMaterial([{ink:'b',coverage}],W,H,{a:rgb(p.secondary),b:rgb(p.primary),paper:[255,255,255]},press,photo.scale);

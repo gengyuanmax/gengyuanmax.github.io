@@ -132,3 +132,23 @@ const src = screenPrintElement(definePrintElement({
 此次不调整参数或重排浮点运算；固定最新主分支的像素指纹覆盖精确/快速路径和 DPR 1/2，线网仅允许移除外围裁切，内部 path 指纹保持一致。
 
 导航使用 `finish:'rubbed'`；`lineFinishes` 集中保存毛边、线宽起伏与断墨倍率。SSR 与浏览器更新传入相同 finish。省略 finish 时仍是 original，历史基准不更新。
+
+矩形照片边缘：通过 `Press.sourceWear` 声明共享 wear-v1 工艺，由 `screenPrintElement` 在加网前应用到原稿覆盖量。`cropBoundary:true` 把裁切框外侧视为纸张，解决满幅矩形没有透明邻点、磨损不生效的问题；色调只乘覆盖率变化一次。不同原稿可使用不同参数，文字不经过这一步。About 的反白图已接入，参数位于 about-photo.ts；不在导出脚本中另写噪声或造不规则轮廓。
+
+
+## 2026-10-16 全局关闭随机扩墨
+
+用户要求所有原稿共享 Screening → Transfer 的阶段边界。公共配方在加网后统一调用 `transferPlate`；原色插页在此为恒等操作。随机像素膨胀已从 sheet 与旧 material 加网实现移除，其内核只保存在 transfer.ts，当前无调用。`transferPolicy.spread=false`，旧 inkEdge 配置不能重新开启。文字、图片、色块、研究圆和导航不得自行调用该扩墨内核。加网阶段的中间调增益也关闭；圆点半径、文字网点与导航/引导线边缘的向外增量由共享 Transfer 约束为零，保留向内缺墨、网格和既定线网波形；缺墨/滚筒的参数化实现由共享 Transfer 处理，配方保留各自的上限与输出表达。
+
+
+## 2026-10-16 统一实际工序，不只统一入口
+
+当前页面的工序为：原稿/分色与影调 → 网版几何 → `transferPlate` → 共享套准 → 输出后端合成/挂载。
+
+- `sheet-context.ts` 只提供共同纸面坐标和 seeded 场；`sheet.ts` / `text.ts` / `polygon.ts` / `line-screen.ts` 负责加网，不计算着墨噪声。
+- `transfer.ts` 的 `transferPlate` 是实际工艺分发入口，处理 raster、text、polygon、line、rule、name-dots、insert。原先分散的缺墨、颗粒、滚筒、线条边缘损失和名字网点墨量计算已迁入此模块；不是加一个空的 wrapper。栅格配方返回强度采样器，矢量配方返回转印后的墨点或轮廓，文字配方返回 alpha；这些是同一工序的输出适配，不能在宿主再加第二遍噪声。
+- `registration.ts` 为 Canvas/SVG 提供同一仿射框架，为栅格提供统一偏移计算；`raster-composite.ts` / `browser.ts` / `vector.ts` 只合成与输出，不生成着墨噪声。
+- 工艺与配方分离：照片、标题、线网仍用已批准的强度/限幅和几何表示，不能为了让实现看起来一样而把线网换成圆点或二次栅格化小字。扩墨全局关闭。
+- 原色 Artifacts 和已印好的品牌原稿用 insert 配方：明确通过恒等转印，保留原稿，不重复加网。正文的无材质配方也不能擅自增加效果。
+- 发布构建只生成当前在用的人像合成与 About 图片。历史 print/portrait-flow 工具不再被发布构建调用；保留历史源文件供研究，不代表它们是可供新元素选用的旁路。
+- `tests/unified-stages.test.mjs` 检查每类在用适配器调用实际 Transfer，并禁止加网/输出模块调用着墨噪声。迁移前捕获的 `pipeline-pre-unification-20261016.json` 覆盖当前输出，迁移后逐项完全相等；旧历史基准不重录。

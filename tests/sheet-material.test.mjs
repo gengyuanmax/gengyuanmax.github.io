@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as native from '../src/design/vendor/print-lab-core.js';
 import {separatePrintLab,screenOriginal,paintMaterial,pressSettings,onSheet} from '../src/design/print-pipeline/index.ts';
-import {sheetInk,spreadRectangle} from '../src/design/print-pipeline/sheet.ts';
+import {sheetInk} from '../src/design/print-pipeline/sheet.ts';
+import {spreadRectangle} from '../src/design/print-pipeline/transfer.ts';
 import {defaults} from '../src/design/settings.ts';
 // Unmodified reference is independent of production dispatch. Export local stages in memory only.
 const referenceCode=fs.readFileSync(new URL('../src/design/vendor/print-lab-reference.js',import.meta.url),'utf8').replace(/^import .*;$/m,'').replace('export {render};','return {render,plates};');

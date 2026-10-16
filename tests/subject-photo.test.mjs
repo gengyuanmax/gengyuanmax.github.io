@@ -43,3 +43,17 @@ test('printed blocks (pad 0) keep their exact box and only lose ink inside the t
  const mid=[...Array(width).keys()].map(x=>alpha[3*width+x]);
  assert.ok(Math.min(...mid)>=.7&&Math.max(...mid)<=1);
 });
+
+test('shared source wear treats a full photo crop as an edge without multiplying alpha twice',async()=>{
+ const {screenOriginal,pressSettings,onSheet}=await import('../src/design/print-pipeline/index.ts');
+ const {defaults}=await import('../src/design/settings.ts');
+ const w=60,h=48,mask=new Float32Array(w*h).fill(.5),tone=new Float32Array(w*h).fill(.25);
+ const press=onSheet({...pressSettings(defaults),sourceWear:{depth:1.2,speckle:.21,cropBoundary:true}},42,{x:100,y:150});
+ const render=()=>screenOriginal('photo-edge',{kind:'photo',mask,tone},w,h,'b',press,3,{x:100,y:150},true);
+ const result=render();
+ assert.deepEqual(result,render());
+ assert.equal(result[0],0);
+ assert.equal(result[24*w+30],.25);
+ assert.ok(result.some((v,i)=>i>w&&i<3*w&&v===0),'the wear must extend beyond the crop boundary');
+ assert.equal(mask[0],.5);assert.equal(tone[0],.25);
+});

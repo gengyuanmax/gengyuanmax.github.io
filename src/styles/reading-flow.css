@@ -38,7 +38,7 @@
 #personal-site .he-about-body {grid-template-columns:repeat(12,minmax(0,1fr));gap:64px var(--column-gap);margin-top:46px;}
 #personal-site .he-about-module {grid-column:var(--item-start)/span var(--item-span);grid-row:var(--item-row);margin-top:calc(var(--item-offset)*var(--baseline));min-width:0;align-self:start;}
 #personal-site .he-about-intro .he-quiet-heading h2 {font-size:36px;}
-#personal-site .he-about-intro > p {font-size:clamp(calc(var(--body-size) + 3px),2cqw,calc(var(--body-size) + 8px));line-height:1.45;max-width:49ch;margin-top:20px;}
+#personal-site .he-about-intro > p {font-size:var(--body-size);line-height:1.45;max-width:49ch;margin-top:20px;}
 #personal-site :is(.he-about-experience,.he-about-education) .he-quiet-heading {align-items:flex-end;gap:20px;padding-top:0;margin-bottom:24px;}
 #personal-site :is(.he-about-experience,.he-about-education) .he-quiet-heading h2 {font-size:34px;padding-bottom:4px;}
 #personal-site :is(.he-about-experience,.he-about-education) .he-module-index {font:700 80px/.82 var(--display-face);letter-spacing:-.075em;border:0;flex-basis:auto;align-self:end;padding:0;}
@@ -92,7 +92,7 @@
 }
 @container(max-width:450px){
  #personal-site .he-about-intro .he-quiet-heading h2 {font-size:29px;}
- #personal-site .he-about-intro > p {font-size:calc(var(--body-size) + 2px);}
+ #personal-site .he-about-intro > p {font-size:var(--body-size);}
  #personal-site .he-about-experience .he-module-index {font-size:62px;}
  #personal-site .he-about-experience .he-quiet-heading h2 {font-size:29px;}
  #personal-site .he-about-education {grid-column:1/-1;padding-left:24px;}

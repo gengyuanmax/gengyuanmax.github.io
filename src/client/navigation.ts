@@ -35,7 +35,7 @@ if(root) {
   if(root!.style.getPropertyValue('--he-header-height')!==headerHeight)root!.style.setProperty('--he-header-height',headerHeight);
  }
  function markAbout(id:string){const index=aboutSections.findIndex(s=>s.id===id);aboutNav.style.setProperty('--about-index',String(Math.max(0,index)));aboutNav.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.aboutLink===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
- function markChapter(id:string) { const index=chapters.findIndex(c=>c.id===id);shortcuts.style.setProperty('--chapter-index',String(Math.max(0,index)));shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
+ function markChapter(id:string) { const index=chapters.findIndex(c=>c.id===id);shortcuts.style.setProperty('--chapter-index',String(Math.max(0,index)));shortcuts.style.setProperty('--chapter-column',String(Math.max(0,index)%2));shortcuts.style.setProperty('--chapter-row',String(Math.floor(Math.max(0,index)/2)));shortcuts.querySelectorAll<HTMLAnchorElement>('a').forEach(a=>{if(a.dataset.chapter===id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');}); }
  function navigate(id:string, {history=true,scroll=true,focus=false}={}) {
   const aboutSection=aboutSections.find(c=>c.id===id);
   const chapter=chapters.find(c=>c.id===id)||aboutSection;

@@ -31,3 +31,12 @@ export function wearEdges(mask:Float32Array,w:number,h:number,scale:number,seed:
  }
  return out;
 }
+
+/** Apply the shared edge process to source coverage. A rectangular photo has no
+ * transparent samples inside the crop, so explicitly seed its outermost pixel as paper.
+ * This is a physical crop boundary, not a generated decorative silhouette. */
+export function wearSourceCoverage(mask:Float32Array,w:number,h:number,scale:number,seed:number,origin:{x:number;y:number},wear:Wear & {cropBoundary?:boolean}){
+ const input=new Float32Array(mask);
+ if(wear.cropBoundary)for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x===0||y===0||x===w-1||y===h-1)input[y*w+x]=0;
+ return wearEdges(input,w,h,scale,seed,origin,wear);
+}
