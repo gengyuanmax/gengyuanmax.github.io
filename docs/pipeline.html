@@ -52,6 +52,7 @@ ol.timeline .t{font:500 12px "JetBrains Mono",monospace;color:var(--red);display
 <main>
 <p class="kicker">gengyuanmax.github.io · docs/pipeline.html</p>
 <h1>印刷管线：从原稿到网页</h1>
+<p>2026-10-16：所有在用配方的实际着墨计算已收敛到 <code>transferPlate</code>。加网只准备网版，转印按配方产生墨量和边缘损失，扩墨全局关闭。文字、圆点、线网保留各自参数与表达；原色插页明确不重复印刷。</p>
 <p class="lede">网站上每一个非文字元素和每一个大字标题，都经过同一台“模拟 Riso 印刷机”：先把原稿分成墨量，再加网、转印、叠印，最后由浏览器挂到真实的页面上。本页用真实管线渲染的中间结果说明每一步。图像由 <code>scripts/render-pipeline-doc.mjs</code> 生成，管线改动后重新运行即可更新。</p>
 
 <h2>1. 总览</h2>
@@ -193,7 +194,7 @@ ol.timeline .t{font:500 12px "JetBrains Mono",monospace;color:var(--red);display
 
 <h2>7. 文件地图</h2>
 <div class="files">
- <div><b>核心（纯计算）</b><br><code>print-pipeline/index.ts</code> 公共入口 · <code>definePrintElement</code><br><code>sources.ts</code> · <code>subject.ts</code> 分色<br><code>tone.ts</code> 影调 · <code>screen.ts</code> 网距<br><code>sheet.ts</code> 加网与转印 · <code>material.ts</code> 版与印刷机<br><code>text.ts</code> 文字 · <code>polygon.ts</code> 研究圆 · <code>rule.ts</code> 线条<br><code>plates.ts</code> · <code>budget.ts</code> · <code>noise.ts</code> · <code>png.ts</code> · <code>jobs.ts</code></div>
+ <div><b>核心（纯计算）</b><br><code>print-pipeline/index.ts</code> 公共入口 · <code>definePrintElement</code><br><code>sources.ts</code> · <code>subject.ts</code> 分色<br><code>tone.ts</code> 影调 · <code>screen.ts</code> 网距<br><code>sheet.ts</code> 加网 · <code>sheet-context.ts</code> 纸面场<br><code>transfer.ts</code> 统一转印 · <code>registration.ts</code> 套准<br><code>raster-composite.ts</code> 栅格合成 · <code>material.ts</code> 版参数<br><code>text.ts</code> 文字 · <code>polygon.ts</code> 研究圆 · <code>rule.ts</code> 线条<br><code>plates.ts</code> · <code>budget.ts</code> · <code>noise.ts</code> · <code>png.ts</code> · <code>jobs.ts</code></div>
  <div><b>浏览器（测量与发布）</b><br><code>client/print-material.ts</code> 文字、色带、插图调度<br><code>client/print-jobs.ts</code> · <code>print-worker.ts</code> Worker 池<br><code>client/print-rules.ts</code> · <code>print-guides.ts</code> 线条<br><code>client/reading-flow.ts</code> 阅读树<br><code>client/portrait-composition.ts</code> 人像 · <code>research-map.ts</code> 研究圆<br><code>print-pipeline/browser.ts</code> canvas / 遮罩工具</div>
  <div><b>构建时</b><br><code>scripts/render-media.mjs</code> 总入口<br><code>render-portrait-composition.mjs</code> 人像<br><code>render-about-photo.mjs</code> 拱门<br><code>scripts/render-pipeline-doc.mjs</code> 本页图像</div>
  <div><b>首帧（CSS）</b><br><code>print-pipeline/first-frame.ts</code> 姓名网点图、色带平涂墨量<br><code>styles/print-material.css</code> 纸纹、遮罩、线条层<br><code>styles/duotone-type.css</code> 两墨文字、套准<br><code>styles/reading-modes.css</code> Poster / Compact</div>

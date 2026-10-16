@@ -1,7 +1,7 @@
 /* Reading modes (user, 2026-10-15).
    - poster: the editorial layout, one large printed object at a time (unchanged).
    - compact: the same printed elements, smaller and tighter, so a desktop screen
-     shows several projects at once. Phones (≤720px) always read as poster.
+     shows several projects at once. Phones (≤720px) use the Poster layout.
    The mode lives in #personal-site[data-reading] (set before first paint); theme is a
    separate axis, #personal-site[data-theme], reserved for a later dark mode. */
 
@@ -11,7 +11,7 @@
 #personal-site .he-view-toggle button[aria-pressed="true"]{color:var(--ink);}
 #personal-site .he-view-toggle button[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--red-ink);}
 #personal-site .he-view-toggle button:focus-visible{outline:2px solid var(--blue-ink);outline-offset:4px;}
-@container(max-width:720px){#personal-site .he-view-toggle{display:none;}}
+
 @media print{#personal-site .he-view-toggle{display:none;}}
 
 @container(min-width:721px){
@@ -92,7 +92,7 @@
  #personal-site[data-reading="compact"] .he-about-shortcuts .he-chapter-indicator{top:14px;transform:translateY(calc(var(--about-index,0) * 24px));}
  #personal-site[data-reading="compact"] .he-about-body .he-about-module{margin-top:0;}
  #personal-site[data-reading="compact"] .he-about-body .he-about-intro{grid-column:1/8;grid-row:2;}
- #personal-site[data-reading="compact"] .he-about-intro>p{font-size:17px;line-height:1.6;margin-top:0;}
+ #personal-site[data-reading="compact"] .he-about-intro>p{font-size:var(--body-size);line-height:1.6;margin-top:0;}
  #personal-site[data-reading="compact"] .he-about-body .he-about-experience{grid-column:1/8;grid-row:3;margin-top:calc(var(--baseline) * 2.5);}
  #personal-site[data-reading="compact"] .he-about-body .he-about-education{grid-column:8/13;grid-row:3;margin-top:calc(var(--baseline) * 2.5);}
  #personal-site[data-reading="compact"] .he-about-body .he-about-funding{grid-column:1/5;grid-row:4;margin-top:calc(var(--baseline) * 2.5);}
@@ -134,3 +134,19 @@
 #personal-site [data-moving-group="ordering"] > [data-moving-indicator]{height:16px;background:none;z-index:-1;}
 #personal-site [data-moving-indicator] .he-mode-indicator{inset:0;height:100%;opacity:1;}
 @media(prefers-reduced-motion:reduce){#personal-site [data-marker-motion] > [data-moving-indicator]{transition:none;}}
+
+/* Portrait phones: four complete section links, plus a dedicated guide gutter. */
+@container(max-width:540px){
+ #personal-site .he-research-page > .he-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:72px;column-gap:16px;row-gap:0;overflow:visible;padding:0;margin-bottom:24px;}
+ #personal-site .he-research-page .he-shortcuts a{display:flex;align-items:flex-start;gap:8px;padding:10px 4px 18px;min-height:0;font-size:14px;line-height:1.3;}
+ #personal-site .he-research-page .he-shortcuts a > .he-shortcut-number{display:block;min-width:24px;margin:0;line-height:1.5;}
+ #personal-site .he-shortcuts .he-shortcut-label{text-wrap:initial;}
+ #personal-site .he-shortcuts .he-chapter-indicator{top:44px;bottom:auto;left:0;width:calc((100% - 16px)/2);height:16px;transform:translate(calc(var(--chapter-column,0) * (100% + 16px)),calc(var(--chapter-row,0) * 72px));}
+ #personal-site .he-shortcuts .he-chapter-indicator svg{width:calc(100% - 36px);margin-left:32px;}
+ #personal-site .he-research-flow,#personal-site .he-artifact-spread{--metro-weight:4px;}
+ #personal-site .he-research-chapter .he-project,#personal-site .he-artifact-spread .he-artifact{padding-left:36px;min-width:0;box-sizing:border-box;}
+ #personal-site .he-project .he-project-description{line-height:1.55;}
+}
+
+/* Phones use the single-column Poster layout; desktop toggle position is unchanged. */
+@container(max-width:720px){#personal-site .he-view-toggle[data-moving-group]{display:none;}}

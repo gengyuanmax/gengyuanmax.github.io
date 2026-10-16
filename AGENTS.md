@@ -18,3 +18,10 @@ Read `docs/DESIGN_CONSTRAINTS.md` before changing visual design, content present
 - Keep visual recipes parameterized and versioned. Do not add element-local screening, noise/PRNG, ink compositing, or fallback-swap implementations. Source adapters may sample images/geometry; they do not own print effects.
 - Preserve the `a7a7483` render baseline during architectural migration. Do not update golden fingerprints to make a regression pass. A visual change needs explicit user scope and a new reviewed baseline.
 - The legacy/source-adapter boundary inventory is a migration debt list, not permission for new bypasses. Remove entries as paths retire; do not expand it merely to pass the guard.
+
+## Shared stage ownership
+
+- Active print effects must use `print-pipeline/transfer.ts` (`transferPlate`); screening and output adapters must not compute press noise, roller loss, or spreading. Preserve each approved recipe's parameters instead of adding a parallel element renderer.
+- Use `sheet-context.ts` for shared paper coordinates/fields and `registration.ts` for placement. Insert originals explicitly use the neutral `insert` recipe; do not print already printed assets twice.
+- Physical expansion is globally disabled. Legacy `inkEdge`/gain settings must not reactivate it.
+- For architecture-only edits, retain the pre-edit output fixture and pass `tests/unified-stages.test.mjs`; do not regenerate that fixture from the edited implementation. Historical renderers must not be added back to release media or active clients.

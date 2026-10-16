@@ -1,3 +1,5 @@
+import {transferPlate} from './transfer.ts';
+import {wearSourceCoverage} from './wear.ts';
 import {lineScreen,type LineTexture,type LineFinish} from './line-screen.ts';
 import {printText,type TextRecipe} from './text.ts';
 /** Public entry: adapters supply originals, registered profiles own screening.
@@ -31,11 +33,21 @@ export function screenPrintElement<Id extends string>(e:Readonly<MaterialElement
 export function screenPrintElement(e:Readonly<InsertElement>):string;
 export function screenPrintElement(e:Readonly<LineElement>):string;
 export function screenPrintElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
+ return screenElement(e);
+}
+/** Recipe dispatch: each renderer separates screening from the shared transfer stage. */
+function screenElement(e:Readonly<PrintElement>):Dot[]|Float32Array|string{
  if(e.profile==='line-v3')return lineScreen(e.pitch,e.angle,e.coverage,e.seed,e.grain,e.starvation,e.id,e.texture,e.finish);
- if(e.profile==='insert')return e.source.src;
+ if(e.profile==='insert')return transferPlate({kind:'insert',source:e.source.src});
  if(e.profile==='polygon-v1')return screenPolygons(e.source,e.width,e.height,e.seed,e.plate,e.screen);
  if(e.textRecipe&&e.source.kind==='text')return printText(e.source.mask,e.width,e.height,e.scale,e.press.seed,e.press.pitch,e.press.angles[e.plate],{transfer:{grain:e.press.grain,starve:e.press.starve,holes:e.press.holes,band:e.press.band},...e.textRecipe},e.press.sheet);
- return screenPlate(e.source.tone,e.width,e.height,e.plate,e.press,e.scale,e.origin,e.solid);
+ let tone=e.source.tone;
+ if(e.press.sourceWear){
+  const mask=wearSourceCoverage(e.source.mask,e.width,e.height,e.scale,e.press.sheet?.seed??e.press.seed,e.origin??{x:0,y:0},e.press.sourceWear);
+  // Tone already contains source alpha. Apply only the change in coverage once.
+  tone=tone.map((v,i)=>e.source.mask[i]>0?v*mask[i]/e.source.mask[i]:0);
+ }
+ return screenPlate(tone,e.width,e.height,e.plate,e.press,e.scale,e.origin,e.solid);
 }
 export {paintMaterial,pressSettings,elementPress,materialVersion,type Press} from './material.ts';
 export type {PrintPlate,RGB,Dot,Transform,RasterSource} from './types.ts';
@@ -71,3 +83,5 @@ export {wearEdges,wearVersion,type Wear} from './wear.ts';
 export {composePlateCoverage} from './composition.ts';
 export {prepareSheetTransfer} from './sheet.ts';
 export {renderSheet,compositeRasterPlates} from './raster-composite.ts';
+
+export {transferPolicy,transferPlate} from './transfer.ts';

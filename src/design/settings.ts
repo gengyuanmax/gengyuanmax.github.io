@@ -71,7 +71,7 @@ export const parameters = {
   primaryAngle:{label:'主墨网角 · 蓝版',group:'印刷墨层',type:'number',default:75,min:0,max:90,step:1,unit:'°',scopes:globalOnly},
   secondaryAngle:{label:'第二墨网角 · 朱红版',group:'印刷墨层',type:'number',default:15,min:0,max:90,step:1,unit:'°',scopes:globalOnly},
   grainSize:{label:'颗粒直径 · 另受网距 30% 限制',group:'印刷墨层',type:'number',default:1.5,min:1,max:2,step:.25,unit:'设备 px',scopes:all},
-  inkEdge:{label:'网点与墨边扩张 · Print Lab',group:'印刷墨层',type:'number',default:.15,min:0,max:.5,step:.05,unit:'px',scopes:all},
+  inkEdge:{label:'转印扩墨（全局暂时关闭）',group:'印刷墨层',type:'number',default:.15,min:0,max:.5,step:.05,unit:'px',scopes:all},
   compositionOperation:{label:'人像与底形的组合',group:'人像组合',type:'select',default:selectedComposition.selection.op,options:operations,scopes:all},
   compositionShape:{label:'几何底形',group:'人像组合',type:'select',default:selectedComposition.selection.shape,options:{circle:'圆形',triangle:'三角形'},scopes:all},
   compositionPitch:{label:'人像网距 · 640px 参考画幅',group:'人像组合',type:'number',default:selectedComposition.selection.pitch,min:3,max:12,step:.5,unit:'px',scopes:all},

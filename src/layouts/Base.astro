@@ -55,7 +55,7 @@ const values=resolve(design).values;
     // phones, unless the reader chose one. Theme is a separate axis, light for now.
     let mode=null;try{mode=localStorage.getItem('reading-mode');}catch{}
     if(mode!=='compact'&&mode!=='poster')mode=matchMedia('(min-width: 900px)').matches?'compact':'poster';
-    root.dataset.reading=mode;root.dataset.theme='light';
+    root.dataset.reading=matchMedia('(max-width: 720px)').matches?'poster':mode;root.dataset.theme='light';
    </script>
    <a class="skip-link" href="#site-content">跳到内容</a>
    <slot/>
