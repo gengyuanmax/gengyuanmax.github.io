@@ -1,4 +1,4 @@
-import {paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
+import {prepareInkGroup,paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
 import {dotPitch} from '../design/print-pipeline/index';
 import {recordScreen,clearScreen} from './screen-data';
@@ -13,6 +13,7 @@ import {printMask,printField} from './print-jobs';
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root){
  let config:DesignConfig=design,frame=0,generation=0;
+ const fieldInks=new Map<SVGSVGElement,{layers:{ink:'a'|'b';coverage:Float32Array}[];inks:{a:readonly [number,number,number];b:readonly [number,number,number];paper:readonly [number,number,number]}}>();
  const mounts=new WeakMap<SVGSVGElement,ReturnType<typeof createPrintMount>>();
  const inkMounts=new WeakMap<HTMLElement,ReturnType<typeof createPrintMount>>();
  const observer=new ResizeObserver(schedule);
@@ -93,12 +94,12 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
       originals.push({ink,coverage:source,screened,ring,kind,index});
      }
     }
-    const {pixels,tones,screens}=await printField({kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});if(run!==generation||!ticket.current())return;
+    const {pixels,tones,screens,inkLayers}=await printField({retainInks:!!el.parentElement?.matches('.he-project-imprint,.he-artifact'),kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});if(run!==generation||!ticket.current())return;
     if(import.meta.env.DEV)originals.forEach((item,i)=>{if(item.screened)rememberTone(`${svg.dataset.printField}:${item.ink}:${item.index}`,tones[i],screens[i],w,h,dpr);});
     let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field');
     if(!canvas){canvas=document.createElement('canvas');canvas.className='he-material-field';canvas.setAttribute('aria-hidden','true');el.append(canvas);}
     const prepared=pixelSurface(pixels,w,h);
-    ticket.commit(()=>{publishCanvas(canvas!,prepared);el.dataset.materialReady='true';});
+    ticket.commit(()=>{publishCanvas(canvas!,prepared);el.dataset.materialReady='true';if(inkLayers)fieldInks.set(svg,{layers:inkLayers,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});});
     recordScreen(canvas,p,[...screenedInks].join('') as 'a'|'b'|'ab');
     canvas.dataset.pressRecipe=JSON.stringify({level:p.level,shapes:p.shapes,pitch:p.pitch,angles:p.angles,offset:p.offset,origin,tone:p.tone,units:'CSS px',materialVersion});
 
@@ -155,6 +156,14 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
    if(hidden.get(el))later.push(job);else if(!await now(job))return;
   }
   await Promise.all(visible);if(run!==generation)return;
+  for(const [svg,data] of fieldInks){
+   if(hidden.get(svg))continue;
+   const art=svg.parentElement!.querySelector<HTMLCanvasElement>('.he-material-field'),host=svg.parentElement!.parentElement!,line=host.querySelector<HTMLElement>(':scope > h2 .he-type-line,:scope > h3 .he-type-line');
+   if(!art||!line)continue;
+   const ar=art.getBoundingClientRect(),tr=line.getBoundingClientRect();
+   if(ar.right<=tr.left||tr.right<=ar.left||ar.bottom<=tr.top||tr.bottom<=ar.top){host.removeAttribute('data-ink-group');host.querySelector(':scope > .he-ink-group-output')?.remove();continue;}
+   try{const publish=await prepareInkGroup(host,art,data.layers,line,data.inks);if(run!==generation)return;publish();}catch(error){console.warn('Keeping DOM overprint fallback.',error);}
+  }
   root!.dispatchEvent(new CustomEvent('design:screen-rendered'));
   for(const job of later){await whenIdle();if(run!==generation)return;await job();}
  }

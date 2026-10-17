@@ -107,3 +107,40 @@ export function clearMask(target:HTMLElement){
  delete target.dataset.materialMask;delete target.dataset.maskUrl;
  if(previous)URL.revokeObjectURL(previous);
 }
+
+/** Resolve an existing text transfer mask, preserving its approved recipe. */
+async function transferredGlyph(el:HTMLElement,dpr:number){
+ const width=Math.max(1,Math.round(el.offsetWidth*dpr)),height=Math.max(1,Math.round(el.offsetHeight*dpr));
+ const coverage=textCoverage(el,width,height,dpr),target=el.querySelector<HTMLElement>('[data-print-transfer]')||el,url=target.dataset.maskUrl;
+ if(url){
+  const image=new Image();image.src=url;await image.decode();
+  const c=surface(width,height),ctx=c.getContext('2d')!;ctx.drawImage(image,0,0,width,height);
+  const pixels=ctx.getImageData(0,0,width,height).data;
+  for(let i=0;i<coverage.length;i++)coverage[i]*=pixels[i*4+3]/255;
+ }
+ return {coverage,width,height};
+}
+/** A local sheet contains real DOM text and artwork, but publishes each ink only
+ * once. Native links remain in place for focus, selection, wrapping and layout. */
+export async function prepareInkGroup(host:HTMLElement,art:HTMLCanvasElement,layers:{ink:'a'|'b';coverage:Float32Array}[],line:HTMLElement,inks:{a:import('./types.ts').RGB;b:import('./types.ts').RGB;paper:import('./types.ts').RGB}){
+ const {composeInkGroup}=await import('./ink-group.ts');
+ const a=line.querySelector<HTMLElement>('.he-type-a')!,b=line.querySelector<HTMLElement>('.he-type-b')!;
+ const extra=host.querySelector<HTMLElement>(':scope > h2 .he-external-mark,:scope > h3 .he-external-mark');
+ const hr=host.getBoundingClientRect(),ar=art.getBoundingClientRect(),br=b.getBoundingClientRect(),rr=a.getBoundingClientRect(),er=extra?.getBoundingClientRect();
+ const zoom=hr.width/(host.offsetWidth||hr.width),dpr=Math.max(1,devicePixelRatio),factor=dpr/zoom;
+ const left=Math.min(ar.left,br.left,rr.left,er?.left??Infinity),top=Math.min(ar.top,br.top,rr.top,er?.top??Infinity),right=Math.max(ar.right,br.right,rr.right,er?.right??-Infinity),bottom=Math.max(ar.bottom,br.bottom,rr.bottom,er?.bottom??-Infinity);
+ const width=Math.ceil((right-left)*factor),height=Math.ceil((bottom-top)*factor);
+ const place=(r:DOMRect)=>({x:(r.left-left)*factor,y:(r.top-top)*factor,drawWidth:r.width*factor,drawHeight:r.height*factor});
+ const fragments=layers.map(layer=>({...layer,width:art.width,height:art.height,...place(ar)}));
+ const blue={ink:'b' as const,...await transferredGlyph(b,dpr),...place(br)};
+ const red={ink:'a' as const,...await transferredGlyph(a,dpr),...place(rr)};
+ if(extra&&er)fragments.push({ink:'b',...await transferredGlyph(extra,dpr),...place(er)});
+ // Small text retains the existing single-ink accessibility rule.
+ const hot=Number.parseFloat(getComputedStyle(b).fontSize)>=24;
+ const normal=pixelSurface(composeInkGroup([...fragments,blue],width,height,inks),width,height);
+ const active=pixelSurface(composeInkGroup([...fragments,blue,...hot?[red]:[]],width,height,inks),width,height);
+ const container=document.createElement('span');container.className='he-ink-group-output';container.setAttribute('aria-hidden','true');
+ Object.assign(container.style,{left:`${(left-hr.left)/zoom-host.clientLeft}px`,top:`${(top-hr.top)/zoom-host.clientTop}px`,width:`${width/dpr}px`,height:`${height/dpr}px`});
+ normal.className='he-ink-group-rest';active.className='he-ink-group-active';container.append(normal,active);
+ return ()=>{host.querySelector(':scope > .he-ink-group-output')?.remove();host.append(container);host.dataset.inkGroup='ready';};
+}

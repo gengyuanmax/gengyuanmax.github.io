@@ -7,7 +7,7 @@ export interface CompositionGeometry {
 }
 export interface CompositionChoice {op:Operation;shape:string;pitch:number;mis:number;}
 export interface CompositionPalette {a:string;b:string;paper:string;}
-export function canvasLayers(image:CanvasImageSource,recipe:CompositionGeometry,state:CompositionChoice,width:number,press:{settings:Press;scale:number;origin:{x:number;y:number}}){
+export function canvasLayers(image:CanvasImageSource,recipe:CompositionGeometry,state:CompositionChoice,width:number,press:{settings:Press;geometryScreen?:Pick<Press,'level'|'pitch'>;scale:number;origin:{x:number;y:number}}){
  const r=width/recipe.sheet.width,height=Math.round(recipe.sheet.height*r),surface=document.createElement('canvas');
  surface.width=width;surface.height=height;
  const g=surface.getContext('2d',{willReadFrequently:true})!;
@@ -18,7 +18,7 @@ export function canvasLayers(image:CanvasImageSource,recipe:CompositionGeometry,
  g.clearRect(0,0,recipe.sheet.width,recipe.sheet.height);
  g.drawImage(image,recipe.photo.x,recipe.photo.y,recipe.photo.width,recipe.photo.height);
  const photo=g.getImageData(0,0,width,height).data;
- return {...preparePortraitOriginals({shape,photo,width,height,geometryScale:r,kind:state.shape==='circle'?'sphere':'plane',operation:state.op,press:press.settings,scale:press.scale,origin:press.origin}),r};
+ return {...preparePortraitOriginals({shape,photo,width,height,geometryScale:r,kind:state.shape==='circle'?'sphere':'plane',operation:state.op,press:press.settings,geometryScreen:press.geometryScreen,scale:press.scale,origin:press.origin}),r};
 }
 export function paintComposition(layers:ReturnType<typeof canvasLayers>,_recipe:CompositionGeometry,_choice:CompositionChoice,palette:CompositionPalette){
  return paintPortraitOriginals(layers,{a:rgb(palette.a),b:rgb(palette.b),paper:rgb(palette.paper)});

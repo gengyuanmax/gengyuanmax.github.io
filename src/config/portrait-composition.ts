@@ -1,3 +1,4 @@
+import {screenScale} from '../design/screen.ts';
 import imported from './portrait-composition.json' with {type:'json'};
 import {operations,type Operation} from '../design/element-composition.ts';
 // The export's selection is authoritative; `defaults` and `print.pitch` can
@@ -14,6 +15,7 @@ export const selectedComposition={
 export const portraitViewport={x:104,y:34,width:458,height:438};
 export const compositionAsset='/images/portrait-composition.png';
 
-/** Portrait and its circle share one screen tier. Fine (2px) is the only tier at which the
- * face reads at display size (user review 2026-10-14); medium 4px and 3px lose eyes and mouth. */
+/** Keep facial detail fine; geometry uses the shared medium tier (2026-10-17). */
 export const portraitScreenLevel='fine' as const;
+
+export const portraitGeometryScreen={level:'medium' as const,pitch:screenScale.medium};

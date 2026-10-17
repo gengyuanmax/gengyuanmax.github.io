@@ -1,8 +1,8 @@
-export interface ResourceLinks { page?:string; arxiv?:string; github?:string; demo?:string; article?:string; dataset?:string }
+export interface ResourceLinks { page?:string; arxiv?:string; github?:string; demo?:string; article?:string; dataset?:string; model?:string }
 export interface CatalogRecord { id:string; publishedAt:string|null; categories:string[]; featured?:boolean }
 export type ArtifactMode='date'|'category';
 export function resourceEntries(links:ResourceLinks={}){
- return (['page','arxiv','github','demo','article','dataset'] as const).flatMap(kind=>{
+ return (['page','arxiv','github','demo','article','dataset','model'] as const).flatMap(kind=>{
   const href=links[kind];
   if(!href||/[\s\\]/.test(href))return [];
   if(/^\/(?!\/)/.test(href))return [{kind,href}];

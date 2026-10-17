@@ -11,12 +11,12 @@ import type {RGB} from './types.ts';
 /** Pure print jobs: everything after layout measurement. They run in a Web Worker when
  * the browser has one (src/client/print-worker.ts), else on the main thread; the
  * result is identical either way. */
-export type MaskJob={kind:'mask';w:number;h:number;dpr:number;ground:boolean;groundOpacity:number;tone:ToneSettings;identity:string;ink:'a'|'b';press:Press;origin:{x:number;y:number};fontSize:number;radius:number;proof?:boolean;route?:RouteShape};
+export type MaskJob={kind:'mask';w:number;h:number;dpr:number;ground:boolean;groundOpacity:number;tone:ToneSettings;identity:string;ink:'a'|'b';press:Press;origin:{x:number;y:number};fontSize:number;radius:number;proof?:boolean;crop?:{x:number;y:number;width:number;height:number};route?:RouteShape};
 /** Metro lines printed as a ground: their geometry is the coverage the plane is screened in. */
 export type RouteShape={paths:RoutePath[];radius:number;stations:RouteStation[]};
-export type FieldJob={kind:'field';originals:FieldOriginal[];w:number;h:number;dpr:number;origin:{x:number;y:number};press:Press;settings:Settings;inks:{a:RGB;b:RGB;paper:RGB}};
+export type FieldJob={kind:'field';retainInks?:boolean;originals:FieldOriginal[];w:number;h:number;dpr:number;origin:{x:number;y:number};press:Press;settings:Settings;inks:{a:RGB;b:RGB;paper:RGB}};
 export type MaskResult={png:Uint8Array;tone?:Float32Array;screened?:Float32Array};
-export type FieldResult={pixels:Uint8ClampedArray;tones:Float32Array[];screens:Float32Array[]};
+export type FieldResult={inkLayers?:{ink:'a'|'b';coverage:Float32Array}[];pixels:Uint8ClampedArray;tones:Float32Array[];screens:Float32Array[]};
 export function runMaskJob(j:MaskJob):MaskResult{
  const {w,h,dpr,press:p}=j;let flat:Float32Array=new Float32Array(w*h).fill(j.ground?j.groundOpacity:1),tone:Float32Array|undefined;
  if(j.route){
@@ -36,9 +36,11 @@ export function runMaskJob(j:MaskJob):MaskResult{
  // Text already has its one bounded transfer stage; never apply image grain again.
  const data=j.ground?paintMaterial([{ink:j.ink,coverage:flat}],w,h,{a:[0,0,0],b:[0,0,0],paper:[255,255,255]},{...p,offset:{x:0,y:0}},dpr):null;
  const alpha=new Uint8Array(w*h);for(let i=0;i<alpha.length;i++)alpha[i]=data?255-data[i*4]:Math.round(255*flat[i]);
- return {png:encodeAlphaPNG(alpha,w,h),...(j.proof&&tone?{tone,screened:flat}:{})};
+ let output=alpha,ow=w,oh=h;
+ if(j.crop){const c=j.crop;ow=c.width;oh=c.height;output=new Uint8Array(ow*oh);for(let y=0;y<oh;y++)output.set(alpha.subarray((y+c.y)*w+c.x,(y+c.y)*w+c.x+ow),y*ow);}
+ return {png:encodeAlphaPNG(output,ow,oh),...(j.proof&&tone?{tone,screened:flat}:{})};
 }
 export function runFieldJob(j:FieldJob):FieldResult{
- const r=renderFieldOriginals(j.originals,j.w,j.h,j.dpr,j.origin,j.press,j.settings,j.inks);
- return {pixels:r.pixels,tones:r.tones,screens:r.screens};
+ const r=renderFieldOriginals(j.originals,j.w,j.h,j.dpr,j.origin,j.press,j.settings,j.inks,j.retainInks);
+ return {pixels:r.pixels,tones:r.tones,screens:r.screens,inkLayers:r.inkLayers};
 }

@@ -1,22 +1,8 @@
 ---
 import ContactLink from './ContactLink.astro';
 import {profile} from '../data/content';
-import {design} from '../config/design';
-import {resolve,fontFamilies} from '../design/settings';
-const s=resolve(design).values;
-const fonts=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(', ');
 ---
 <footer class="he-colophon" aria-label="Colophon">
- <p class="he-colophon-print"><a class="he-brand-mark" href="#home" aria-label="Gengyuan Zhang, Home"><img src="/images/gz-logo.png" width="48" height="52" alt=""/></a>Blue &amp; orange, yellow research overprints.</p>
- <p>Set in <span data-colophon-fonts>{fonts}</span>.</p>
- <div class="he-colophon-bottom"><p>© 2026 {profile.name.join(' ')}<br/>Site updated <time datetime="2026-10-14">Oct 2026</time></p>
+ <div class="he-colophon-bottom"><div class="he-colophon-identity"><a class="he-brand-mark" href="#home" aria-label="Gengyuan Zhang, Home"><img src="/images/gz-logo.png" width="48" height="52" alt=""/></a><p>© 2026 {profile.name.join(' ')}<br/>Site updated <time datetime="2026-10-14">Oct 2026</time></p></div>
  <nav aria-label="Colophon links">{profile.contacts.map(link=><ContactLink {...link}/>)}<a href="https://gengyuanmax.github.io/print-labs/">Print Labs ↗</a></nav></div>
 </footer>
-<script>
- import {resolve,fontFamilies,type DesignConfig} from '../design/settings';
- document.querySelector('#personal-site')?.addEventListener('design:updated',event=>{
-  const s=resolve((event as CustomEvent<DesignConfig>).detail).values;
-  const label=document.querySelector('[data-colophon-fonts]');
-  if(label)label.textContent=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key as keyof typeof fontFamilies].split(',')[0].replaceAll('"','')).join(', ');
- });
-</script>

@@ -1,0 +1,43 @@
+---
+import sharp from 'sharp';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+import {screenOriginal,pressSettings,paintMaterial} from '../design/print-pipeline/index';
+import {encodeAlphaPNG} from '../design/print-pipeline/png';
+// Originals only: the shared pipeline owns all screening and transfer.
+const settings=resolve(design).values,scale=3,size=48;
+const originals={crop:'M0 9h7v1.5H0z M9 0h1.5v7H9z',cross:'M7 2h1v12H7z M2 7h12v1H2z',patch:'M1 1h14v14H1z'};
+const masks=await Promise.all(Object.entries(originals).map(async([id,path])=>{
+ const pixels=await sharp(new TextEncoder().encode(`<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 16 16"><path d="${path}"/></svg>`)).ensureAlpha().raw().toBuffer();
+ const coverage=Float32Array.from({length:size*size},(_,i)=>pixels[i*4+3]/255);
+ const press={...pressSettings(settings,'fine'),offset:{x:0,y:0},registration:{},grain:.04,starve:.04,holes:.01,sheet:{seed:settings.seed,origin:{x:0,y:0}}};
+ const plate=screenOriginal(`sheet-${id}`,{kind:'shape',mask:coverage,tone:coverage},size,size,'b',press,scale,{x:0,y:0},true);
+ const printed=paintMaterial([{ink:'b',coverage:plate}],size,size,{b:[0,0,0],paper:[255,255,255]},press,scale);
+ const alpha=Uint8Array.from({length:size*size},(_,i)=>255-printed[i*4]);
+ return `--sheet-${id}:url("data:image/png;base64,${btoa(String.fromCharCode(...encodeAlphaPNG(alpha,size,size)))}")`;
+}));
+---
+<div class="he-sheet-marks" aria-hidden="true" style={masks.join(';')}>
+ {['tl','tr','bl','br'].map(corner=><i class={`he-sheet-crop ${corner}`}/>)}
+ <i class="he-sheet-register"/>
+ <div class="he-sheet-swatches"><i/><i/><i><b/></i></div>
+</div>
+<style is:global>
+ #personal-site .he-page:has(>.he-sheet-marks)::after{content:none;}
+ #personal-site .he-sheet-marks{position:absolute;inset:0;pointer-events:none;user-select:none;color:var(--blue-ink);}
+ #personal-site .he-sheet-crop,#personal-site .he-sheet-register{position:absolute;display:block;width:16px;height:16px;background:currentColor;mask:var(--sheet-crop) center/contain no-repeat;}
+ #personal-site .he-sheet-crop.tl{left:10px;top:8px;}
+ #personal-site .he-sheet-crop.tr{right:10px;top:8px;transform:scaleX(-1);}
+ #personal-site .he-sheet-crop.bl{left:10px;bottom:8px;transform:scaleY(-1);}
+ #personal-site .he-sheet-crop.br{right:10px;bottom:8px;transform:scale(-1);}
+ #personal-site .he-sheet-register{left:10px;top:38px;mask-image:var(--sheet-cross);}
+ #personal-site .he-sheet-swatches{position:absolute;right:12px;top:48px;display:grid;gap:4px;isolation:isolate;}
+ #personal-site .he-sheet-swatches i{display:block;position:relative;width:12px;height:12px;background:var(--blue-ink);mask:var(--sheet-patch) center/contain no-repeat;}
+ #personal-site .he-sheet-swatches i:nth-child(2){background:var(--red-ink);}
+ #personal-site .he-sheet-swatches b{position:absolute;inset:0;background:var(--red-ink);mix-blend-mode:multiply;}
+ @container(max-width:720px){
+  #personal-site .he-sheet-crop.tl,#personal-site .he-sheet-crop.bl,#personal-site .he-sheet-register{left:2px;}
+  #personal-site .he-sheet-crop.tr,#personal-site .he-sheet-crop.br{right:2px;}
+  #personal-site .he-sheet-swatches{right:4px;}
+ }
+</style>

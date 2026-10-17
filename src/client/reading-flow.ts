@@ -1,6 +1,5 @@
-import {metroTree,timelineGuides,type ReadingAnchor,type ReadingBand} from '../design/reading-route';
+import {metroTree,type ReadingAnchor,type ReadingBand} from '../design/reading-route';
 import {paintMetro} from './print-routes';
-import {paintGuides} from './print-guides';
 import {paperOrigin} from '../design/print-pipeline/browser';
 import {design} from '../config/design';
 import type {DesignConfig} from '../design/settings';
@@ -17,6 +16,11 @@ if(root){
   if(root!.dataset.navigating)return;
   const live=new Set<Element>();
   root!.querySelectorAll<HTMLElement>('[data-reading-host]').forEach(host=>{
+   if(host.closest<HTMLElement>('.he-page')?.dataset.readingGuide==='none'){
+    host.querySelectorAll<HTMLElement>('.he-reading-route .he-route').forEach(el=>{if(el.dataset.maskUrl)URL.revokeObjectURL(el.dataset.maskUrl);});
+    host.querySelectorAll('.he-reading-route,.he-route-knockout').forEach(el=>el.remove());
+    return;
+   }
    const rect=host.getBoundingClientRect();
    const cards=[...host.querySelectorAll<HTMLElement>('.he-project,.he-artifact')];
    for(const el of [host,...cards]){live.add(el);if(!observed.has(el)){observed.add(el);observer.observe(el);}}
@@ -33,11 +37,9 @@ if(root){
    const headers=[...host.querySelectorAll<HTMLElement>('.he-chapter-heading')];
    const grounds=headers.map(h=>h.querySelector<HTMLElement>(':scope > [data-style-element^="plate-"]')||h);
    const bands:ReadingBand[]=headers.map((h,i)=>{const b=h.getBoundingClientRect(),g=grounds[i].getBoundingClientRect();return {top:b.top-rect.top,bottom:b.bottom-rect.top,left:g.left-rect.left,right:g.right-rect.left};});
-   const metro=parseFloat(getComputedStyle(host).getPropertyValue('--metro-weight'))||8;
+   const metro=Math.round((parseFloat(getComputedStyle(host).getPropertyValue('--metro-weight'))||8)*.67);
    const page=host.closest<HTMLElement>('.he-page')||root!;
-   // The trunk may step aside into the page margin only where the margin has room for it.
-   const margin=rect.left-page.getBoundingClientRect().left,jog=Math.max(0,Math.min(14,margin-18-metro-12));
-   const {tiles,knockouts}=metroTree(anchors,bands,{trunk:metro,branch:Math.round(metro*.67),station:STATION,ring:3,jog});
+   const {tiles,knockouts}=metroTree(anchors,bands,{trunk:metro,branch:metro,station:STATION,ring:3});
    layer.querySelectorAll(':scope > canvas.he-guide').forEach(c=>c.remove());
    paintMetro(layer,tiles,paperOrigin(host,page),page.offsetHeight,config,`route-${host.closest('.he-page')?.id||'host'}`);
    // Knockouts live inside the band they cut, above its ink and below its type.
@@ -53,12 +55,18 @@ if(root){
    live.add(list);if(!observed.has(list)){observed.add(list);observer.observe(list);}
    const box=list.getBoundingClientRect();if(!box.width)return;
    const before=getComputedStyle(list,'::before'),items=[...list.querySelectorAll<HTMLElement>(':scope > li:not(.he-timeline-guides)')];
-   const left=parseFloat(before.left)||0,width=parseFloat(before.width)||0,top=parseFloat(before.top)||0,bottom=box.height-(parseFloat(before.bottom)||0);
+   const left=parseFloat(before.left)||0,width=parseFloat(before.width)||0;
    const entries=items.map(li=>{const m=getComputedStyle(li,'::before');return li.getBoundingClientRect().top-box.top+(parseFloat(m.top)||0)+(parseFloat(m.height)||0)/2;});
-   const weight=parseFloat(getComputedStyle(list).getPropertyValue('--reading-weight'))||1.5,page=list.closest<HTMLElement>('.he-page')||root!,origin=paperOrigin(list,page);
+   const page=list.closest<HTMLElement>('.he-page')||root!,origin=paperOrigin(list,page);
    let layer=list.querySelector<HTMLElement>(':scope > .he-timeline-guides');
    if(!layer){layer=document.createElement('li');layer.className='he-timeline-guides';layer.setAttribute('aria-hidden','true');layer.setAttribute('role','presentation');list.append(layer);}
-   paintGuides(layer,timelineGuides({x:left+width/2,top,bottom},entries,{weight,dpr:Math.max(1,devicePixelRatio||1),origin}),origin,config);
+   layer.querySelectorAll('canvas.he-guide').forEach(el=>el.remove());
+   const x=left+width/2;
+   const tiles=entries.length?[{paths:[{points:[{x,y:Math.min(...entries)-24},{x,y:Math.max(...entries)+32}],weight:10}],stations:entries.map(y=>({x,y,radius:4,ring:2.3}))}]:[];
+   paintMetro(layer,tiles,origin,page.offsetHeight,config,`timeline-${list.closest('[id]')?.id||'about'}`,0,'a');
+   let blue=layer.querySelector<HTMLElement>(':scope > .he-timeline-stops');
+   if(!blue){blue=document.createElement('div');blue.className='he-timeline-stops';layer.append(blue);}
+   paintMetro(blue,entries.length?[{paths:[],stations:entries.map(y=>({x,y,radius:4,ring:2.3}))}]:[],origin,page.offsetHeight,config,`timeline-stops-${list.closest('[id]')?.id||'about'}`,0,'b');
    list.dataset.guides='print';
   });
   for(const el of observed)if(!live.has(el)){observer.unobserve(el);observed.delete(el);}

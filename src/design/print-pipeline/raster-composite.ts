@@ -2,6 +2,18 @@ import {transferPlate} from './transfer.ts';
 import {rasterOffsets} from './registration.ts';
 import type {Press} from './material.ts';
 import type {PrintPlate,RGB} from './types.ts';
+/** A physical ink is emitted once per composite, even when callers supply
+ * multiple originals. Explicit opaque operations retain their separate contract. */
+export function mergeSameInkPlates<Id extends string>(plates:PrintPlate<Id>[]){
+ const out:PrintPlate<Id>[]=[];
+ for(const plate of plates){
+  const i=out.findIndex(p=>p.ink===plate.ink&&!!p.opaque===!!plate.opaque);
+  if(i<0){out.push(plate);continue;}
+  if(out[i].coverage.length!==plate.coverage.length)throw new Error('Same-ink plate dimensions must match');
+  out[i]={...out[i],coverage:out[i].coverage.map((v,j)=>Math.max(v,plate.coverage[j]))};
+ }
+ return out;
+}
 /** Orchestrates sheet transfer, registration and RGB compositing without changing the recipe. */
 export function renderSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,h:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale:number){
  return compositeRasterPlates(plates,w,h,inks,p,scale,transferPlate({kind:'raster',w,h,press:p,scale}));
@@ -9,6 +21,7 @@ export function renderSheet<Id extends string>(plates:PrintPlate<Id>[],w:number,
 /** Composite already screened coverage with supplied ink strength; no noise generation.
  * The sampler is evaluated at destination sheet coordinates, preserving the approved model. */
 export function compositeRasterPlates<Id extends string>(plates:PrintPlate<Id>[],w:number,h:number,inks:Record<Id,RGB>&{paper:RGB},p:Pick<Press<Id>,'offset'|'registration'>,scale:number,transfer:(x:number,y:number)=>number){
+ plates=mergeSameInkPlates(plates);
  const out=new Uint8ClampedArray(w*h*4);
  // Plates shift relative to the reference only where an element prints more than one
  // of them; a single-plate element is its own reference (the approved look).
@@ -31,6 +44,7 @@ export function compositeRasterPlates<Id extends string>(plates:PrintPlate<Id>[]
 
 /** Compatibility render orchestrator: screening is already complete; applies transfer and composite. */
 export function renderMaterial<Id extends string>(plates:PrintPlate<Id>[],width:number,height:number,inks:Record<Id,RGB>&{paper:RGB},p:Press<Id>,scale=1){
+ plates=mergeSameInkPlates(plates);
  if(p.sheet)return renderSheet(plates,width,height,inks,p,scale);
  const data=new Uint8ClampedArray(width*height*4),strengthAt=transferPlate({kind:'legacy-raster',w:width,h:height,press:p,scale});
  const offsets=rasterOffsets(plates.filter(v=>v.coverage.some(x=>x>0)).map(v=>v.ink),p,scale,true),active=plates.filter(v=>v.coverage.some(x=>x>0));

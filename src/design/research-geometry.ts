@@ -15,11 +15,16 @@ export function researchGeometry(ratio=1.33,stagger=18){
 /** Letter baselines share the ink circle's center. The lower arc needs an
  * extra cap height because upright letters extend inward from its baseline. */
 export function researchLabelArc(g:ReturnType<typeof researchGeometry>,id:DirectionId,scale=.8){
- const c=g.circles[id],bottom=id==='benchmarking',radius=g.r+(bottom?36:20)/scale;
+ const c=g.circles[id],bottom=id==='benchmarking';
+ // Match the ink circle at every responsive size, rather than fixed-size labels
+ // around progressively smaller circles. Bottom baselines include the cap height.
+ const fontSize=Math.max(14,Math.min(18,g.r*scale*.17))/scale;
+ const gap=Math.max(7,Math.min(12,g.r*scale*.10))/scale;
+ const radius=g.r+gap+(bottom?fontSize*.8:0);
  // Turn the outside labels away from the neighbouring circles, keeping both
  // ink copies on exactly the same concentric path.
  const rotation=id==='machines'?-12:id==='domain'?12:0,angle=rotation*Math.PI/180;
  const dx=radius*Math.cos(angle),dy=radius*Math.sin(angle);
- return {radius,cx:c.x,cy:c.y,fontSize:18/scale,
+ return {radius,cx:c.x,cy:c.y,fontSize,
   path:`M ${c.x-dx} ${c.y-dy} A ${radius} ${radius} 0 0 ${bottom?0:1} ${c.x+dx} ${c.y+dy}`};
 }

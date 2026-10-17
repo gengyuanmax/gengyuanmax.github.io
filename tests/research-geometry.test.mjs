@@ -18,8 +18,8 @@ test('default adjacent overlap is one third of the diameter and labels stay conc
  for(const scale of [.5,.8,1])for(const id of ['benchmarking','domain','machines']){
   const arc=researchLabelArc(g,id,scale);
   assert.deepEqual({x:arc.cx,y:arc.cy},g.circles[id]);
-  assert(Math.abs(arc.fontSize*scale-18)<1e-12);
-  assert((arc.radius-g.r)*scale>=14-1e-10);
+  assert(arc.fontSize*scale>=14-1e-12 && arc.fontSize*scale<=18+1e-12);
+  assert((arc.radius-g.r)*scale>=7-1e-10);
  }
 });
 test('membership correction preserves existing research page cross links',()=>{
