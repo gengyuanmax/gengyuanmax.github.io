@@ -57,3 +57,27 @@ html:has(#personal-site){overflow-x:clip;}
 #personal-site .he-colophon{position:relative;}
 #personal-site .he-rule-layer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible;}
 @media print{#personal-site[data-enhanced] *{border-color:revert!important;}#personal-site .he-rule-layer{display:none;}}
+
+/* Cross-element ink assembly. The original boxes still own layout and links;
+   a completed shared sheet replaces only their paint, with no reflow on hover. */
+#personal-site [data-ink-group="ready"]>.he-print-object,
+#personal-site [data-ink-group="ready"]>:is(h2,h3) :is(.he-type-line,.he-external-mark){opacity:0;}
+#personal-site [data-ink-group="ready"]>:is(h2,h3) a{visibility:visible;}
+#personal-site .he-ink-group-output{position:absolute;pointer-events:none;mix-blend-mode:multiply;}
+#personal-site .he-ink-group-output>canvas{position:absolute;inset:0;width:100%;height:100%;}
+#personal-site .he-ink-group-active{visibility:hidden;}
+#personal-site [data-ink-group="ready"]:has(>:is(h2,h3) a:focus-visible)>.he-ink-group-output>.he-ink-group-rest{visibility:hidden;}
+#personal-site [data-ink-group="ready"]:has(>:is(h2,h3) a:focus-visible)>.he-ink-group-output>.he-ink-group-active{visibility:visible;}
+@media (hover:hover){
+ #personal-site [data-ink-group="ready"]:has(>:is(h2,h3) a:hover)>.he-ink-group-output>.he-ink-group-rest{visibility:hidden;}
+ #personal-site [data-ink-group="ready"]:has(>:is(h2,h3) a:hover)>.he-ink-group-output>.he-ink-group-active{visibility:visible;}
+}
+@media print,(forced-colors:active){
+ #personal-site .he-ink-group-output{display:none;}
+ #personal-site [data-ink-group="ready"]>.he-print-object,
+ #personal-site [data-ink-group="ready"]>:is(h2,h3) :is(.he-type-line,.he-external-mark){opacity:1;}
+}
+/* Same-colour rule fragments are unioned before output; distinct rule inks
+   multiply inside their local sheet rather than covering one another. */
+#personal-site :is(.he-rule-layer,.he-timeline-guides){isolation:isolate;mix-blend-mode:multiply;}
+#personal-site .he-guide{mix-blend-mode:multiply;}

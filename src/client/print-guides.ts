@@ -1,3 +1,5 @@
+import {groupInkRects} from '../design/print-pipeline/ink-rects';
+import {unionInkCoverage} from '../design/print-pipeline/ink-group';
 import {printRule,ruleVersion,pressSettings,elementPress} from '../design/print-pipeline/index';
 import {paintAlpha,alphaMaskBlob} from '../design/print-pipeline/browser';
 import {resolve,type DesignConfig} from '../design/settings';
@@ -23,14 +25,17 @@ const rgbOf=(c:string):[number,number,number]=>{const m=c.match(/[\d.]+/g)||['0'
 /** Draw `rects` (layer coordinates, CSS px) into `layer`. `origin` is the layer's position on the page sheet. */
 export function paintGuides(layer:HTMLElement,rects:InkRect[],origin:{x:number;y:number},config:DesignConfig){
  const dpr=Math.max(1,devicePixelRatio||1),pad=1,existing=[...layer.querySelectorAll<HTMLCanvasElement>(':scope > canvas.he-guide')],ink=getComputedStyle(layer).color;
- rects.forEach((r,i)=>{
-  const vertical=r.height>=r.width,el=existing[i]||layer.appendChild(Object.assign(document.createElement('canvas'),{className:'he-guide'}));
-  el.setAttribute('aria-hidden','true');el.dataset.level=String(r.level);
-  const key=JSON.stringify([ruleVersion,r.x,r.y,r.width,r.height,origin,dpr,r.color||ink,resolve(config).values.seed]);
-  el.style.cssText=`left:${r.x-(vertical?pad:0)}px;top:${r.y-(vertical?0:pad)}px;width:${r.width+(vertical?pad*2:0)}px;height:${r.height+(vertical?0:pad*2)}px`;
+ const groups=groupInkRects(rects.map(r=>{const vertical=r.height>=r.width;return {source:r,x:r.x-(vertical?pad:0),y:r.y-(vertical?0:pad),width:r.width+(vertical?pad*2:0),height:r.height+(vertical?0:pad*2),color:r.color||ink};}));
+ groups.forEach((group,i)=>{
+  const x=Math.min(...group.map(r=>r.x)),y=Math.min(...group.map(r=>r.y)),width=Math.max(...group.map(r=>r.x+r.width))-x,height=Math.max(...group.map(r=>r.y+r.height))-y;
+  const el=existing[i]||layer.appendChild(Object.assign(document.createElement('canvas'),{className:'he-guide'}));
+  el.setAttribute('aria-hidden','true');el.dataset.level=String(Math.min(...group.map(r=>r.source.level)));
+  const key=JSON.stringify([ruleVersion,'same-ink-union',group,origin,dpr,resolve(config).values.seed]);
+  el.style.cssText=`left:${x}px;top:${y}px;width:${width}px;height:${height}px`;
   if(el.dataset.key===key)return;
-  const m=rule(r.width,r.height,{x:origin.x+r.x,y:origin.y+r.y},dpr,config,pad);
-  paintAlpha(el,m.alpha,m.width,m.height,rgbOf(r.color||ink));el.dataset.key=key;
+  const fragments=group.map(r=>{const m=rule(r.source.width,r.source.height,{x:origin.x+r.source.x,y:origin.y+r.source.y},dpr,config,pad);return {coverage:m.alpha,width:m.width,height:m.height,x:(r.x-x)*dpr,y:(r.y-y)*dpr,drawWidth:r.width*dpr,drawHeight:r.height*dpr};});
+  const w=Math.max(1,Math.round(width*dpr)),h=Math.max(1,Math.round(height*dpr));
+  paintAlpha(el,unionInkCoverage(fragments,w,h),w,h,rgbOf(group[0].color));el.dataset.key=key;
  });
- existing.slice(rects.length).forEach(el=>el.remove());
+ existing.slice(groups.length).forEach(el=>el.remove());
 }

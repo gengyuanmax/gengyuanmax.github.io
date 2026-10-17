@@ -31,16 +31,40 @@ test('the metro tree keeps the reading tree: one trunk, one tile per row, a stat
  // Every piece is horizontal, vertical or 45°.
  for(const tile of t.tiles)for(const p of tile.paths)for(let i=1;i<p.points.length;i++){const dx=Math.abs(p.points[i].x-p.points[i-1].x),dy=Math.abs(p.points[i].y-p.points[i-1].y);assert.ok(dx<1e-9||dy<1e-9||Math.abs(dx-dy)<1e-9);}
 });
-test('the metro tree steps at 45° to lower stations and jogs before later bands',()=>{
- const t=metroTree([{x:100,y:300,row:'a'},{x:600,y:380,row:'a'},{x:100,y:1000,row:'b'}],[{top:0,bottom:120,left:-60,right:900},{top:700,bottom:820,left:-60,right:900}],{jog:12});
+test('the metro tree uses a stable spine and 45 degree approaches',()=>{
+ const t=metroTree([{x:100,y:300,row:'a'},{x:600,y:380,row:'a'},{x:100,y:1000,row:'b'}],[{top:0,bottom:120,left:-60,right:900},{top:700,bottom:820,left:-60,right:900}]);
  const trunk=t.tiles[0].paths[0].points;
- assert.ok(trunk.some(p=>Math.abs(p.x-(t.trunkX-12))<1e-9),'the trunk steps aside');
+ assert.ok(trunk.every(p=>p.x===t.trunkX),'no decorative jogs in the spine');
  const bus=t.tiles[1].paths[0].points;
  for(let i=1;i<bus.length;i++){const dx=Math.abs(bus[i].x-bus[i-1].x),dy=Math.abs(bus[i].y-bus[i-1].y);assert.ok(dx<1e-9||dy<1e-9||Math.abs(dx-dy)<1e-9);}
  assert.ok(bus.some((p,i)=>i>0&&Math.abs(p.x-bus[i-1].x)>0&&Math.abs(p.x-bus[i-1].x)===Math.abs(p.y-bus[i-1].y)),'a 45° step to the lower station');
 });
-test('small height differences keep the bus level',()=>{
- const t=metroTree([{x:100,y:300,row:'a'},{x:600,y:288,row:'a'}],[],{});
- const ys=new Set(t.tiles[1].paths[0].points.slice(1,-1).map(p=>p.y));
- assert.equal(ys.size,1);
+test('metro weights match and all stations have a straight 45 degree approach',()=>{
+ for(const anchors of [[{x:16,y:80,row:'a'},{x:16,y:500,row:'b'}],[{x:100,y:200,row:'a'},{x:600,y:260,row:'a'}]]){
+  const {tiles}=metroTree(anchors);
+  assert.equal(new Set(tiles.flatMap(t=>t.paths.map(p=>p.weight))).size,1);
+  for(const tile of tiles)for(const st of tile.stations){
+   const path=tile.paths.find(p=>p.points.at(-1).x===st.x&&p.points.at(-1).y===st.y);
+   assert.ok(path);const a=path.points.at(-2),b=path.points.at(-1);
+   for(let i=1;i<path.points.length;i++)assert.ok(path.points[i].x>=path.points[i-1].x,'no backward kink before station');
+   assert.ok(b.y>a.y);assert.equal(b.x-a.x,b.y-a.y);
+  }
+ }
+ assert.ok(roundedPath([{x:0,y:0},{x:30,y:0},{x:50,y:20}],0).every(s=>s.kind==='line'));
+});
+
+test('branches peel away from a shared vertical tangent without a square T junction',()=>{
+ const {tiles}=metroTree([{x:100,y:200,row:'a'},{x:600,y:260,row:'a'},{x:100,y:800,row:'b'}]);
+ for(const tile of tiles.slice(1)){const [a,b,c]=tile.paths[0].points;assert.equal(a.x,b.x);assert.equal(c.x-b.x,c.y-b.y);assert.ok(c.x>b.x);}
+ const last=tiles.at(-1).paths[0].points;
+ assert.deepEqual(tiles[0].paths[0].points.at(-1),last[0]);
+});
+
+test('a lower left station never extends through the spine when the right station is higher',()=>{
+ const {tiles,trunkX}=metroTree([{x:8,y:260,row:'a'},{x:526,y:212,row:'a'}]);
+ for(const tile of tiles)for(const path of tile.paths)for(const p of path.points)assert.ok(p.x>=trunkX);
+ const bus=tiles[1].paths[0].points, end=bus.at(-1),before=bus.at(-2);
+ assert.ok(end.y-before.y>=32,'terminal has a complete diagonal before ring');
+ assert.equal(end.x-before.x,end.y-before.y);
+ const near=tiles[1].paths[1].points;assert.equal(near[0].x,trunkX);
 });

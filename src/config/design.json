@@ -42,6 +42,12 @@
   "areas": {
     "home": {
       "homeScale": 0.78
+    },
+    "research": {
+      "readingGuide": "none"
+    },
+    "artifacts": {
+      "readingGuide": "none"
     }
   },
   "elements": {

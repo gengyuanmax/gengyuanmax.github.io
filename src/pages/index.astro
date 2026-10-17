@@ -1,4 +1,5 @@
 ---
+import SheetMarks from '../components/SheetMarks.astro';
 import Colophon from '../components/Colophon.astro';
 import Base from '../layouts/Base.astro';
 import Navigation from '../components/Navigation.astro';
@@ -17,7 +18,7 @@ const classes={home:'he-home',research:'he-research-page',artifacts:'he-artifact
   <Navigation/>
   <main class="he-window" id="site-content" tabindex="-1"><div class="he-track">{navigation.map(item=>{
    const Component=components[item.id];
-   return <section class:list={['he-page',classes[item.id]]} id={item.id} aria-label={item.label} data-style-area={item.id} data-home-layout={item.id==='home'?'main':undefined} {...designAttributes(resolve(design,item.id).values)} style={styleText(design.areas[item.id]||{},design)}><Component/></section>;
+   return <section class:list={['he-page',classes[item.id]]} id={item.id} aria-label={item.label} data-style-area={item.id} data-home-layout={item.id==='home'?'main':undefined} {...designAttributes(resolve(design,item.id).values)} style={styleText(design.areas[item.id]||{},design)}><SheetMarks/><Component/></section>;
   })}</div></main>
  <Colophon/>
  </div>

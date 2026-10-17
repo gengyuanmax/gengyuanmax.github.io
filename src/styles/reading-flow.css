@@ -4,7 +4,7 @@
 #personal-site .he-reading-route {position:absolute;inset:0;overflow:visible;z-index:-1;pointer-events:none;color:var(--blue-ink);}
 /* Guide lines (print-guides.ts, rule-v1): ink-coloured blocks masked by their printed rule. */
 #personal-site .he-guide {position:absolute;display:block;pointer-events:none;}
-#personal-site .he-timeline > li.he-timeline-guides {position:absolute;inset:0;display:block;padding:0;margin:0;border:0;pointer-events:none;color:var(--blue-ink);}
+#personal-site .he-timeline > li.he-timeline-guides {position:absolute;inset:0;display:block;padding:0;margin:0;border:0;pointer-events:none;color:var(--red-ink);}
 #personal-site .he-timeline > li.he-timeline-guides::before,
 #personal-site .he-about-body .he-timeline[data-guides="print"]::before,
 #personal-site .he-about-body .he-timeline[data-guides="print"] > li::before {display:none;}
@@ -108,3 +108,9 @@
 #personal-site .he-route{position:absolute;display:block;pointer-events:none;background:currentColor;-webkit-mask:var(--route-mask,linear-gradient(transparent,transparent)) 0 0/100% 100% no-repeat;mask:var(--route-mask,linear-gradient(transparent,transparent)) 0 0/100% 100% no-repeat;}
 #personal-site .he-reading-marker{width:auto;min-width:32px;padding-left:24px;border:0;background:none;text-align:left;line-height:26px;}
 @media print{#personal-site .he-route{display:none;}}
+
+/* Metro timeline: red plate, paper-centred stops. These also serve as the no-JS fallback. */
+#personal-site .he-about-body .he-timeline::before{background:var(--red-ink);}
+#personal-site .he-about-body .he-timeline > li:not(.he-timeline-guides)::before{background:var(--paper);border:2px solid var(--red-ink);border-radius:50%;}
+
+#personal-site .he-timeline-stops{position:absolute;inset:0;z-index:1;color:var(--blue-ink);mix-blend-mode:multiply;transform:translate(.3px,.2px);pointer-events:none;}

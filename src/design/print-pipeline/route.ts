@@ -12,6 +12,7 @@ export type RouteStation={x:number;y:number;radius:number;ring:number};
 export function roundedPath(points:Point[],radius:number):Seg[]{
  const pts=points.filter((p,i)=>i===0||Math.hypot(p.x-points[i-1].x,p.y-points[i-1].y)>1e-6);
  const out:Seg[]=[];let s=0,start=pts[0];
+ if(radius<=0){for(let i=1;i<pts.length;i++){const len=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);out.push({kind:'line',a:pts[i-1],b:pts[i],s,len});s+=len;}return out;}
  const push=(seg:Seg)=>{out.push(seg);s+=seg.len;};
  for(let i=1;i<pts.length;i++){
   const p=pts[i],next=pts[i+1];
@@ -72,6 +73,26 @@ export function routeCoverage(width:number,height:number,scale:number,paths:Rout
    const hole=Math.max(0,Math.min(1,(inner-dist)*scale+.5));
    out[i]=Math.max(out[i]*(1-hole),ring);
   });
+ }
+ return out;
+}
+
+/** Non-overlapping publication bands of one blue route plate. Source geometry in
+ * each band includes its neighbours, so joints are unioned before wear/transfer.
+ * Padding is discarded after printing, never blended with an adjacent band. */
+export function routeBands(tiles:{paths:RoutePath[];stations:RouteStation[]}[],bandHeight=256,padding=8){
+ const boxes=tiles.filter(t=>t.paths.length||t.stations.length).map(t=>{
+  const xs=[...t.paths.flatMap(p=>p.points.flatMap(q=>[q.x-p.weight,q.x+p.weight])),...t.stations.flatMap(s=>[s.x-s.radius,s.x+s.radius])];
+  const ys=[...t.paths.flatMap(p=>p.points.flatMap(q=>[q.y-p.weight,q.y+p.weight])),...t.stations.flatMap(s=>[s.y-s.radius,s.y+s.radius])];
+  return {...t,left:Math.floor(Math.min(...xs)-2),right:Math.ceil(Math.max(...xs)+2),top:Math.floor(Math.min(...ys)-2),bottom:Math.ceil(Math.max(...ys)+2)};
+ });
+ if(!boxes.length)return [];
+ const top=Math.min(...boxes.map(t=>t.top)),bottom=Math.max(...boxes.map(t=>t.bottom)),out=[];
+ for(let y=top;y<bottom;y+=bandHeight){
+  const end=Math.min(bottom,y+bandHeight),active=boxes.filter(t=>t.top<end+padding&&t.bottom>y-padding);
+  if(!active.length)continue;
+  const x=Math.min(...active.map(t=>t.left)),right=Math.max(...active.map(t=>t.right));
+  out.push({x,y,width:right-x,height:end-y,padding,paths:active.flatMap(t=>t.paths),stations:active.flatMap(t=>t.stations)});
  }
  return out;
 }

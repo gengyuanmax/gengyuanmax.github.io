@@ -56,16 +56,11 @@ export function readingTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail
  return {ink,knockouts};
 }
 
-/** The reading tree drawn as metro lines (user, 2026-10-16): the same trunk, buses and
- * stems as readingTree, as continuous lines whose bends are rounded and whose branches
- * leave their parent with a curve; every stem ends in a station ring. Like a real line it
- * is not ruler-straight: the trunk steps sideways at 45° before each chapter band it
- * crosses (`jog` px, alternating), and a bus follows its stations' heights with 45° steps
- * instead of hanging every stem from one level; differences under `flat` px stay level. Pieces are grouped per tile (trunk, then
- * one tile per row) so they print separately. */
+/** Equal-width metro routes with straight 45-degree approaches into station rings.
+ * Tiles describe source geometry; publication unions them before printing. */
 export interface MetroPiece {points:{x:number;y:number}[];weight:number}
 export interface MetroTile {paths:MetroPiece[];stations:{x:number;y:number;radius:number;ring:number}[]}
-export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=6,branch=4,radius=14,station=7,ring=2.5,jog=0,flat=32}:{rail?:number;gap?:number;trunk?:number;branch?:number;radius?:number;station?:number;ring?:number;jog?:number;flat?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
+export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-18,gap=24,trunk=4,branch=trunk,station=7,ring=2.5}:{rail?:number;gap?:number;trunk?:number;branch?:number;station?:number;ring?:number}={}):{tiles:MetroTile[];knockouts:Rect[];trunkX:number}{
  if(!anchors.length)return {tiles:[],knockouts:[],trunkX:rail};
  const rows=new Map<string,ReadingAnchor[]>();
  for(const a of anchors){const row=rows.get(a.row)||[];row.push(a);rows.set(a.row,row);}
@@ -73,40 +68,39 @@ export function metroTree(anchors:ReadingAnchor[],bands:ReadingBand[]=[],{rail=-
  let left=rail-trunk/2;
  for(const b of bands)if(b.left!==undefined&&b.left<=left+trunk&&(b.right??Infinity)>=left&&left-b.left<bandInset)left=b.left+bandInset;
  const x=left+trunk/2;
- const crossing=bands.filter(b=>(b.left??-Infinity)<=x+trunk/2+jog&&(b.right??Infinity)>=x-trunk/2-jog).sort((a,b)=>a.top-b.top);
- const top=Math.min(buses[0].y-12,...crossing.filter(b=>b.bottom<=buses[0].y).map(b=>b.top)),last=buses.at(-1)!.y;
- // The trunk: straight, except a 45° side step just above each band it crosses after the first.
- const trunkPts=[{x,y:top}];let cx=x;
- crossing.forEach((b,k)=>{
-  if(k===0||!jog||b.top<=top+jog+radius*2||b.top>=last)return;
-  const nx=k%2?x-jog:x,dy=Math.abs(nx-cx);if(!dy)return;
-  const y0=b.top-12-dy;trunkPts.push({x:cx,y:y0},{x:nx,y:y0+dy});cx=nx;
- });
- trunkPts.push({x:cx,y:last-radius});
- const xAt=(y:number)=>{let v=trunkPts[0].x;for(let i=1;i<trunkPts.length;i++){const a=trunkPts[i-1],b=trunkPts[i];if(y>=a.y&&y<=b.y){v=b.y===a.y?b.x:a.x+(b.x-a.x)*(y-a.y)/(b.y-a.y);break;}if(y>b.y)v=b.x;}return v;};
- const knockouts:Rect[]=crossing.filter(b=>b.bottom>top&&b.top<last).map(b=>{const kx=xAt((b.top+b.bottom)/2);return {x:kx-trunk/2,y:Math.max(top,b.top),width:trunk,height:Math.min(last,b.bottom)-Math.max(top,b.top),level:0 as const};});
- const tiles:MetroTile[]=[{paths:[{points:trunkPts,weight:trunk}],stations:[]}];
- const straight=radius+station;
- for(const bus of buses){
-  const stems=bus.items,tx=xAt(bus.y);
-  // The bus leaves the trunk with a curve, steps at 45° to each station's own level and
-  // turns down into its last station; other stations hang from it on short stems.
-  const pts=[{x:tx,y:bus.y-radius},{x:tx,y:bus.y}];let cy=bus.y;
-  const levels:number[]=[];
-  for(const s of stems){
-   // Small differences stay level: the stem absorbs them (no hump for a few px).
-   const want=s.y-gap,level=Math.abs(want-cy)<flat?cy:want,dy=level-cy,px=pts[pts.length-1].x;
-   if(Math.abs(dy)>.5){
-    const x1=s.x-straight,x0=Math.max(px+straight,x1-Math.abs(dy));
-    if(x1>x0+1){pts.push({x:x0,y:cy},{x:x1,y:cy+Math.sign(dy)*(x1-x0)});cy+=Math.sign(dy)*(x1-x0);}
-    if(Math.abs(level-cy)>.5){pts.push({x:x1,y:cy},{x:x1,y:level});cy=level;}
-   }
-   pts.push({x:s.x,y:cy});levels.push(cy);
+ const crossing=bands.filter(b=>(b.left??-Infinity)<=x+trunk/2&&(b.right??Infinity)>=x-trunk/2).sort((a,b)=>a.top-b.top);
+ // Keep a stable spine. Branches peel away in the reading direction rather than
+ // forming rectangular T junctions. Close stations share the diagonal departure.
+ const rowsGeometry=buses.map(bus=>{
+  const first=bus.items[0],reach=Math.max(1,first.x-x);
+  let startY=Math.min(...bus.items.map(s=>s.y))-Math.min(reach,gap+24);
+  const end=bus.items.at(-1)!;
+  // Leave a full diagonal between the final bend and the ring, even when the
+  // right-hand card is higher than the first card.
+  if(bus.items.length>1)startY=Math.min(startY,Math.min(...bus.items.map(s=>s.y))-32-Math.min(24,reach/2));
+  const lead=Math.min(24,reach/2),join={x:x+lead,y:startY+lead};
+  const points=[{x,y:startY-16},{x,y:startY},join];
+  const approach={x:end.x-(end.y-join.y),y:join.y};
+  // A narrow single-column route is one diagonal, with no intermediate elbow.
+  if(approach.x>join.x+.5)points.push(approach);
+  points.push({x:end.x,y:end.y});
+  const paths:MetroPiece[]=[{points,weight:branch}];
+  for(const st of bus.items.slice(0,-1)){
+   const begin={x:st.x-(st.y-join.y),y:join.y};
+   if(begin.x<join.x+10){
+    // This station lies below/near the departure. Attach it to the actual
+    // spine, never extend the diagonal backwards through the left margin.
+    const departure=st.y-(st.x-x);
+    paths.push({points:[{x,y:departure-16},{x,y:departure},{x:st.x,y:st.y}],weight:branch});
+   }else paths.push({points:[begin,{x:st.x,y:st.y}],weight:branch});
   }
-  const end=stems.at(-1)!;pts.push({x:end.x,y:end.y});
-  const paths:MetroPiece[]=[{points:pts,weight:branch}];
-  stems.slice(0,-1).forEach((s,i)=>paths.push({points:[{x:s.x-radius,y:levels[i]},{x:s.x,y:levels[i]},{x:s.x,y:s.y}],weight:branch}));
-  tiles.push({paths,stations:stems.map(s=>({x:s.x,y:s.y,radius:station,ring}))});
- }
+  return {startY,paths,stations:bus.items.map(s=>({x:s.x,y:s.y,radius:station,ring}))};
+ });
+ const departures=rowsGeometry.flatMap(r=>r.paths.filter(p=>p.points[0].x===x).map(p=>p.points[0].y));
+ const firstStart=Math.min(...departures);
+ const top=Math.min(firstStart,...crossing.filter(b=>b.bottom<=firstStart).map(b=>b.top));
+ const last=Math.max(...departures);
+ const knockouts:Rect[]=crossing.filter(b=>b.bottom>top&&b.top<last).map(b=>({x:x-trunk/2,y:Math.max(top,b.top),width:trunk,height:Math.min(last,b.bottom)-Math.max(top,b.top),level:0 as const}));
+ const tiles:MetroTile[]=[{paths:[{points:[{x,y:top},{x,y:last}],weight:trunk}],stations:[]},...rowsGeometry.map(({paths,stations})=>({paths,stations}))];
  return {tiles,knockouts,trunkX:x};
 }

@@ -6,7 +6,7 @@
    separate axis, #personal-site[data-theme], reserved for a later dark mode. */
 
 /* Toggle: two small printed labels at the top right of the navigation. */
-#personal-site .he-view-toggle{position:absolute;top:18px;right:var(--page-gutter);display:flex;gap:14px;z-index:3;}
+#personal-site .he-view-toggle{position:absolute;top:18px;right:var(--page-gutter);display:flex;flex-direction:column;align-items:flex-start;gap:4px;z-index:3;}
 #personal-site .he-view-toggle button{position:relative;padding:2px 0 6px;border:0;background:none;font:500 11px/1.4 var(--metadata-face);color:var(--blue-ink);cursor:pointer;letter-spacing:.02em;}
 #personal-site .he-view-toggle button[aria-pressed="true"]{color:var(--ink);}
 #personal-site .he-view-toggle button[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--red-ink);}
@@ -150,3 +150,12 @@
 
 /* Phones use the single-column Poster layout; desktop toggle position is unchanged. */
 @container(max-width:720px){#personal-site .he-view-toggle[data-moving-group]{display:none;}}
+
+/* Keep the About print inside the content edge; the gutter belongs to press marks. */
+#personal-site .he-about-masthead .he-about-photo{margin-right:0;max-width:100%;}
+
+/* Poster: bring Experience into the open space below the introduction. */
+#personal-site[data-reading="poster"] .he-about-body .he-about-experience{margin-top:-64px;}
+@container(max-width:700px){
+ #personal-site[data-reading="poster"] .he-about-body .he-about-experience{margin-top:-24px;}
+}
