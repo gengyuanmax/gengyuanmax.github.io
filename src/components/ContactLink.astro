@@ -1,0 +1,38 @@
+---
+import sharp from 'sharp';
+import {design} from '../config/design';
+import {resolve} from '../design/settings';
+import {screenOriginal,pressSettings,paintMaterial} from '../design/print-pipeline/index';
+import {encodeAlphaPNG} from '../design/print-pipeline/png';
+interface Props { label: string; href: string }
+const {label,href}=Astro.props;
+// Small solid stamps use the shared material/transfer recipe, baked before first paint.
+// Counters are actual transparent knockouts, so the shared paper shows through.
+const marks:Record<string,string>={
+ Email:'M1 3h18v14H1z M3 5v2l7 5 7-5V5l-7 5z',
+ Scholar:'M0 6l10-5 10 5-10 5z M4 10l6 3 6-3v5c-4 3-8 3-12 0z M18 8h2v8h-2z',
+ GitHub:'M3 1h6v6H7v6h2v6H3v-6h2V7H3z M13 1h6v6h-2v2c0 3-3 5-7 5v-2c3 0 5-1 5-3V7h-2z',
+ LinkedIn:'M1 1h18v18H1z M4 8v8h3V8z M4 4v2h3V4z M9 8v8h3v-5c0-2 2-2 2 0v5h3v-6c0-3-4-3-5-1V8z',
+};
+const settings=resolve(design).values;
+const size=48,scale=3;
+const original=new TextEncoder().encode(`<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 20 20"><path fill="black" fill-rule="evenodd" d="${marks[label]}"/></svg>`);
+const pixels=await sharp(original).ensureAlpha().raw().toBuffer();
+const coverage=Float32Array.from({length:size*size},(_,i)=>pixels[i*4+3]/255);
+// One fixed stamp master, reused at each contact location; no animated texture swap.
+const press={...pressSettings(settings,'fine'),offset:{x:0,y:0},registration:{},
+ sourceWear:{depth:.3,speckle:.12},grain:.10,starve:.10,holes:.04,
+ sheet:{seed:settings.seed,origin:{x:0,y:0}}};
+const plate=screenOriginal(`contact-${label}`,{kind:'shape',mask:coverage,tone:coverage},size,size,'b',press,scale,{x:0,y:0},true);
+const printed=paintMaterial([{ink:'b',coverage:plate}],size,size,{b:[0,0,0],paper:[255,255,255]},press,scale);
+const alpha=Uint8Array.from({length:size*size},(_,i)=>255-printed[i*4]);
+const mask=`data:image/png;base64,${btoa(String.fromCharCode(...encodeAlphaPNG(alpha,size,size)))}`;
+
+---
+<a class="he-contact-link" href={href}>
+ <i class="he-contact-icon" aria-hidden="true" style={`mask-image:url("${mask}");-webkit-mask-image:url("${mask}")`}></i>{label}
+</a>
+<style>
+ :global(#personal-site) a.he-contact-link{display:inline-flex;align-items:center;gap:6px;min-height:24px;white-space:nowrap;}
+ .he-contact-icon{display:block;flex:none;width:16px;height:16px;pointer-events:none;background:currentColor;mask-size:100% 100%;-webkit-mask-size:100% 100%;mask-repeat:no-repeat;}
+</style>

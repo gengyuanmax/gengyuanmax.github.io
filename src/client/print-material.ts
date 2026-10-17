@@ -1,4 +1,4 @@
-import {paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL} from '../design/print-pipeline/browser';
+import {paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
 import {dotPitch} from '../design/print-pipeline/index';
 import {recordScreen,clearScreen} from './screen-data';
@@ -34,6 +34,7 @@ if(root){
  const metricsOf=(el:HTMLElement)=>{let m=metrics.get(el);if(!m){m=measure(el);metrics.set(el,m);}return m;};
 const decodeImage=(url:string)=>{const image=new Image();image.src=url;return image.decode().catch(()=>{});};
  async function textureMask(el:HTMLElement,ink:'a'|'b',s:ReturnType<typeof resolve>['values']){
+  const target=el.querySelector<HTMLElement>('[data-print-transfer]')||el;
   const ground=el.matches('.he-project-ground,.he-divider-band');
   // Solid type only carries low-frequency transfer (features ≥32 CSS px; its 1px grain
   // covers <4% of the area at <8% loss), so its mask is computed at 2 CSS px per sample
@@ -51,10 +52,8 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
   try{
    const r=await printMask({kind:'mask',w,h,dpr,ground,groundOpacity:s.groundOpacity,tone:toneSettings(s),identity,ink,press:p,origin,fontSize,radius:s.titleDotRadius,proof:import.meta.env.DEV});
    if(import.meta.env.DEV&&r.tone&&r.screened)rememberTone(identity,r.tone,r.screened,w,h,dpr);
-   const url=URL.createObjectURL(new Blob([r.png as BlobPart],{type:'image/png'}));
-   // Swap only a decoded mask: an undecoded mask-image paints nothing for a frame.
-   await decodeImage(url);
-   if(!ticket.commit(()=>{const previous=el.dataset.maskUrl;el.style.maskImage=`url(${url})`;el.style.maskSize='100% 100%';el.dataset.materialMask='true';el.dataset.maskUrl=url;if(previous)URL.revokeObjectURL(previous);}))URL.revokeObjectURL(url);
+   await publishMask(target,r.png,ticket);
+
   }catch(error){console.warn('Keeping the unprinted ink.',error);}
  }
 
@@ -121,7 +120,7 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
   for(const el of [...grounds,...bands])metrics.set(el,measure(el));
   const hidden=new Map([...fields,...lines,...grounds,...bands].map(el=>[el,offscreen(el)]));
   // Write phase for type state, all at once.
-  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.closest('[data-style-element="home-name"]')?'display':textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);}
+  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.dataset.displayScreen==='true'?'display':textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);}
   // Illustrations stay paper until printed, while type and grounds already show their
   // final ink and only gain texture: print the visible illustrations first.
   for(const svg of fields){
@@ -133,11 +132,12 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
    const job=()=>{
     const tasks:Promise<void>[]=[];const s=resolve(config,area as Area|undefined,owner?.dataset.styleElement).values;
     for(const ink of ['a','b'] as const){const layer=el.querySelector<HTMLElement>(`.he-type-${ink}`);if(!layer)continue;
-     const dotted=(size>=72||el.closest('[data-style-element="home-name"]'))&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
-     // The dotted plate is painted by CSS (--dot-plate) from the first frame; a JS mask would replace it.
-     if(dotted){if(layer.dataset.materialMask){layer.style.removeProperty('mask-image');layer.style.removeProperty('mask-size');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();}
-      recordScreen(layer,elementPress(pressSettings(s,typeScreenLevel(size)!,size),owner?.dataset.styleElement||'shared-type','title',size),ink,size);continue;}
-     if(size>=24)tasks.push(textureMask(layer,ink,s));else{layer.style.removeProperty('mask-image');delete layer.dataset.materialMask;inkMounts.get(layer)?.invalidate();clearScreen(layer);}
+     const dotted=(size>=72||el.dataset.displayScreen==='true')&&s.titleTreatment==='dotted'&&ink==='b'&&typeScreenLevel(size)!==null;
+     // Every text plate has separate screen and transfer surfaces. Transfer never replaces the screen.
+     if(size>=24)tasks.push(textureMask(layer,ink,s));
+     else{clearMask(layer.querySelector<HTMLElement>('[data-print-transfer]')||layer);inkMounts.get(layer)?.invalidate();}
+     if(dotted)recordScreen(layer,elementPress(pressSettings(s,typeScreenLevel(size)!,size),owner?.dataset.styleElement||'shared-type','title',size),ink,size);
+     else clearScreen(layer);
     }
     return Promise.all(tasks).then(()=>{});
    };

@@ -31,3 +31,14 @@ test('release media cannot select historical print or portrait-flow renderers',a
  assert.match(source,/renderPortraitComposition\(config\)/);
  assert.match(source,/renderAboutPhoto\(config\)/);
 });
+
+test('text adapters share plates and cannot special-case the name transfer',async()=>{
+ const client=await fs.readFile('src/client/print-material.ts','utf8');
+ assert.doesNotMatch(client,/home-name|nameEdge|glyphEdgeLoss|data-name-transfer/);
+ assert.match(client,/publishMask\(target,r.png,ticket\)/);
+ for(const component of ['PrintTitle','PrintWord','InkText']){
+  const source=await fs.readFile(`src/components/${component}.astro`,'utf8');
+  assert.match(source,/PrintTypeLine/);
+  assert.doesNotMatch(source,/he-type-a|data-name-transfer/);
+ }
+});

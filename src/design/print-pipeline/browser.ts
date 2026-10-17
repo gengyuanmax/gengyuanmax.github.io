@@ -87,3 +87,23 @@ export function alphaMaskBlob(alpha:Float32Array,width:number,height:number){
  return Promise.resolve(alphaMaskURL(bytes,width,height));
 }
 export function alphaMaskURL(alpha:Uint8Array,width:number,height:number){return URL.createObjectURL(new Blob([encodeAlphaPNG(alpha,width,height)],{type:'image/png'}));}
+
+/** Shared DOM output backend: decode before publication and release superseded resources. */
+export async function publishMask(target:HTMLElement,png:Uint8Array,ticket:{commit:(publish:()=>void)=>boolean}){
+ const url=URL.createObjectURL(new Blob([png as BlobPart],{type:'image/png'}));
+ try{
+  const image=new Image();image.src=url;await image.decode();
+  if(!ticket.commit(()=>{
+   const previous=target.dataset.maskUrl;
+   target.style.maskImage=`url(${url})`;target.style.maskSize='100% 100%';
+   target.dataset.materialMask='true';target.dataset.maskUrl=url;
+   if(previous)URL.revokeObjectURL(previous);
+  }))URL.revokeObjectURL(url);
+ }catch(error){URL.revokeObjectURL(url);throw error;}
+}
+export function clearMask(target:HTMLElement){
+ const previous=target.dataset.maskUrl;
+ target.style.removeProperty('mask-image');target.style.removeProperty('mask-size');
+ delete target.dataset.materialMask;delete target.dataset.maskUrl;
+ if(previous)URL.revokeObjectURL(previous);
+}

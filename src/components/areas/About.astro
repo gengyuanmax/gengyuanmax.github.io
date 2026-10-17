@@ -1,4 +1,5 @@
 ---
+import ContactLink from '../ContactLink.astro';
 import ChapterIndicator from '../ChapterIndicator.astro';
 import {aboutSections} from '../../data/about-sections';
 import InkText from '../InkText.astro';
@@ -37,6 +38,6 @@ import {aboutPhoto} from '../../config/about-photo';
   <div class="he-personal-heading"><QuietHeading title="Outside research"/><PrintMotif id="mark-about"/></div><p>{profile.personal}</p>
  </Styled>
  <Styled as="section" id="about-contact" anchorId="about-contact" data-about-section area="about" class="he-about-module he-about-contact" style={row('contact')}>
-  <QuietHeading title="Contact" index="03"/><nav class="he-contact" aria-label="Contact and profiles">{profile.contacts.map(link=><a href={link.href}>{link.label}<span class="he-contact-arrow" aria-hidden="true">↗</span></a>)}</nav>
+  <QuietHeading title="Contact" index="03"/><nav class="he-contact" aria-label="Contact and profiles">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav>
  </Styled>
 </div>
