@@ -152,3 +152,9 @@ const src = screenPrintElement(definePrintElement({
 - 原色 Artifacts 和已印好的品牌原稿用 insert 配方：明确通过恒等转印，保留原稿，不重复加网。正文的无材质配方也不能擅自增加效果。
 - 发布构建只生成当前在用的人像合成与 About 图片。历史 print/portrait-flow 工具不再被发布构建调用；保留历史源文件供研究，不代表它们是可供新元素选用的旁路。
 - `tests/unified-stages.test.mjs` 检查每类在用适配器调用实际 Transfer，并禁止加网/输出模块调用着墨噪声。迁移前捕获的 `pipeline-pre-unification-20261016.json` 覆盖当前输出，迁移后逐项完全相等；旧历史基准不重录。
+
+## DOM 文字挂载（2026-10-17）
+
+所有双墨文字通过 `PrintTypeLine.astro` 声明：每版外层承载加网及套准，内层 `data-print-transfer` 承载着墨强度。`PrintTitle`、`PrintWord`、`InkText` 共用这一结构；不要增加姓名或其他元素专属的遮罩节点、工艺函数或渲染分支。需要跨字号保留网版的原稿声明 `displayScreen`，不能在渲染器里识别元素 ID。
+
+所有文字的着墨使用 `printMask → runMaskJob → screenOriginal → printText → transferPlate`，按共享字号配方限幅。网点层与实色层都走该流程，网点几何不会被着墨遮罩替换。`browser.publishMask` 统一等待解码、校验挂载票据、替换及释放旧 URL；失败时保留上一帧，`clearMask` 负责清理。宿主只测量、排队和传配方，不重新实现上述生命周期。

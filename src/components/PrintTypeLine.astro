@@ -1,0 +1,5 @@
+---
+interface Props {text:string;class?:string;displayScreen?:boolean}
+const {text,class:className='',displayScreen=false}=Astro.props;
+---
+<span class:list={['print-2ink','he-type-line',className]} data-display-screen={displayScreen?'true':undefined}><span class="he-type-a" aria-hidden="true" data-ink-copy={text}><span data-print-transfer>{text}</span></span><span class="he-type-b"><span data-print-transfer>{text}</span></span></span>

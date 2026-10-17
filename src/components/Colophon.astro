@@ -1,4 +1,5 @@
 ---
+import ContactLink from './ContactLink.astro';
 import {profile} from '../data/content';
 import {design} from '../config/design';
 import {resolve,fontFamilies} from '../design/settings';
@@ -9,7 +10,7 @@ const fonts=[s.displayFont,s.bodyFont,s.metadataFont].map(key=>fontFamilies[key 
  <p class="he-colophon-print"><a class="he-brand-mark" href="#home" aria-label="Gengyuan Zhang, Home"><img src="/images/gz-logo.png" width="48" height="52" alt=""/></a>Blue &amp; orange, yellow research overprints.</p>
  <p>Set in <span data-colophon-fonts>{fonts}</span>.</p>
  <div class="he-colophon-bottom"><p>© 2026 {profile.name.join(' ')}<br/>Site updated <time datetime="2026-10-14">Oct 2026</time></p>
- <nav aria-label="Colophon links">{profile.contacts.filter(link=>['Email','Scholar','GitHub'].includes(link.label)).map(link=><a href={link.href}>{link.label} ↗</a>)}<a href="https://gengyuanmax.github.io/print-labs/">Print Labs ↗</a></nav></div>
+ <nav aria-label="Colophon links">{profile.contacts.map(link=><ContactLink {...link}/>)}<a href="https://gengyuanmax.github.io/print-labs/">Print Labs ↗</a></nav></div>
 </footer>
 <script>
  import {resolve,fontFamilies,type DesignConfig} from '../design/settings';

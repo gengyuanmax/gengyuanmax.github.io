@@ -8,7 +8,6 @@
 #personal-site .he-home .he-pillars .he-number {background:var(--paper);}
 #personal-site .he-home .he-pillars a {border-bottom:0;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;}
 #personal-site .he-home .he-contact {gap:10px 12px;}
-#personal-site .he-contact .he-contact-arrow {display:inline-block;margin-left:5px;padding:0;color:var(--ink);font:12px/1 var(--metadata-face);}
 #personal-site .he-home .he-news h2 {font-size:clamp(34px,4cqw,48px);padding-top:12px;}
 #personal-site .he-home .he-news h2 > .he-print-object {width:145px;height:88px;left:-10px;top:-8px;}
 #personal-site .he-home .he-date {border-left:0;border-top:2px solid var(--blue-ink);padding:5px 0 0;max-width:64px;}

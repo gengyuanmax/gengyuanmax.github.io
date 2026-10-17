@@ -392,3 +392,12 @@ About 照片（2026-10-16）：保留反白构图与 coarse 网距，通过公�
 - `tests/unified-stages.test.mjs` 检查每类在用适配器调用实际 Transfer，并禁止加网/输出模块调用着墨噪声。迁移前捕获的 `pipeline-pre-unification-20261016.json` 覆盖当前输出，迁移后逐项完全相等；旧历史基准不重录。
 
 About 自我介绍正文（2026-10-16）：I am 开头的段落使用共享 `--body-size`，Poster、Compact 和手机均不再额外放大，保留字体、行距及版面位置。
+
+联系方式（2026-10-16）：首页、About 和页脚统一展示 Email、Scholar、GitHub、LinkedIn，链接来自 profile.contacts。共享 ContactLink 用固定 16px 单墨实心图形分别表示信封、学术、代码分支及 in；采用色块与镂空而非单线描边（2026-10-17），保留真实文字与下划线，图标对辅助技术隐藏，不额外加网或噪声。链接至少 24px 高，整项换行，悬停不改变尺寸。
+
+联系图标质感（2026-10-17）：用户允许小图标使用轻微印刷磨损。16px 实心原稿经共享 material-v1 / Transfer，边缘 wear depth=.3、speckle=.12，grain=.10、starvation=.10、holes=.04；保持单墨、不扩墨，文字仍无材质。构建时生成同一印章母版的 alpha，首帧直接呈现，不运行时换图。
+
+
+姓名双版着墨（2026-10-17）：撤销独立字形轮廓缺墨遮罩，不再沿轮廓单独啃边。蓝色网点与朱红底字共用文字 Transfer 配方、纸面坐标和强度上限；蓝版外层保留原网点，内层乘同一着墨强度场，因此不重加网、不扩墨、不删除完整网点。网点尺寸/位置变化属于网版几何；颗粒减墨、缺墨与滚筒属于 Transfer。保留悬停额外错版 (.5px,.25px)、180ms ease-out，reduced motion 禁用。
+
+文字宿主统一（2026-10-17）：PrintTitle、PrintWord、InkText 共用 PrintTypeLine 的双版原稿结构及 data-print-transfer；客户端不按 home-name 分支，跨字号网版由 displayScreen 配方声明。公共 browser.publishMask/clearMask 管理解码、票据提交和 URL 生命周期。保留已确认的两版着墨与悬停效果，不新增工艺。
