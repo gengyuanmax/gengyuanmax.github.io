@@ -11,9 +11,9 @@ export const profile={
 };
 export const navigation=[{id:'home',label:'Home',shape:'home'},{id:'research',label:'Research projects',shape:'research'},{id:'artifacts',label:'Artifacts',shape:'artifacts'},{id:'about',label:'About me',shape:'about'}] as const;
 export const pillars=[
- {id:'machines',action:'Building',label:'Machines can see',short:'Machines can see',lines:['Machines','can see'],detail:'Models, Agents, Systems'},
- {id:'benchmarking',action:'Evaluating',label:'Benchmarking visual intelligence',short:'Benchmarking',lines:['Benchmarking','visual intelligence'],detail:''},
- {id:'applications',action:'Leveraging',label:'Domain applications',short:'Domain applications',lines:['Domain','applications'],detail:'Embodied AI, Surgical domain'},
+ {id:'machines',action:'Building',label:'Building',short:'Building',lines:['Building'],detail:'Multimodal intelligent systems'},
+ {id:'benchmarking',action:'Evaluating',label:'Evaluating',short:'Evaluating',lines:['Evaluating'],detail:'Multimodal systems in the wild'},
+ {id:'applications',action:'Applications',label:'Applications',short:'Applications',lines:['Applications'],detail:'Multimodal intelligence in specialized domains'},
 ] as const;
 export const sectionCopy={research:'Multimodal understanding, evaluation, and systems',artifacts:'Interactive experiments, research tools, datasets, and papers.'};
 export interface Entry {id:string;title:string;description:string;metadata:string;themes:string[];assetId?:string;links?:ResourceLinks;approval:'pending'|'approved';sources:string[];}
@@ -41,12 +41,22 @@ export const printLabModules=[
  {name:'Elements',href:'https://gengyuanmax.github.io/print-labs/element.html',image:'/images/print-lab-element.png'},
 ];
 export const news=[
- {id:'print-labs-2026',date:'13 Oct 2026',text:'I launched a fun product, Print Labs, with four interactive labs for print texture, layout, paper objects, and composition.',href:'https://gengyuanmax.github.io/print-labs/index.html',sources:['user','print-lab'],approval:'approved',note:'Launch date confirmed by the user on 14 Oct 2026 as yesterday.'},
- {id:'mosaic-2026',date:'30 Sep 2026',text:'Introducing Mosaic, a visual tool environment, benchmark, and trained agent for multi-image understanding.',href:mosaicLinks.page!,sources:['mosaic','mosaic-release'],approval:'pending'},
- {id:'surgeon-2026',date:'20 Sep 2026',text:'Our paper “How to Train a Surgeon?” has been accepted to the NeurIPS 2026 Evaluations and Datasets Track.',href:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078',sources:['user','cv','neurips'],approval:'approved',note:'Acceptance date confirmed by the user on 14 Oct 2026.'},
+ {id:'print-labs-2026',date:'13 Oct 2026',text:'I launched a fun product, Print Labs, to visualize how printing can be simulated in codes.',href:'https://gengyuanmax.github.io/print-labs/index.html',sources:['user','print-lab'],approval:'approved',note:'Launch date confirmed by the user on 14 Oct 2026 as yesterday.'},
+ {id:'mosaic-2026',date:'30 Sep 2026',text:'Introducing Mosaic, a agentic visual harness for multi-image understanding',href:mosaicLinks.page!,sources:['mosaic','mosaic-release'],approval:'pending'},
+ {id:'surgeon-2026',date:'20 Sep 2026',text:'Our paper “How to Train a Surgeon? Benchmarking Generalist Agents in Surgical Scene Understanding” has been accepted to the NeurIPS 2026 Evaluations and Datasets Track.',href:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078',sources:['user','cv','neurips'],approval:'approved',note:'Acceptance date confirmed by the user on 14 Oct 2026.'},
  {id:'reexplore-2026',date:'09 Sep 2026',text:'ReEXplore at the Embodied Multimodal Reasoning Workshop, ECCV 2026.',href:'https://arxiv.org/abs/2511.19033',sources:['user','cv'],approval:'approved',note:'Workshop date confirmed by the user; this is not the acceptance notification date or a claim of personal attendance.'},
  {id:'oxford-2026',date:'16 Mar 2026',text:'I visited the Torr Vision Group at the University of Oxford from 16 Mar to 31 Jul 2026.',href:'https://torrvision.com/',sources:['user','cv'],approval:'approved',note:'Full visit dates confirmed by the user; ordered by the start date.'},
  {id:'funding-2025',date:'Dec 2025',text:'Secured €115,000 in Software Campus funding to lead a research project on intelligent agents for surgical video understanding.',href:'https://softwarecampus.de/',sources:['user','homepage','cv'],approval:'pending',note:'The user confirmed €115,000 and December 2025. Month precision is intentional; no exact day is claimed.'},
+ {id:"amazon-2025",date:"07 Apr 2025",text:"I start my internship @Amazon London!",href:"#about-experience",sources:['legacy-news'],approval:'approved'},
+ {id:"worldmodel-2025",date:"05 Mar 2025",text:"One paper accepted by ICLR 2025 Workshop World Model.",href:"https://arxiv.org/abs/2502.15457",sources:['legacy-news'],approval:'approved'},
+ {id:"cvpr-2025",date:"26 Feb 2025",text:"Two papers accepted at CVPR2025! See you in Nashville.",href:"#publications",sources:['legacy-news'],approval:'approved'},
+ {id:"memory-2025",date:"20 Feb 2025",text:"Our new paper is now on arXiv: Memory Helps, but Confabulation Misleads: Understanding Streaming Events in Videos with MLLMs!",href:"https://arxiv.org/abs/2502.15457",sources:['legacy-news'],approval:'approved'},
+ {id:"wacv-2025",date:"28 Oct 2024",text:"One new paper is accepted by WACV 2025, Tuscon, Arizona!",href:"#publications",sources:['legacy-news'],approval:'approved'},
+ {id:"icq-2024",date:"17 Jun 2024",text:"Our new paper is now on arXiv: Localizing Events in Videos with Multimodal Queries!",href:"https://arxiv.org/pdf/2406.10079",sources:['legacy-news'],approval:'approved'},
+ {id:"spot-2023",date:"27 Nov 2023",text:"1 new paper is now on arXiv: SPOT! Revisiting Video-Language Models for Event Understanding!",href:"https://arxiv.org/abs/2311.12919",sources:['legacy-news'],approval:'approved'},
+ {id:"wacv-2024",date:"24 Oct 2023",text:"1 Paper accepted at WACV 2024!",href:"https://wacv2024.thecvf.com/",sources:['legacy-news'],approval:'approved'},
+ {id:"iccv-2023",date:"01 Jul 2023",text:"1 Paper accepted at ICCV 2023!",href:"https://iccv2023.thecvf.com/",sources:['legacy-news'],approval:'approved'},
+ {id:"phd-2021",date:"01 Oct 2021",text:"I started my PhD at LMU.",href:"#about-education",sources:['legacy-news'],approval:'approved'},
 ];
 export const experience=[
  {date:'Oct 2021–present',role:'Research Assistant',place:'LMU Munich',detail:'Multimodal learning, visual/video understanding, and multimodal agents.'},
