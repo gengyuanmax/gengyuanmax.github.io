@@ -3,4 +3,4 @@ import InkText from './InkText.astro';
 import {pillars} from '../data/content';
 import ChapterIndicator from './ChapterIndicator.astro';
 ---
-  <nav class="he-shortcuts" aria-label="Research sections" data-native-scroll><ChapterIndicator/>{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span class="he-shortcut-number" aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span><span class="he-shortcut-label">{p.short}</span></a>)}<a href="#publications" data-chapter="publications"><span class="he-shortcut-number" aria-hidden="true">Appx.</span><span class="he-shortcut-label">Publication</span></a></nav>
+  <nav class="he-shortcuts" aria-label="Research sections" data-native-scroll><ChapterIndicator/>{pillars.map((p,i)=><a href={`#${p.id}`} data-chapter={p.id}><span class="he-shortcut-number" aria-hidden="true"><InkText text={String(i+1).padStart(2,'0')}/></span><span class="he-shortcut-label">{p.short}</span></a>)}<a href="#publications" data-chapter="publications"><span class="he-shortcut-number" aria-hidden="true">Appx.</span><span class="he-shortcut-label">Publications</span></a></nav>

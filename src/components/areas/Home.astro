@@ -45,5 +45,7 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
 <section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
  <HomeDivider kind="news"/>
  <h2 id="news-heading"><PrintWord id="word-news" area="home" text="News"/></h2>
- <div class="he-news-scroll" role="region" aria-labelledby="news-heading" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{monthDate(n.date)}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div>
+ <div class="he-news-scroll" tabindex="0" role="region" aria-labelledby="news-heading" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{monthDate(n.date)}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div>
 </section>
+
+<script>import "../../client/news-scroll";</script>

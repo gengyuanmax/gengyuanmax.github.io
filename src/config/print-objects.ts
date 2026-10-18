@@ -35,6 +35,7 @@ export const printGrounds = {
  'plate-about':{area:'about',label:'About · 页边墨版'},
  'plate-benchmarking':{area:'research',label:'Research · Benchmarking 章题墨版'},
  'plate-applications':{area:'research',label:'Research · Domain 章题墨版'},
+ 'plate-publications':{area:'research',label:'Research · Publications 附录章题墨版'},
  'plate-machines':{area:'research',label:'Research · Machines 章题墨版'},
  'ground-home-role':{area:'home',label:'Home · 身份信息底形'},
  'ground-home-pillars':{area:'home',label:'Home · 研究方向索引底形'},

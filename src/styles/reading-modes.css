@@ -24,7 +24,7 @@
 
  /* Research: chapter bands half height; two projects side by side per chapter. */
  #personal-site[data-reading="compact"] .he-research-chapter{row-gap:calc(var(--baseline) * 3);margin-top:var(--baseline);}
- #personal-site[data-reading="compact"] .he-research-chapter .he-chapter-heading{min-height:104px;padding-top:16px;padding-bottom:16px;grid-template-columns:150px minmax(0,1fr);margin-bottom:0;}
+ #personal-site[data-reading="compact"] :is(.he-research-chapter,.he-publication-index) .he-chapter-heading{min-height:104px;padding-top:16px;padding-bottom:16px;grid-template-columns:150px minmax(0,1fr);margin-bottom:0;}
  #personal-site[data-reading="compact"] .he-chapter-heading .he-chapter-number{font-size:104px;height:88px;line-height:.85;margin-bottom:-16px;}
  #personal-site[data-reading="compact"] .he-chapter-heading h2{font-size:clamp(24px,2.6cqw,34px);}
  #personal-site[data-reading="compact"] .he-research-chapter>.he-project{grid-row:2;margin-top:0;align-self:start;padding-bottom:0;}
@@ -159,3 +159,12 @@
 @container(max-width:700px){
  #personal-site[data-reading="poster"] .he-about-body .he-about-experience{margin-top:-24px;}
 }
+
+/* Appendix uses the same printed chapter plate and heading geometry. */
+#personal-site .he-publication-index{border-top:0;padding-top:0;}
+#personal-site .he-publication-index > summary.he-chapter-heading{position:relative;isolation:isolate;list-style:none;cursor:pointer;}
+#personal-site .he-publication-index > summary::-webkit-details-marker{display:none;}
+#personal-site .he-publication-index .he-chapter-heading > .he-project-ground{left:0;right:0;width:auto;}
+#personal-site .he-publication-index .he-chapter-number{margin-left:0;}
+#personal-site .he-publication-index .he-publications-toggle{position:absolute;right:16px;bottom:12px;color:var(--paper);font:24px/1 var(--metadata-face);}
+#personal-site .he-publication-index[open] .he-publications-toggle{transform:rotate(45deg);}

@@ -140,6 +140,13 @@
       "groundBleed": 0,
       "groundEdge": "cut"
     },
+    "plate-publications": {
+      "groundInk": "primary",
+      "groundOpacity": 0.85,
+      "groundWidth": 100,
+      "groundBleed": 0,
+      "groundEdge": "cut"
+    },
     "plate-machines": {
       "groundInk": "primary",
       "groundOpacity": 0.85,

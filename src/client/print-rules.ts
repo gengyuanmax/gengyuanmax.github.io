@@ -12,7 +12,8 @@ import type {DesignConfig} from '../design/settings';
 const root=document.querySelector<HTMLElement>('#personal-site');
 if(root){
  let config:DesignConfig=design,timer=0;
- const hostSelector='.he-page,.he-nav-shell,.he-colophon';
+ // Scrollable content owns its printed borders, so they move and clip with it.
+ const hostSelector='.he-page,.he-nav-shell,.he-colophon,.he-news-scroll > ol';
  const skip=(el:Element)=>!!el.closest('.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
  const ink=(c:string)=>!!c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)&&!/^rgb\(240, 235, 223\)$/.test(c);
  const groundLike=(el:Element)=>el.matches('.he-project-ground,.he-divider-band,[data-material-mask],.he-type-a,.he-type-b,img,canvas,svg,svg *');
@@ -73,7 +74,7 @@ if(root){
  // something asked for a reprint while it was running.
  let stale=false;
  const schedule=()=>{clearTimeout(timer);if(root!.dataset.navigating){stale=true;return;}timer=window.setTimeout(draw,root!.dataset.rulesReady===undefined?16:120);};
- const observer=new ResizeObserver(schedule);root.querySelectorAll('.he-page,.he-nav-shell').forEach(el=>observer.observe(el));
+ const observer=new ResizeObserver(schedule);root.querySelectorAll(hostSelector).forEach(el=>observer.observe(el));
  root.addEventListener('design:updated',e=>{config=(e as CustomEvent<DesignConfig>).detail;schedule();});
  root.addEventListener('navigation:settled',()=>{if(stale){stale=false;schedule();}});
  root.addEventListener('toggle',schedule,true);root.addEventListener('reading:layout',schedule);

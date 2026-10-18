@@ -8,7 +8,7 @@
 #personal-site .he-research-masthead{padding-bottom:32px;}
 #personal-site .he-artifacts-masthead{padding-bottom:0;margin-bottom:24px;}
 #personal-site .he-about-masthead{min-height:166px;}
-#personal-site .he-research-chapter .he-chapter-heading{min-height:149px;padding-block:20px;grid-template-columns:167px minmax(0,1fr);}
+#personal-site :is(.he-research-chapter,.he-publication-index) .he-chapter-heading{min-height:149px;padding-block:20px;grid-template-columns:167px minmax(0,1fr);}
 #personal-site .he-chapter-heading h2{font-size:clamp(28px,3.696cqw,47.52px);}
 #personal-site .he-chapter-heading .he-chapter-number{font-size:160px;height:114px;margin-bottom:-20px;}
 #personal-site .he-chapter-heading p{margin-top:10px;}
@@ -36,7 +36,7 @@
  #personal-site .he-home[data-home-layout] .he-name{font-size:clamp(44.2px,calc(21.25cqw - 10.2px),132.6px);padding-bottom:18px;}
  #personal-site .he-home[data-home-layout] .he-brand h2{font-size:clamp(25.5px,calc(var(--home-brand-size) * .595),39.1px);}
  #personal-site .he-about-masthead{min-height:96px;}
- #personal-site .he-research-chapter .he-chapter-heading{min-height:120px;padding-block:16px;grid-template-columns:70px minmax(0,1fr);gap:0 14px;}
+ #personal-site :is(.he-research-chapter,.he-publication-index) .he-chapter-heading{min-height:120px;padding-block:16px;grid-template-columns:70px minmax(0,1fr);gap:0 14px;}
  #personal-site .he-chapter-heading h2{font-size:22px;}
  #personal-site .he-chapter-heading .he-chapter-number{font-size:92px;height:78px;margin-bottom:-16px;}
  #personal-site .he-print-lab-overview{width:min(100%,220px);}
