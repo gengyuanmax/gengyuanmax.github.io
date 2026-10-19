@@ -157,3 +157,5 @@
 #personal-site .he-news-scroll[data-dragging]{cursor:grabbing;user-select:none;}
 
 #personal-site .he-news-scroll > ol{position:relative;isolation:isolate;}
+
+#personal-site .he-home[data-home-layout] .he-bio.he-self-introduction{font-size:var(--body-size);line-height:1.6;max-width:60ch;text-wrap:pretty;}

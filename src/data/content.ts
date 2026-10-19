@@ -3,7 +3,7 @@ import type {ResourceLinks} from './catalog';
 // Source-backed review copy. Nothing is marked approved by inference.
 export const profile={
  name:['Gengyuan','Zhang'],role:['AI researcher','Based in Europe (Germany/UK)'],core:'Visual Intelligence',approval:'pending' as const,
- slogan:'Vision, Intelligence, Human & Machine',
+ introduction:'I am a final-year PhD student at LMU Munich, working on multimodal AI systems that understand and interact with the visual world. My research spans building multimodal models and agents, evaluating their visual intelligence in the wild, and applying their capabilities to specialized domains. I have also conducted research at the University of Oxford, Amazon, and TU Munich.',
  bio:'I study multimodal learning, visual and video understanding, and multimodal agents.',
  about:'I am a PhD researcher at LMU Munich, supervised by Prof. Volker Tresp. My thesis is titled “Promises and Limits of Language-centered Visual Understanding”.',
  personal:'Outside research: plants, travelling, cooking, Crusader Kings III, and my dachshund.',

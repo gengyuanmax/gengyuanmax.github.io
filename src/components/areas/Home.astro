@@ -26,10 +26,9 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
-  <div class="he-intro-second"><p class="he-bio"><span class="he-slogan-opening">{profile.slogan.slice(0,profile.slogan.indexOf('Human & Machine')).trim()}</span>{' '}<span class="he-slogan-pair">Human &amp; Machine</span></p>
-  <nav class="he-contact" aria-label="Profile links">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav>
+  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{profile.introduction}</p>
+  <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav><PrintMedia /></div>
  </div></div>
- <PrintMedia />
 </div>
 <section class="he-home-research" aria-labelledby="research-core" data-flow-label="品牌与三个研究方向">
  <HomeDivider kind="chapter"/>

@@ -46,3 +46,39 @@
 #personal-site .he-about-contact{align-items:end;}
 /* Form controls have a fixed border-box height; their border is inside it. */
 #personal-site :is(select,input,button,textarea){--rb-t:0px!important;--rb-b:0px!important;}
+
+/* Self-introduction and portrait share one top-aligned desktop composition. */
+#personal-site .he-home[data-home-layout]{--intro-type-size:12px;}
+#personal-site .he-home[data-home-layout] :is(.he-role,.he-bio.he-self-introduction){font-size:var(--intro-type-size);}
+#personal-site .he-home[data-home-layout] .he-bio.he-self-introduction{line-height:1.65;}
+@container(min-width:1001px){
+ #personal-site .he-home[data-home-layout] .he-intro{grid-template-rows:auto 1fr;align-self:start;gap:16px 0;}
+ #personal-site .he-home[data-home-layout] .he-role{align-self:start;}
+ #personal-site .he-home[data-home-layout] .he-intro-second{align-self:start;position:relative;z-index:2;}
+ #personal-site[data-reading] .he-home[data-home-layout] .he-portrait[data-material]{grid-column:10/13;grid-row:1;width:calc(100% + 72px);max-width:360px;align-self:start;justify-self:end;margin:0;pointer-events:none;}
+}
+@container(min-width:721px) and (max-width:1000px){
+ #personal-site[data-reading] .he-home[data-home-layout] .he-portrait[data-material]{width:calc(100% + 40px);max-width:300px;align-self:start;pointer-events:none;}
+}
+@container(max-width:720px){
+ #personal-site[data-reading] .he-home[data-home-layout] .he-portrait[data-material]{grid-column:2/5;max-width:280px;margin-top:8px;}
+}
+
+/* Paragraph, contacts and portrait share a blend group and bottom edge. */
+#personal-site .he-home[data-home-layout] .he-intro-second{mix-blend-mode:normal;}
+#personal-site .he-intro-copy{position:relative;isolation:isolate;}
+#personal-site .he-intro-copy > .he-bio{position:relative;z-index:0;}
+@container(min-width:721px){
+ #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:absolute;bottom:0;right:calc(-1 * clamp(150px,18cqw,240px));width:clamp(260px,29cqw,360px);max-width:none;margin:0;padding:0;translate:none;z-index:1;mix-blend-mode:multiply;pointer-events:none;}
+}
+@container(max-width:720px){
+ #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:relative;width:75%;max-width:280px;margin:12px 0 0 auto;translate:none;}
+}
+
+#personal-site .he-home[data-home-layout]{--intro-contact-size:14px;}
+#personal-site .he-home[data-home-layout] .he-bio.he-self-introduction{font-size:var(--intro-contact-size);}
+#personal-site .he-home[data-home-layout] .he-intro-copy :is(.he-contact,.he-contact-link){font-size:12px;}
+
+/* Keep contact labels readable on one row, with native scrolling on small screens. */
+#personal-site .he-home[data-home-layout] .he-intro-copy .he-contact{flex-wrap:nowrap;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding-bottom:4px;}
+#personal-site .he-home[data-home-layout] .he-intro-copy .he-contact-link{flex-shrink:0;}
