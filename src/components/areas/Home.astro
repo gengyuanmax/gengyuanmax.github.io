@@ -8,7 +8,9 @@ import GridGuides from '../GridGuides.astro';
 import PrintMedia from '../PrintMedia.astro';
 import PrintTitle from '../PrintTitle.astro';
 import PrintWord from '../PrintWord.astro';
-import {profile,pillars,news,projects,selectedProjects} from '../../data/content';
+import {profile,pillars,news,projects,selectedProjects,selectedLines} from '../../data/content';
+// Emphasize the institutions inside the introduction without changing its wording.
+const introParts=(()=>{const re=new RegExp(`(${profile.affiliations.map(a=>a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g');return profile.introduction.split(re);})();
 import {preferredResource} from '../../data/catalog';
 const venueOf=(m:string)=>m.split(',')[0].trim();
 const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
@@ -29,7 +31,8 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
-  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{profile.introduction}</p>
+  <p class="he-status"><span class="he-status-mark" aria-hidden="true"></span>{profile.status}</p>
+  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation">{part}</strong>:part)}</p>
   <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav><PrintMedia /></div>
  </div></div>
 </div>
@@ -43,13 +46,14 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
 
   </div>
  </li>)}</ol></div></div>
+ <ol class="he-direction-summaries">{pillars.map((p,i)=><li><a href={`#${p.id}`}><span class="he-direction-index">{String(i+1).padStart(2,'0')}</span><span class="he-direction-name">{p.label}</span></a><p>{p.summary}</p></li>)}</ol>
 </section>
 <section class="he-selected" aria-labelledby="selected-heading" data-flow-label="Selected projects">
  <h2 id="selected-heading" class="he-selected-title">Selected projects</h2>
  <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li>
   <p class="he-selected-venue"><span class="he-venue">{venueOf(item.metadata)}</span>{yearOf(item.metadata)&&!venueOf(item.metadata).includes(yearOf(item.metadata))&&<span class="he-venue-year">{yearOf(item.metadata)}</span>}</p>
   <h3>{r?<a href={r.href}>{item.title}</a>:item.title}</h3>
-  <p class="he-selected-description">{item.description}</p>
+  <p class="he-selected-description">{selectedLines[id]||item.description}</p>
   <a class="he-selected-direction" href={`#${pillar.id}`}>{pillar.label} →</a>
  </li>;})}</ol>
 </section>

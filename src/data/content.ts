@@ -2,8 +2,12 @@ import {researchMemberships} from './research-memberships.ts';
 import type {ResourceLinks} from './catalog';
 // Source-backed review copy. Nothing is marked approved by inference.
 export const profile={
- name:['Gengyuan','Zhang'],role:['AI researcher','Based in Europe (Germany/UK)'],core:'Visual Intelligence',approval:'pending' as const,
+ name:['Gengyuan','Zhang'],role:['PhD AI researcher in multimodal intelligence and visual understanding','Based in Europe (Germany & UK)'],core:'Visual Intelligence',approval:'pending' as const,
  introduction:'I am a final-year PhD student at LMU Munich, working on multimodal AI systems that understand and interact with the visual world. My research spans building multimodal models and agents, evaluating their visual intelligence in the wild, and applying their capabilities to specialized domains. I have also conducted research at the University of Oxford, Amazon, and TU Munich.',
+ /** User copy QA, 2026-10-21. */
+ status:'Actively on the job market and open to research collaboration.',
+ affiliations:['LMU Munich','University of Oxford','Amazon','TU Munich'],
+ collaboration:{topics:['Training and evaluating agents','Defining and evaluating multimodal intelligence','Domain applications'],open:'Open to collaborative projects, job opportunities and student mentoring.',contact:'Email me.'},
  bio:'I study multimodal learning, visual and video understanding, and multimodal agents.',
  about:'I am a PhD researcher at LMU Munich, supervised by Prof. Volker Tresp. My thesis is titled “Promises and Limits of Language-centered Visual Understanding”.',
  personal:'Outside research: plants, travelling, cooking, Crusader Kings III, and my dachshund.',
@@ -11,14 +15,22 @@ export const profile={
 };
 export const navigation=[{id:'home',label:'Home',shape:'home'},{id:'research',label:'Research projects',shape:'research'},{id:'artifacts',label:'Artifacts',shape:'artifacts'},{id:'about',label:'About me',shape:'about'}] as const;
 export const pillars=[
- {id:'machines',action:'Building',label:'Building',short:'Building',lines:['Building'],detail:'Multimodal intelligent systems'},
- {id:'benchmarking',action:'Evaluating',label:'Evaluating',short:'Evaluating',lines:['Evaluating'],detail:'Multimodal systems in the wild'},
- {id:'applications',action:'Applications',label:'Applications',short:'Applications',lines:['Applications'],detail:'Multimodal intelligence in specialized domains'},
+ {id:'machines',action:'Building',label:'Building',short:'Building',lines:['Building'],detail:'Multimodal intelligent systems',summary:'Building AI models and systems that understand and interact with the visual, multimodal real world.'},
+ {id:'benchmarking',action:'Evaluating',label:'Evaluating',short:'Evaluating',lines:['Evaluating'],detail:'Multimodal systems in the wild',summary:'Where are the capability boundaries of evolving multimodal models? Benchmarking and evaluation as a long-term goal.'},
+ {id:'applications',action:'Applications',label:'Applications',short:'Applications',lines:['Applications'],detail:'Multimodal intelligence in specialized domains',summary:'Bringing multimodal intelligence into real production in expert domains.'},
 ] as const;
 /** Home "Selected projects" (user, 2026-10-21): projects in this order, not grouped by
- * direction. Draft order pending the user's copy QA (docs/COPY_QA.md). */
-export const selectedProjects=['a','d','f','b','e'] as const;
-export const sectionCopy={research:'Multimodal understanding, evaluation, and systems',artifacts:'Interactive experiments, research tools, datasets, and papers.'};
+ * direction. Order from the user's copy QA (2026-10-21). */
+export const selectedProjects=['a','d','b','e','f'] as const;
+/** One line per selected project (user copy QA, 2026-10-21). */
+export const selectedLines:Record<string,string>={
+ a:'Rethinking multi-image representation in multi-image MLLMs.',
+ d:'Can generalist agents be trained into specialized surgeons?',
+ b:'Semantic event localization with multimodal user queries.',
+ e:'Multi-event video retrieval.',
+ f:'Ongoing work on online, interactive multimodal systems.',
+};
+export const sectionCopy={research:'My research spans three directions: building, evaluating and applying multimodal intelligence, told here through its projects.',artifacts:'Artifacts from my research and personal interests: interactive demos, tools, datasets, papers and more.'};
 export interface Entry {id:string;title:string;description:string;metadata:string;themes:string[];assetId?:string;links?:ResourceLinks;approval:'pending'|'approved';sources:string[];}
 export const mosaicLinks:ResourceLinks={page:'https://gengyuanmax.github.io/Mosaic/',arxiv:'https://arxiv.org/abs/2609.39363',github:'https://github.com/gengyuanmax/Mosaic',model:'https://huggingface.co/gengyuanmax/MosaicAgent-8B',dataset:'https://huggingface.co/datasets/gengyuanmax/MosaicBench'};
 export const projects:Record<string,Entry & {primaryTheme:string;publicationId:string;details?:string}>={

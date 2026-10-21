@@ -39,5 +39,6 @@ import {aboutPhoto} from '../../config/about-photo';
  </Styled>
  <Styled as="section" id="about-contact" anchorId="about-contact" data-about-section area="about" class="he-about-module he-about-contact" style={row('contact')}>
   <QuietHeading title="Contact" index="03"/><nav class="he-contact" aria-label="Contact and profiles">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav>
+  <div class="he-collaboration"><p class="he-collaboration-status">{profile.status}</p><ul>{profile.collaboration.topics.map(t=><li>{t}</li>)}</ul><p>{profile.collaboration.open} <a href={profile.contacts.find(c=>c.label==="Email")!.href}>{profile.collaboration.contact}</a></p></div>
  </Styled>
 </div>
