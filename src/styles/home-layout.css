@@ -122,7 +122,7 @@
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-home-research{grid-row:3;--section-number:"01";}
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-selected{grid-row:4;--section-number:"02";}
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-news{grid-row:5;--section-number:"03";}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand,.he-selected-title,.he-news>h2){grid-column:1/4;grid-row:1;margin:0;padding:0;min-height:0;background:none;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand,.he-selected-title,.he-news>h2){display:block;grid-column:1/4;grid-row:1;margin:0;padding:0;min-height:0;background:none;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand h2,.he-selected-title,.he-news>h2){font-size:24px;line-height:1.15;letter-spacing:-.025em;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand,.he-selected-title,.he-news>h2)::before{content:var(--section-number);display:block;width:40px;padding-top:12px;margin-bottom:8px;border-top:6px solid var(--ink);font:500 12px/1.5 var(--metadata-face);color:var(--blue-ink);}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news>h2 :is(.he-print-word,.he-type-line){font:inherit;}

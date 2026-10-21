@@ -121,7 +121,7 @@ AViLA (on going project on online interactive multimodal systems)
 - A1 role: "PhD AI researcher in multimodal intelligence and visual understanding" / "Based in Europe (Germany & UK)"
 - A2 status: "Actively on the job market and open to research collaboration." (home under the links; About › Contact)
 - A3 intro: unchanged; A4: LMU Munich, University of Oxford, Amazon, TU Munich set in bold inside it
-- A5 CV: pending the PDF
+- A5 CV: public/files/Gengyuan_Zhang_CV.pdf (CV 202610), linked as "CV" after LinkedIn in every contact row
 - B1 Building: "Building AI models and systems that understand and interact with the visual, multimodal real world."
 - B2 Evaluating: "Where are the capability boundaries of evolving multimodal models? Benchmarking and evaluation as a long-term goal."
 - B3 Applications: "Bringing multimodal intelligence into real production in expert domains."

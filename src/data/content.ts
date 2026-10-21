@@ -11,7 +11,7 @@ export const profile={
  bio:'I study multimodal learning, visual and video understanding, and multimodal agents.',
  about:'I am a PhD researcher at LMU Munich, supervised by Prof. Volker Tresp. My thesis is titled “Promises and Limits of Language-centered Visual Understanding”.',
  personal:'Outside research: plants, travelling, cooking, Crusader Kings III, and my dachshund.',
- contacts:[{label:'Email',href:'mailto:gengyuanmax@gmail.com'},{label:'Scholar',href:'https://scholar.google.com/citations?user=LN2tYr0AAAAJ'},{label:'GitHub',href:'https://github.com/gengyuanmax'},{label:'LinkedIn',href:'https://www.linkedin.com/in/gengyuan-zhang-343542184/'}],
+ contacts:[{label:'Email',href:'mailto:gengyuanmax@gmail.com'},{label:'Scholar',href:'https://scholar.google.com/citations?user=LN2tYr0AAAAJ'},{label:'GitHub',href:'https://github.com/gengyuanmax'},{label:'LinkedIn',href:'https://www.linkedin.com/in/gengyuan-zhang-343542184/'},{label:'CV',href:'/files/Gengyuan_Zhang_CV.pdf'}],
 };
 export const navigation=[{id:'home',label:'Home',shape:'home'},{id:'research',label:'Research projects',shape:'research'},{id:'artifacts',label:'Artifacts',shape:'artifacts'},{id:'about',label:'About me',shape:'about'}] as const;
 export const pillars=[
