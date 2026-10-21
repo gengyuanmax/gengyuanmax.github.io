@@ -204,3 +204,6 @@
 #personal-site .he-collaboration ul{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:4px 24px;}
 #personal-site .he-collaboration li{font:650 18px/1.4 var(--display-face);letter-spacing:-.02em;color:var(--ink);}
 #personal-site .he-collaboration p{margin:0;}
+
+/* Institutions beyond the first two: weight only (at most two printed emphases per paragraph). */
+#personal-site .he-affiliation:not(.em-ink){font-weight:600;}
