@@ -41,7 +41,7 @@
  #personal-site .he-nav-plate {left:-4px;right:-4px;width:calc(100% + 8px);}
  #personal-site[data-navigation="thumb"] .he-nav a {padding-top:26px;min-height:100px;}
  #personal-site .he-shortcuts {gap:12px;padding:10px 0;}
- #personal-site .he-shortcuts a {display:block;font-size:11px;overflow-wrap:anywhere;}
+ #personal-site .he-shortcuts a {display:block;font-size:12px;overflow-wrap:anywhere;}
  #personal-site .he-shortcuts a > .he-shortcut-number {display:block;margin-bottom:4px;}
 }
 @container(max-width:360px) {#personal-site .he-nav-label {font-size:12.5px;}}
@@ -58,7 +58,7 @@
 @media(prefers-reduced-motion:reduce){#personal-site .he-chapter-indicator{transition:none;}}
 
 /* Small, single-ink signature marks leave the navigation titles dominant. */
-#personal-site .he-nav-signature{display:flex;align-items:baseline;gap:7px;min-height:18px;font:500 10px/1.4 var(--metadata-face);letter-spacing:.10em;color:var(--blue-ink);}
+#personal-site .he-nav-signature{display:flex;align-items:baseline;gap:7px;min-height:18px;font:500 11px/1.4 var(--metadata-face);letter-spacing:.10em;color:var(--blue-ink);}
 #personal-site .he-nav-signature b{font-size:14px;line-height:1;font-weight:600;letter-spacing:0;}
 #personal-site .he-nav a[aria-current="page"] .he-nav-signature{color:var(--red-ink);}
 

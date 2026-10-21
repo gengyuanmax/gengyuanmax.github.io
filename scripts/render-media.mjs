@@ -1,6 +1,7 @@
 import './render-brand.mjs';
 import {renderPortraitComposition} from './render-portrait-composition.mjs';
 import {renderAboutPhoto} from './render-about-photo.mjs';
+import {renderHomeLandscape} from './render-home-landscape.mjs';
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import {validateConfig} from '../src/design/settings.ts';
@@ -10,6 +11,7 @@ validateConfig(config);
 await fs.mkdir(new URL('../.design/',import.meta.url),{recursive:true});
 await renderPortraitComposition(config);
 await renderAboutPhoto(config);
+await renderHomeLandscape(config);
 for(const [element,placement] of Object.entries(placements)) {
   const asset=assets[placement.asset];
   const bytes=await fs.readFile(new URL('../'+asset.original,import.meta.url));

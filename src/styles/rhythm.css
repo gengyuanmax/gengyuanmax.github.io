@@ -68,13 +68,6 @@
 #personal-site .he-home[data-home-layout] .he-intro-second{mix-blend-mode:normal;}
 #personal-site .he-intro-copy{position:relative;isolation:isolate;}
 #personal-site .he-intro-copy > .he-bio{position:relative;z-index:0;}
-@container(min-width:721px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:absolute;bottom:0;right:calc(-1 * clamp(150px,18cqw,240px));width:clamp(260px,29cqw,360px);max-width:none;margin:0;padding:0;translate:none;z-index:1;mix-blend-mode:multiply;pointer-events:none;}
-}
-@container(max-width:720px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:relative;width:75%;max-width:280px;margin:12px 0 0 auto;translate:none;}
-}
-
 #personal-site .he-home[data-home-layout]{--intro-contact-size:14px;}
 #personal-site .he-home[data-home-layout] .he-bio.he-self-introduction{font-size:var(--intro-contact-size);}
 #personal-site .he-home[data-home-layout] .he-intro-copy :is(.he-contact,.he-contact-link){font-size:12px;}

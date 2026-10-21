@@ -8,43 +8,76 @@ import GridGuides from '../GridGuides.astro';
 import PrintMedia from '../PrintMedia.astro';
 import PrintTitle from '../PrintTitle.astro';
 import PrintWord from '../PrintWord.astro';
-import {profile,pillars,news} from '../../data/content';
+import {profile,pillars,news,projects,selectedProjects,selectedLines} from '../../data/content';
+// Emphasize the institutions inside the introduction without changing its wording.
+const introParts=(()=>{const re=new RegExp(`(${profile.affiliations.map(a=>a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g');return profile.introduction.split(re);})();
+import {preferredResource,resourceEntries} from '../../data/catalog';
+const resourceLabel=(kind:string)=>({page:'Project',arxiv:'arXiv',github:'GitHub',demo:'Demo',article:'Article',dataset:'Dataset',model:'Model'} as Record<string,string>)[kind]||kind;
+const venueOf=(m:string)=>m.split(',')[0].trim();
+const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
 import {screenScale} from '../../design/screen';
+import {homeLandscape} from '../../config/home-landscape';
+import {emphasisMisprint} from '../../design/emphasis-print';
+import {researchRecipe,plateVector} from '../../design/research-render';
+import {directions} from '../../data/research-map';
+import {design} from '../../config/design';
+import {resolve} from '../../design/settings';
+// Research circles, split: each direction's own screened circle (polygon-v1, the same
+// recipe as the research map) as a stamp under its name. Cropped to the circle.
+const researchSettings=resolve(design,'home').values;
+const circleRecipe=researchRecipe(researchSettings,design,640,undefined,{seed:resolve(design).values.seed,origin:{x:0,y:0},height:1440});
+const stamps=Object.fromEntries(directions.map(d=>{const c=circleRecipe.geometry.circles[d.id],k=circleRecipe.scale,r=circleRecipe.geometry.r*k*1.04;
+ const svg=plateVector(circleRecipe,d.id).replace(/<svg ([^>]*?)width="[^"]*" height="[^"]*"/,`<svg $1viewBox="${(c.x*k-r).toFixed(1)} ${(c.y*k-r).toFixed(1)} ${(2*r).toFixed(1)} ${(2*r).toFixed(1)}" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"`);
+ return [d.href.slice(1),svg];}));
 const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1');
 ---
 <GridGuides />
 <div class="he-home-profile">
  <PrintTitle id="home-name" displayScreen area="home" class="he-name" lines={profile.name}/>
  <script is:inline define:vars={{coarseEm:screenScale.coarseEm,fine:screenScale.fine,medium:screenScale.medium}}>
-  /* Same pitch and tier rules as first-frame.ts dotPitch() and text.ts textTier(), applied while
+  /* Same pitch and tier rules as first-frame.ts dotPitch(size, display) and text.ts textTier(), applied while
      parsing so the name's CSS dot plate is exact in the first frame. print-material.ts keeps it current. */
   document.currentScript.previousElementSibling.querySelectorAll('.he-type-line').forEach(line=>{
    const size=parseFloat(getComputedStyle(line).fontSize),coarse=Math.max(2,Math.round(size*coarseEm));
-   line.style.setProperty('--dot-pitch',(coarse>=medium*1.5?coarse:fine)+'px');
+   line.style.setProperty('--dot-pitch',Math.max(medium,coarse)+'px');
    line.dataset.textTier='display';
   });
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
-  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{profile.introduction}</p>
-  <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav><PrintMedia /></div>
+  <p class="he-status"><span class="he-status-mark" aria-hidden="true"></span>{profile.status}</p>
+  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?(profile.affiliations.indexOf(part)<2?<strong class="he-affiliation he-body-emphasis em-ink" style={emphasisMisprint(part)}>{part}</strong>:<strong class="he-affiliation">{part}</strong>):part)}</p>
+  <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav></div>
  </div></div>
 </div>
+<PrintMedia />
+<figure class="he-landscape" aria-hidden="true"><img src={homeLandscape.output} width={homeLandscape.width*homeLandscape.scale} height={homeLandscape.height*homeLandscape.scale} alt="" decoding="async"/></figure>
 <section class="he-home-research" aria-labelledby="research-core" data-flow-label="品牌与三个研究方向">
  <HomeDivider kind="chapter"/>
  <svg class="he-home-branches" aria-hidden="true"></svg>
  <div class="he-brand"><h2 id="research-core"><span class="he-slogan-prefix">{homeBrandDraft.prefix}</span><span class="he-slogan-core"><InkText text={homeBrandDraft.core}/></span></h2></div>
  <div class="he-research-overview"><ResearchMap/><div class="rm-tree"><ol class="he-pillars">{pillars.map((p,i)=><li>
   <span class="he-number"><InkText text={String(i+1).padStart(2,'0')}/></span>
-  <div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3>
-
-  </div>
+  <div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3></div>
  </li>)}</ol></div></div>
+ <ol class="he-direction-summaries">{pillars.map((p,i)=><li><span class="he-direction-stamp" set:html={stamps[p.id]}/><a href={`#${p.id}`}><span class="he-direction-name">{p.label}</span></a><p>{p.summary}</p></li>)}</ol>
 </section>
+
 <section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
  <HomeDivider kind="news"/>
  <h2 id="news-heading"><PrintWord id="word-news" area="home" text="News"/></h2>
  <div class="he-news-scroll" tabindex="0" role="region" aria-labelledby="news-heading" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{monthDate(n.date)}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div>
+</section>
+
+<section class="he-selected" aria-labelledby="selected-heading" data-flow-label="Selected projects">
+ <h2 id="selected-heading" class="he-selected-title"><InkText text="Selected projects"/></h2>
+ <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li data-line={pillar.id}>
+  <p class="he-selected-venue"><span class="he-venue">{venueOf(item.metadata)}</span>{yearOf(item.metadata)&&!venueOf(item.metadata).includes(yearOf(item.metadata))&&<span class="he-venue-year">{yearOf(item.metadata)}</span>}</p>
+  <h3>{r?<a href={r.href}>{item.title}</a>:item.title}</h3>
+  <p class="he-selected-description">{selectedLines[id]||item.description}</p>
+  <p class="he-selected-links">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{resourceLabel(kind)}</a>)}</p>
+  <a class="he-selected-direction" href={`#${pillar.id}`}>{pillar.label} →</a>
+ </li>;})}</ol>
 </section>
 
 <script>import "../../client/news-scroll";</script>

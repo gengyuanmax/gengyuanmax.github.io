@@ -121,7 +121,7 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
   for(const el of [...grounds,...bands])metrics.set(el,measure(el));
   const hidden=new Map([...fields,...lines,...grounds,...bands].map(el=>[el,offscreen(el)]));
   // Write phase for type state, all at once.
-  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.dataset.displayScreen==='true'?'display':textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size)}px`);}
+  for(const el of lines){const size=sizes.get(el)!;el.dataset.pressLarge=String(size>=24);el.dataset.pressFine=String(size<24);el.dataset.textTier=el.dataset.displayScreen==='true'?'display':textTier(size);el.style.setProperty('--dot-pitch',`${dotPitch(size,el.dataset.displayScreen==='true')}px`);}
   // Illustrations stay paper until printed, while type and grounds already show their
   // final ink and only gain texture: print the visible illustrations first.
   for(const svg of fields){

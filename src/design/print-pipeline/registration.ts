@@ -19,3 +19,12 @@ export function rasterOffsets<Id extends string>(ids:Id[],p:Pick<Press<Id>,'offs
   return {dx:Math.round(withinSigned(reg.x,noiseBudget.registration.plate)*scale),dy:Math.round(withinSigned(reg.y,noiseBudget.registration.plate)*scale)};
  });
 }
+
+/** A small misregistered pass for one inline mark (body emphasis, user 2026-10-21):
+ * tilt within ±1.6°, offset 1–3 px right and −0.5–1.5 px down, one of three band
+ * variants and a phase along the band, all fixed by the mark's text. */
+export function phraseMisregistration(text:string){
+ let h=2166136261;for(const c of text){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}
+ const u=(n:number)=>((h>>>n)&1023)/1023;
+ return {variant:(h>>>3)%3,tilt:u(5)*3.2-1.6,x:1+u(13)*2,y:u(21)*2-.5,shift:Math.round(u(9)*200)};
+}

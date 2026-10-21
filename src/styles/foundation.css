@@ -13,7 +13,7 @@
 #personal-site * { box-sizing: border-box; }
 #personal-site :is(h1,h2,h3,p,figure) { margin: 0; }
 #personal-site button { font: inherit; color: inherit; appearance: none; }
-#personal-site .he-review { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding-bottom: 12px; font: 400 11px/1.5 var(--reading-face); color: var(--muted-ink); }
+#personal-site .he-review { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding-bottom: 12px; font: 400 12px/1.5 var(--reading-face); color: var(--muted-ink); }
 #personal-site .he-site { background: var(--paper); }
 #personal-site .he-window { overflow: clip; touch-action: pan-y pinch-zoom; }
 #personal-site .he-track { width: 100%; }
@@ -25,7 +25,7 @@
 #personal-site .he-meta { font: 400 12px/1.6 var(--metadata-face); color: var(--muted-ink); margin-bottom: 24px; }
 #personal-site .he-secondary-list { margin-top: 42px; display: grid; gap: 24px; }
 #personal-site .he-secondary-list section { border-top: 1px solid var(--rule-ink); padding-top: 18px; }
-#personal-site .he-font-status { color: var(--muted-ink); font-size: 11px; line-height: 1.5; margin-top: 8px; }
+#personal-site .he-font-status { color: var(--muted-ink); font-size: 12px; line-height: 1.5; margin-top: 8px; }
 #personal-site .he-announcement { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
 @container (max-width: 720px) {
   #personal-site :is(.he-page,.he-nav) { --columns: 4; --column-gap: 16px; }

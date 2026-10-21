@@ -1,12 +1,11 @@
 /* Clone the ink decoration per line when a phrase wraps. */
 #personal-site :is(.em-ink,.em-knock){font:inherit;letter-spacing:inherit;text-decoration:none;border-radius:0;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
-#personal-site .em-ink{
- color:var(--blue-ink);padding-inline:.08em;margin-inline:-.08em;
- background-image:var(--emphasis-dots);background-repeat:repeat-x;
- background-size:var(--emphasis-tile) .45em;
- /* Discount the typeface's descender space, then offset the ink down 1–2px. */
- background-position:var(--emphasis-offset) calc(100% - .2em + var(--emphasis-offset));
-}
+/* Printed band (emphasis-print.ts): screened, worn dots in the vermilion tint, tilted and
+   offset per phrase like a misregistered pass. Phrases stay on one line. */
+#personal-site .em-ink{position:relative;isolation:isolate;white-space:nowrap;color:var(--blue-ink);}
+#personal-site .em-ink::before{content:"";position:absolute;z-index:-1;left:-.12em;right:-.12em;bottom:-.12em;height:12px;
+ background:var(--em-tint);-webkit-mask:var(--em-band) var(--em-shift,0) 100%/240px 12px repeat-x;mask:var(--em-band) var(--em-shift,0) 100%/240px 12px repeat-x;
+ transform:translate(var(--em-dx,1.5px),var(--em-dy,1px)) rotate(var(--em-tilt,0deg));transform-origin:0 50%;mix-blend-mode:multiply;pointer-events:none;}
 #personal-site .em-knock{
  color:var(--paper);padding-inline:.15em;
  /* A flat rectangle, shifted 1px; identical stops do not shade it. */
@@ -14,10 +13,12 @@
  background-size:calc(100% - 1px) calc(100% - 1px);background-position:1px 1px;
 }
 /* Links win in either nesting order. No emphasis in headings or metadata. */
+#personal-site :is(a,h1,h2,h3,h4,nav,.he-item-meta,.he-meta,.he-theme-tags) .em-ink::before,#personal-site .em-ink:is(a,:has(a))::before{display:none;}
 #personal-site :is(a,h1,h2,h3,h4,nav,.he-item-meta,.he-meta,.he-theme-tags) :is(.em-ink,.em-knock),
 #personal-site :is(.em-ink,.em-knock):is(a,:has(a)){color:inherit;background:none;padding:0;margin:0;font:inherit;}
 #personal-site a:is(.em-ink,.em-knock),#personal-site :is(.em-ink,.em-knock) a{text-decoration:underline;}
 @media print,(forced-colors:active){
+ #personal-site .em-ink::before{display:none;}
  #personal-site :is(.em-ink,.em-knock){background:none;color:inherit;font-family:"Newsreader","Songti SC",Georgia,serif;font-weight:600;padding:0;margin:0;}
  #personal-site a:is(.em-ink,.em-knock),#personal-site a :is(.em-ink,.em-knock),#personal-site :is(.em-ink,.em-knock):has(a){font-weight:inherit;}
 }

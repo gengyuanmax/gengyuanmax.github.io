@@ -14,7 +14,7 @@ if(root){
  let config:DesignConfig=design,timer=0;
  // Scrollable content owns its printed borders, so they move and clip with it.
  const hostSelector='.he-page,.he-nav-shell,.he-colophon,.he-news-scroll > ol';
- const skip=(el:Element)=>!!el.closest('.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
+ const skip=(el:Element)=>!!el.closest('.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.em-ink,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
  const ink=(c:string)=>!!c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)&&!/^rgb\(240, 235, 223\)$/.test(c);
  const groundLike=(el:Element)=>el.matches('.he-project-ground,.he-divider-band,[data-material-mask],.he-type-a,.he-type-b,img,canvas,svg,svg *');
  function host(el:Element){return el.closest<HTMLElement>(hostSelector)||root!;}

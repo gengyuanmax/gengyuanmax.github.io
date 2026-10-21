@@ -13,7 +13,7 @@
 #personal-site .he-project-resources a,#personal-site .he-contact a {text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px;border-bottom:1.5px solid transparent;padding-block:4px;}
 @media (hover:hover){#personal-site .he-project-resources a:hover,#personal-site .he-contact a:hover {text-decoration-thickness:3px;}}
 #personal-site .he-project-resources a:focus-visible,#personal-site .he-contact a:focus-visible {text-decoration-thickness:3px;}
-#personal-site .he-item-meta {font:500 11px/1.7 var(--metadata-face);letter-spacing:.025em;color:var(--ink);}
+#personal-site .he-item-meta {font:500 12px/1.7 var(--metadata-face);letter-spacing:.025em;color:var(--ink);}
 #personal-site .he-item-meta strong {font-weight:500;background:var(--ink);color:var(--paper);padding:4px 6px;margin-right:8px;box-decoration-break:clone;}
 #personal-site .he-theme-tags {gap:8px 18px;}
 #personal-site .he-theme-tags li {border:0;}
@@ -21,7 +21,7 @@
 #personal-site .he-theme-tags a::before {content:"↗";margin-right:5px;color:var(--ink);}
 @media (hover:hover){#personal-site .he-theme-tags a:hover {text-decoration:underline;}}
 #personal-site .he-project-details {border-top:0;border-bottom:1.5px solid var(--ink);}
-#personal-site .he-project-details summary {font:400 11px/1.6 var(--metadata-face);padding-block:14px;}
+#personal-site .he-project-details summary {font:400 12px/1.6 var(--metadata-face);padding-block:14px;}
 #personal-site .he-external-mark {font:400 .6em/1 var(--metadata-face);vertical-align:top;display:inline-block;margin-left:.15em;}
 
 /* Chapter marks: same screened circle, different editorial anchors. */
@@ -82,7 +82,7 @@
 #personal-site .he-print-lab-spread a:nth-of-type(3) {margin-top:0;transform:translateY(-28px);}
 #personal-site .he-print-lab-spread a:nth-of-type(4) {margin-top:0;transform:translateY(12px);}
 #personal-site .he-print-lab-spread a {margin-top:0;border-bottom:2px solid var(--ink);padding-bottom:8px;}
-#personal-site .he-print-lab-spread span:not(.he-print-object) {font-size:10px;}
+#personal-site .he-print-lab-spread span:not(.he-print-object) {font-size:12px;}
 #personal-site [data-content-id="artifact-a"] h2 {font-size:clamp(48px,7.4cqw,90px);margin-top:12px;}
 #personal-site [data-content-id="artifact-a"] .he-item-meta {margin-top:20px;}
 #personal-site .he-artifact > .he-print-object {height:160px;margin-bottom:4px;}
@@ -118,7 +118,7 @@
 #personal-site .he-about-personal > .he-print-object {height:190px;margin-bottom:24px;}
 #personal-site .he-about-body .he-secondary-list > section {border-top:3px solid var(--ink);padding-top:18px;}
 #personal-site .he-about-body .he-secondary-list > section > h2 {font:750 30px/1.1 var(--display-face);letter-spacing:-.04em;}
-#personal-site .he-timeline .he-item-meta {font:500 11px/1.7 var(--metadata-face);padding-left:10px;border-left:3px solid var(--blue-ink);}
+#personal-site .he-timeline .he-item-meta {font:500 12px/1.7 var(--metadata-face);padding-left:10px;border-left:3px solid var(--blue-ink);}
 #personal-site .he-nav a::after {filter:none;}
 #personal-site .he-page::after {opacity:.75;}
 
@@ -153,7 +153,7 @@
  #personal-site .he-chapter-heading h2 {font-size:25px;}
  #personal-site .he-chapter-heading>.he-print-object {width:115px;left:-23px;}
  #personal-site [data-content-id="artifact-a"] h2 {font-size:48px;}
- #personal-site .he-project-imprint .he-item-meta {font-size:10px;}
+ #personal-site .he-project-imprint .he-item-meta {font-size:12px;}
  #personal-site .he-print-field {overflow:hidden;}
 }
 
