@@ -47,7 +47,6 @@
  #personal-site[data-reading="compact"] .he-about-body .he-timeline li{padding-top:12px;padding-bottom:14px;}
 
  /* Home: smaller name and research index so News reaches the first screen. */
- #personal-site[data-reading="compact"] .he-home .he-name{font-size:clamp(56px,7cqw,96px);}
 
  /* Compact also scales the reading text and the printed objects, not only titles. */
  /* Areas and elements carry --body-size inline from the design settings (18px), so the
@@ -64,26 +63,6 @@
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{grid-column:auto/span 3;}
  #personal-site[data-reading="compact"] .he-artifact h2{font-size:clamp(22px,2.1cqw,30px);}
 
- /* Home: profile row, then the research index and News side by side. */
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-bio{font-size:18px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-portrait[data-material]{max-width:180px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout="main"]{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout="main"]>.he-home-profile{grid-column:1/-1;grid-row:1;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research{--home-branch-layout:stack;grid-column:1/7;grid-row:auto;grid-template-columns:repeat(6,minmax(0,1fr));}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-brand{grid-column:1/-1;grid-row:1;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-brand h2{font-size:calc(var(--home-brand-size) * .6);}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/-1;grid-row:2;padding:calc(var(--baseline) * 3) 0 0;margin:0;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .research-map{max-width:none;margin-inline:0;--map-max:100cqw;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research{grid-row:2;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news{grid-column:7/13;grid-row:2;align-self:start;}
- /* Selected projects: a regular full-width table under research and News. */
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected{grid-column:1/-1;grid-row:3;margin-top:calc(var(--baseline) * 5);}
- #personal-site[data-reading="compact"] .he-selected-list>li{padding:calc(var(--baseline) * 1.5) 0;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news h2{font-size:30px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:var(--column-gap);row-gap:0;padding:calc(var(--baseline) * 1.5) 0;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news .he-date{grid-column:1;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li p{grid-column:2/-1;max-width:none;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li p{font-size:15px;line-height:1.5;}
 
  /* About: masthead and body share one 12-column grid so the photograph and the section
     index sit beside the title and intro, and Experience / Education reach the first screen. */
@@ -106,8 +85,6 @@
  /* Rows (user, 2026-10-15: follow the grid in rows as well as columns; break it only when
     needed). Modules side by side share their top line and their heading line. */
  /* Home: News starts its heading on the same line as the research heading beside it. */
- #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-news{padding-top:40px;}
- #personal-site[data-reading="compact"] .he-home[data-home-dividers="print"] .he-divider-news{top:calc(40px + var(--baseline,8px));}
  /* Artifacts: one art slot per row; art hangs from the slot's bottom so meta and titles align. */
  /* A column of blocks: margins must not collapse into the art slot. */
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{display:flex;flex-direction:column;align-items:stretch;}
@@ -173,6 +150,5 @@
 #personal-site .he-publication-index .he-publications-toggle{position:absolute;right:16px;bottom:12px;color:var(--paper);font:24px/1 var(--metadata-face);}
 #personal-site .he-publication-index[open] .he-publications-toggle{transform:rotate(45deg);}
 @container(min-width:721px){
- #personal-site[data-reading="compact"] .he-direction-summaries{grid-template-columns:1fr;row-gap:calc(var(--baseline) * 1.5);}
  #personal-site[data-reading="compact"] .he-research-chapter>.he-chapter-summary{grid-column:1/9;font-size:var(--body-size);}
 }

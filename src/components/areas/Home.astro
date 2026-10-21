@@ -33,34 +33,36 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
   <p class="he-status"><span class="he-status-mark" aria-hidden="true"></span>{profile.status}</p>
   <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation">{part}</strong>:part)}</p>
-  <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav><PrintMedia /></div>
+  <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav></div>
  </div></div>
 </div>
+<PrintMedia />
+<div class="he-home-block" aria-hidden="true"><span class="he-block-bar"></span><span class="he-block-foot"></span></div>
 <section class="he-home-research" aria-labelledby="research-core" data-flow-label="品牌与三个研究方向">
  <HomeDivider kind="chapter"/>
  <svg class="he-home-branches" aria-hidden="true"></svg>
  <div class="he-brand"><h2 id="research-core"><span class="he-slogan-prefix">{homeBrandDraft.prefix}</span><span class="he-slogan-core"><InkText text={homeBrandDraft.core}/></span></h2></div>
  <div class="he-research-overview"><ResearchMap/><div class="rm-tree"><ol class="he-pillars">{pillars.map((p,i)=><li>
   <span class="he-number"><InkText text={String(i+1).padStart(2,'0')}/></span>
-  <div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3>
-
-  </div>
+  <div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3></div>
  </li>)}</ol></div></div>
  <ol class="he-direction-summaries">{pillars.map((p,i)=><li><a href={`#${p.id}`}><span class="he-direction-index">{String(i+1).padStart(2,'0')}</span><span class="he-direction-name">{p.label}</span></a><p>{p.summary}</p></li>)}</ol>
 </section>
+
+<section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
+ <HomeDivider kind="news"/>
+ <h2 id="news-heading"><PrintWord id="word-news" area="home" text="News"/></h2>
+ <div class="he-news-scroll" tabindex="0" role="region" aria-labelledby="news-heading" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{monthDate(n.date)}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div>
+</section>
+
 <section class="he-selected" aria-labelledby="selected-heading" data-flow-label="Selected projects">
  <h2 id="selected-heading" class="he-selected-title">Selected projects</h2>
- <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li>
+ <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li data-line={pillar.id}>
   <p class="he-selected-venue"><span class="he-venue">{venueOf(item.metadata)}</span>{yearOf(item.metadata)&&!venueOf(item.metadata).includes(yearOf(item.metadata))&&<span class="he-venue-year">{yearOf(item.metadata)}</span>}</p>
   <h3>{r?<a href={r.href}>{item.title}</a>:item.title}</h3>
   <p class="he-selected-description">{selectedLines[id]||item.description}</p>
   <a class="he-selected-direction" href={`#${pillar.id}`}>{pillar.label} →</a>
  </li>;})}</ol>
-</section>
-<section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
- <HomeDivider kind="news"/>
- <h2 id="news-heading"><PrintWord id="word-news" area="home" text="News"/></h2>
- <div class="he-news-scroll" tabindex="0" role="region" aria-labelledby="news-heading" data-native-scroll><ol>{news.map(n=><li><span class="he-date">{monthDate(n.date)}</span><p><a href={n.href}>{n.text}</a></p></li>)}</ol></div>
 </section>
 
 <script>import "../../client/news-scroll";</script>

@@ -68,26 +68,6 @@
 #personal-site .he-home[data-home-layout] .he-intro-second{mix-blend-mode:normal;}
 #personal-site .he-intro-copy{position:relative;isolation:isolate;}
 #personal-site .he-intro-copy > .he-bio{position:relative;z-index:0;}
-/* Readability (user, 2026-10-21): the paragraph and links sit on clean paper. The
-   portrait takes its own columns beside them, sharing their bottom edge, never under text. */
-@container(min-width:1001px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro{grid-column:6/13;}
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > :not(.he-portrait){grid-column:1/5;}
-}
-@container(min-width:721px) and (max-width:1000px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro{grid-column:1/-1;grid-template-columns:repeat(12,minmax(0,1fr));}
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-second{grid-column:4/13;}
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > :not(.he-portrait){grid-column:1/6;}
-}
-@container(min-width:721px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:relative;grid-column:-4/-1;grid-row:1/3;align-self:end;width:100%;max-width:none;margin:0;padding:0;translate:none;z-index:1;mix-blend-mode:multiply;pointer-events:none;}
-}
-@container(max-width:720px){
- #personal-site[data-reading] .he-home[data-home-layout] .he-intro-copy > .he-portrait[data-material]{position:relative;width:75%;max-width:280px;margin:12px 0 0 auto;translate:none;}
-}
-
 #personal-site .he-home[data-home-layout]{--intro-contact-size:14px;}
 #personal-site .he-home[data-home-layout] .he-bio.he-self-introduction{font-size:var(--intro-contact-size);}
 #personal-site .he-home[data-home-layout] .he-intro-copy :is(.he-contact,.he-contact-link){font-size:12px;}
