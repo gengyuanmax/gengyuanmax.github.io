@@ -21,7 +21,9 @@
 @media (hover:hover){#personal-site a:hover .he-type-line>.he-type-b{text-decoration:underline;text-underline-offset:.12em;}}
 /* Fine type is one untextured blue plate, with no artificial grey hierarchy. */
 #personal-site :is(p,summary,.he-date,.he-meta,.he-item-meta,.he-contact a,.he-project-resources a,.he-theme-tags a,.he-shortcuts a,.he-reading-marker,.he-artifact-controls button,.he-artifact-group-label,.he-slogan-prefix){background-image:none;-webkit-text-fill-color:currentColor;}
-#personal-site :is(.em-ink,.em-knock){background:none;color:inherit;-webkit-text-fill-color:currentColor;font:inherit;font-weight:600;text-decoration:none;padding:0;margin:0;}
+#personal-site .em-knock{background:none;color:inherit;-webkit-text-fill-color:currentColor;font:inherit;font-weight:600;text-decoration:none;padding:0;margin:0;}
+/* Body emphasis is the printed dot band (user, 2026-10-21); weight stays regular+. */
+#personal-site .em-ink{-webkit-text-fill-color:currentColor;font-weight:600;}
 #personal-site .he-type-line[data-press-fine="true"]>.he-type-a{opacity:0!important;}
 /* Selected navigation keeps both plates visible at every width. */
 #personal-site .he-nav a[aria-current="page"] .he-type-line[data-press-fine="true"]>.he-type-a{opacity:1!important;}

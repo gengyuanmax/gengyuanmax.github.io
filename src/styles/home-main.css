@@ -187,7 +187,7 @@
 /* Job-market status: one line under the role, marked with a small vermilion block. */
 #personal-site .he-status{display:flex;align-items:baseline;gap:8px;margin:0;font:500 12px/1.5 var(--metadata-face);color:var(--ink);}
 #personal-site .he-status-mark{flex:0 0 8px;width:8px;height:8px;background:var(--red-ink);transform:translateY(-1px);}
-#personal-site .he-affiliation{font-weight:600;color:var(--ink);}
+
 /* Each direction in one sentence, visible under the circles. */
 #personal-site .he-direction-summaries{grid-column:1/-1;list-style:none;margin:calc(var(--baseline) * 3) 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--column-gap);}
 #personal-site .he-direction-summaries li{border-top:2px solid var(--blue-ink);padding-top:calc(var(--baseline) * 1.5);}

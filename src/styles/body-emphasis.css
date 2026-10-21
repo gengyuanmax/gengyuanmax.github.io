@@ -3,9 +3,9 @@
 #personal-site .em-ink{
  color:var(--blue-ink);padding-inline:.08em;margin-inline:-.08em;
  background-image:var(--emphasis-dots);background-repeat:repeat-x;
- background-size:var(--emphasis-tile) .45em;
+ background-size:var(--emphasis-tile) .6em;
  /* Discount the typeface's descender space, then offset the ink down 1–2px. */
- background-position:var(--emphasis-offset) calc(100% - .2em + var(--emphasis-offset));
+ background-position:var(--emphasis-offset) calc(100% - .12em + var(--emphasis-offset));
 }
 #personal-site .em-knock{
  color:var(--paper);padding-inline:.15em;

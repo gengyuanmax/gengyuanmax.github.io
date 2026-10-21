@@ -45,7 +45,7 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
   <p class="he-status"><span class="he-status-mark" aria-hidden="true"></span>{profile.status}</p>
-  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation">{part}</strong>:part)}</p>
+  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation he-body-emphasis em-ink">{part}</strong>:part)}</p>
   <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav></div>
  </div></div>
 </div>
