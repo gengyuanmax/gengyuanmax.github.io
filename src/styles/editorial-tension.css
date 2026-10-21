@@ -79,7 +79,7 @@
  #personal-site :is(.he-research-chapter,.he-publication-index) .he-chapter-heading {grid-template-columns:70px minmax(0,1fr);grid-row:auto;gap:0 8px;padding:22px 0;min-height:132px;}
  #personal-site .he-chapter-heading .he-chapter-number {font-size:106px;height:82px;margin-bottom:-22px;}
  #personal-site .he-chapter-heading h2 {font-size:clamp(24px,5.2cqw,36px);}
- #personal-site .he-chapter-heading p {font-size:11px;}
+ #personal-site .he-chapter-heading p {font-size:12px;}
  #personal-site .he-about-masthead {min-height:124px;gap:12px;}
  #personal-site .he-about-masthead h1 {grid-column:1/10;font-size:clamp(41px,8.5cqw,60px);padding-bottom:8px;}
  #personal-site .he-about-folio {grid-column:10/13;}

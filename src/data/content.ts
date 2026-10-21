@@ -15,6 +15,9 @@ export const pillars=[
  {id:'benchmarking',action:'Evaluating',label:'Evaluating',short:'Evaluating',lines:['Evaluating'],detail:'Multimodal systems in the wild'},
  {id:'applications',action:'Applications',label:'Applications',short:'Applications',lines:['Applications'],detail:'Multimodal intelligence in specialized domains'},
 ] as const;
+/** Home "Selected projects" (user, 2026-10-21): projects in this order, not grouped by
+ * direction. Draft order pending the user's copy QA (docs/COPY_QA.md). */
+export const selectedProjects=['a','d','f','b','e'] as const;
 export const sectionCopy={research:'Multimodal understanding, evaluation, and systems',artifacts:'Interactive experiments, research tools, datasets, and papers.'};
 export interface Entry {id:string;title:string;description:string;metadata:string;themes:string[];assetId?:string;links?:ResourceLinks;approval:'pending'|'approved';sources:string[];}
 export const mosaicLinks:ResourceLinks={page:'https://gengyuanmax.github.io/Mosaic/',arxiv:'https://arxiv.org/abs/2609.39363',github:'https://github.com/gengyuanmax/Mosaic',model:'https://huggingface.co/gengyuanmax/MosaicAgent-8B',dataset:'https://huggingface.co/datasets/gengyuanmax/MosaicBench'};

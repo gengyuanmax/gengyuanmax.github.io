@@ -8,7 +8,10 @@ import GridGuides from '../GridGuides.astro';
 import PrintMedia from '../PrintMedia.astro';
 import PrintTitle from '../PrintTitle.astro';
 import PrintWord from '../PrintWord.astro';
-import {profile,pillars,news} from '../../data/content';
+import {profile,pillars,news,projects,selectedProjects} from '../../data/content';
+import {preferredResource} from '../../data/catalog';
+const venueOf=(m:string)=>m.split(',')[0].trim();
+const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
 import {screenScale} from '../../design/screen';
 const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1');
 ---
@@ -40,6 +43,15 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
 
   </div>
  </li>)}</ol></div></div>
+</section>
+<section class="he-selected" aria-labelledby="selected-heading" data-flow-label="Selected projects">
+ <h2 id="selected-heading" class="he-selected-title">Selected projects</h2>
+ <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li>
+  <p class="he-selected-venue"><span class="he-venue">{venueOf(item.metadata)}</span>{yearOf(item.metadata)&&!venueOf(item.metadata).includes(yearOf(item.metadata))&&<span class="he-venue-year">{yearOf(item.metadata)}</span>}</p>
+  <h3>{r?<a href={r.href}>{item.title}</a>:item.title}</h3>
+  <p class="he-selected-description">{item.description}</p>
+  <a class="he-selected-direction" href={`#${pillar.id}`}>{pillar.label} →</a>
+ </li>;})}</ol>
 </section>
 <section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
  <HomeDivider kind="news"/>
