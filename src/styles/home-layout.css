@@ -1,8 +1,9 @@
 /* Home layout (user, 2026-10-21). Two compositions on one 12-column grid:
-   - Poster: a Riso poster. Oversized name with its second line indented, a large portrait
-     standing on a solid vermilion block (draft 06), research directions stepping down
-     the page with the research circles as a small stamp, News running under the
-     portrait's columns, Selected projects as staggered printed cards. Separation comes
+   - Poster: a Riso poster. Oversized name with its second line indented; a full-bleed
+     landscape (Max's mountain photograph with his portrait standing in front, one printed
+     sheet) whose paper sky rises beside the intro; research directions stepping down,
+     each over its own split research circle; News in the portrait's columns; Selected
+     projects as staggered cards. Separation comes
      from scale, solid ink, offsets and space, never from full-width hairlines.
    - Compact: a regular index. Each section is a label column (1–3) and a content column
      (4–12); a short ink stub, not a rule, opens each label. The circles are a small stamp
@@ -14,7 +15,9 @@
 #personal-site .he-home[data-home-layout] .he-home-branches{display:none;}
 #personal-site .he-home[data-home-layout] .he-home-research{border-top:0;padding-top:0;}
 
-/* The research circles as a stamp: diagram only, no arc labels, no hover. */
+/* The combined research map is not shown on Home: its circles are split into the directions. */
+#personal-site .he-home[data-home-layout] .he-home-research>.he-research-overview{display:none;}
+/* (kept for the design desk) */
 #personal-site .he-home[data-home-layout] .he-research-overview{padding:0;margin:0;pointer-events:none;}
 #personal-site .he-home[data-home-layout] .he-research-overview .research-map{max-width:none;width:100%;--map-max:100cqw;margin:0;}
 #personal-site .he-home[data-home-layout] .he-research-overview :is(.rm-label-arc,.rm-directions,.rm-touch-help,.rm-tree){display:none;}
@@ -27,7 +30,12 @@
 /* Directions: name, one sentence; a short ink stub in the direction's ink opens each. */
 #personal-site .he-home[data-home-layout] .he-direction-summaries{display:block;margin:0;padding:0;list-style:none;}
 #personal-site .he-home[data-home-layout] .he-direction-summaries li{border:0;padding:0;position:relative;}
-#personal-site .he-home[data-home-layout] .he-direction-summaries li::before{content:"";display:block;width:40px;height:6px;margin-bottom:12px;background:var(--line-ink);}
+/* Each direction's own research circle, split from the map, printed under its name. */
+#personal-site .he-home[data-home-layout] .he-direction-summaries li{isolation:isolate;padding-top:24px;}
+#personal-site .he-home[data-home-layout] .he-direction-stamp{position:absolute;z-index:-1;left:-28px;top:0;width:96px;height:96px;mix-blend-mode:multiply;pointer-events:none;}
+#personal-site .he-home[data-home-layout] .he-direction-stamp>svg{display:block;width:100%;height:100%;}
+#personal-site .he-home[data-home-layout] .he-direction-summaries a{position:relative;}
+#personal-site .he-home[data-home-layout] .he-direction-summaries .he-direction-name{mix-blend-mode:multiply;}
 #personal-site .he-home[data-home-layout] .he-direction-summaries a{display:flex;align-items:baseline;gap:12px;color:var(--ink);text-decoration:none;font:650 28px/1.15 var(--display-face);letter-spacing:-.03em;}
 #personal-site .he-home[data-home-layout] .he-direction-summaries p{margin:8px 0 0;max-width:40ch;font-size:var(--body-size);line-height:1.5;}
 @media (hover:hover){#personal-site .he-home[data-home-layout] .he-direction-summaries a:hover .he-direction-name{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:2px;}}
@@ -36,22 +44,30 @@
 #personal-site .he-home[data-home-layout] .he-selected{border:0;padding:0;}
 #personal-site .he-home[data-home-layout] .he-selected-list{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);row-gap:0;margin:0;padding:0;list-style:none;}
 #personal-site .he-home[data-home-layout] .he-selected-list>li{display:block;border:0;padding:0;}
-#personal-site .he-home[data-home-layout] .he-selected-list>li::before{content:"";display:block;width:48px;height:8px;margin-bottom:16px;background:var(--line-ink);}
+
 #personal-site .he-home[data-home-layout] .he-selected-venue{display:flex;gap:6px;align-items:baseline;margin:0 0 8px;}
 #personal-site .he-home[data-home-layout] .he-selected-list h3{margin:0;font:650 28px/1.1 var(--display-face);letter-spacing:-.03em;}
 #personal-site .he-home[data-home-layout] .he-selected-description{margin:8px 0 0;font-size:var(--body-size);line-height:1.5;}
 #personal-site .he-home[data-home-layout] .he-selected-direction{display:inline-block;margin-top:8px;}
 
+/* One title style for the three home sections; the brand's kicker repeats the directions. */
+#personal-site .he-home[data-home-layout] .he-brand .he-slogan-prefix{display:none;}
+#personal-site .he-home[data-home-layout] .he-news>.he-home-divider{display:none;}
+#personal-site .he-home[data-home-layout] :is(.he-brand h2,.he-news>h2,.he-selected-title){font:650 48px/1.05 var(--display-face);letter-spacing:-.04em;color:var(--ink);margin:0;padding:0;min-height:0;background:none;}
+#personal-site .he-home[data-home-layout] :is(.he-brand h2,.he-news>h2) :is(.he-slogan-core,.he-print-word){font:inherit;letter-spacing:inherit;}
+/* The landscape: mountain and portrait, one printed sheet. The portrait figure is not used on Home. */
+#personal-site .he-home[data-home-layout]>.he-portrait{display:none;}
+#personal-site .he-home[data-home-layout] .he-landscape{margin:0;pointer-events:none;mix-blend-mode:multiply;position:relative;z-index:0;}
+#personal-site .he-home[data-home-layout] .he-landscape>img{display:block;width:100%;height:auto;}
+#personal-site .he-home[data-home-layout] .he-home-profile{position:relative;z-index:1;}
+
 /* News: date over text in a narrow column. */
 #personal-site .he-home[data-home-layout] .he-news{border:0;}
 /* The list scrolls inside its column, so a long archive never stretches the page. */
 #personal-site .he-home[data-home-layout] .he-news-scroll{max-block-size:var(--news-height,520px);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;padding-right:8px;}
-/* The portrait overprints whatever it stands on (the block). */
-#personal-site .he-home[data-home-layout] .he-portrait[data-material]{mix-blend-mode:multiply;}
 
 @container(min-width:721px){
  #personal-site .he-home[data-home-layout]{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);row-gap:0;align-items:start;}
- #personal-site .he-home[data-home-layout]>:is(.he-home-profile,.he-portrait,.he-home-block,.he-home-research,.he-news,.he-selected){margin-left:0;margin-right:0;}
 }
 
 /* ---------- Poster ---------- */
@@ -63,29 +79,23 @@
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-intro>*{margin:0;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-status{margin:12px 0 24px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-intro-copy .he-contact{margin-top:16px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-portrait[data-material]{grid-column:9/13;grid-row:1/3;align-self:end;justify-self:stretch;width:100%;max-width:none;margin:0 0 16px;position:relative;z-index:2;}
- /* The block: a bar from column 2 that bleeds off the right edge and rises under the portrait. */
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-home-block{grid-column:2/13;grid-row:2;height:16px;margin:56px calc(-1 * var(--page-gutter)) 0 0;position:relative;z-index:1;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-block-bar{position:absolute;inset:0;background:var(--red-ink);}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-block-foot{position:absolute;right:0;bottom:0;width:calc((100% - var(--page-gutter) + var(--column-gap)) * 4 / 11 + var(--page-gutter));height:80px;background:var(--red-ink);border-bottom-left-radius:24px;}
+ /* The landscape bleeds to both page edges; its upper sky (paper) rises beside the intro. */
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-landscape{grid-column:1/13;grid-row:2;margin:-200px calc(-1 * var(--page-gutter)) 0;}
  /* Research: title, then three directions stepping down and right; the stamp beside them. */
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-home-research{grid-column:1/9;grid-row:3;display:block;position:relative;margin-top:112px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-brand h2{font-size:56px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries{margin-top:48px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-home-research{grid-column:1/9;grid-row:3;display:block;position:relative;margin-top:80px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries{margin-top:40px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li{width:calc((100% + var(--column-gap)) * 5 / 8 - var(--column-gap));}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li+li{margin-top:40px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li+li{margin-top:24px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li:nth-child(2){margin-left:calc((100% + var(--column-gap)) / 8);}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li:nth-child(3){margin-left:calc((100% + var(--column-gap)) * 2 / 8);}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-home-research>.he-research-overview{position:absolute;top:24px;right:0;width:calc((100% + var(--column-gap)) * 3 / 8 - var(--column-gap));mix-blend-mode:multiply;}
  /* News under the portrait's columns. */
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news{grid-column:9/13;grid-row:3;display:block;margin-top:112px;padding:0;--news-height:600px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news h2{font-size:40px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news{grid-column:9/13;grid-row:3;display:block;margin-top:80px;padding:0;--news-height:600px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li{display:block;padding:16px 0 0;border:0;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news .he-date{display:block;margin-bottom:4px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li p{max-width:none;font-size:15px;line-height:1.5;}
  /* Selected projects: staggered cards. */
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected{grid-column:1/13;grid-row:4;margin-top:144px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected-title{font-size:56px;margin-bottom:48px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected-title{margin-bottom:48px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected-list>li:nth-child(1){grid-column:1/5;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected-list>li:nth-child(2){grid-column:6/10;margin-top:80px;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected-list>li:nth-child(3){grid-column:10/13;margin-top:24px;}
@@ -95,29 +105,27 @@
 
 /* ---------- Compact ---------- */
 @container(min-width:721px){
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-profile{grid-column:1/10;grid-row:1;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-name{grid-column:1/4;grid-row:1;font-size:clamp(44px,5.4cqw,72px);padding:0;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro{grid-column:4/10;grid-row:1;display:block;margin:0;max-width:none;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-profile{grid-column:1/13;grid-row:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-name{grid-column:1/6;grid-row:1;font-size:clamp(44px,5.4cqw,72px);padding:0;overflow:visible;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro{grid-column:6/12;grid-row:1;display:block;margin:0;max-width:none;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro>*{margin:0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-status{margin:8px 0 16px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro-copy .he-contact{margin-top:12px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-portrait[data-material]{grid-column:10/13;grid-row:1;width:100%;max-width:none;margin:0;justify-self:stretch;align-self:start;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-block{display:none;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape{grid-column:1/13;grid-row:2;margin:24px calc(-1 * var(--page-gutter)) 0;height:360px;overflow:hidden;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape>img{height:100%;object-fit:cover;object-position:78% 15%;}
  /* Sections: label (1–3) | content (4–12). */
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>:is(.he-home-research,.he-selected,.he-news){grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;margin-top:80px;padding:0;--news-height:420px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-home-research{grid-row:2;--section-number:"01";}
- #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-selected{grid-row:3;--section-number:"02";}
- #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-news{grid-row:4;--section-number:"03";}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-home-research{grid-row:3;--section-number:"01";}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-selected{grid-row:4;--section-number:"02";}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-news{grid-row:5;--section-number:"03";}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand,.he-selected-title,.he-news>h2){grid-column:1/4;grid-row:1;margin:0;padding:0;min-height:0;background:none;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand h2,.he-selected-title,.he-news>h2){font:650 24px/1.15 var(--display-face);letter-spacing:-.025em;color:var(--ink);}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand h2,.he-selected-title,.he-news>h2){font-size:24px;line-height:1.15;letter-spacing:-.025em;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-brand,.he-selected-title,.he-news>h2)::before{content:var(--section-number);display:block;width:40px;padding-top:12px;margin-bottom:8px;border-top:6px solid var(--ink);font:500 12px/1.5 var(--metadata-face);color:var(--blue-ink);}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news>h2 :is(.he-print-word,.he-type-line){font:inherit;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news>.he-home-divider{display:none;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-brand .he-slogan-prefix{display:block;font:500 12px/1.5 var(--metadata-face);color:var(--blue-ink);margin-bottom:4px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/3;grid-row:2;margin-top:24px;padding:0;mix-blend-mode:multiply;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-direction-summaries{grid-column:4/13;grid-row:1/3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--column-gap);}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-direction-summaries{grid-column:4/13;grid-row:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--column-gap);}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-direction-summaries a{font-size:22px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-direction-summaries li::before{width:32px;height:4px;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-direction-stamp{width:72px;height:72px;left:-20px;}
  /* Selected: a regular table in the content columns. */
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-list{grid-column:4/13;grid-template-columns:repeat(9,minmax(0,1fr));row-gap:24px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-list>li{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:baseline;}
@@ -136,12 +144,10 @@
 
 /* ---------- Phones (always poster) ---------- */
 @container(max-width:720px){
- #personal-site .he-home[data-home-layout] .he-home-block{height:12px;margin:-24px calc(-1 * var(--page-gutter)) 0 0;position:relative;}
- #personal-site .he-home[data-home-layout] .he-block-bar{position:absolute;inset:0;background:var(--red-ink);}
- #personal-site .he-home[data-home-layout] .he-block-foot{position:absolute;right:0;bottom:0;width:45%;height:48px;background:var(--red-ink);border-bottom-left-radius:16px;}
- #personal-site .he-home[data-home-layout] .he-portrait[data-material]{position:relative;z-index:2;width:70%;margin:24px 0 0 auto;}
+ #personal-site .he-home[data-home-layout] .he-landscape{margin:24px calc(-1 * var(--page-gutter)) 0;height:300px;overflow:hidden;}
+ #personal-site .he-home[data-home-layout] .he-landscape>img{height:100%;object-fit:cover;object-position:80% 100%;}
+ #personal-site .he-home[data-home-layout] :is(.he-brand h2,.he-news>h2,.he-selected-title){font-size:36px;}
  #personal-site .he-home[data-home-layout] .he-home-research{position:relative;margin-top:72px;}
- #personal-site .he-home[data-home-layout] .he-home-research>.he-research-overview{position:absolute;top:0;right:0;width:120px;mix-blend-mode:multiply;}
  #personal-site .he-home[data-home-layout] .he-direction-summaries{margin-top:32px;}
  #personal-site .he-home[data-home-layout] .he-direction-summaries li+li{margin-top:32px;}
  #personal-site .he-home[data-home-layout] .he-direction-summaries li:nth-child(2){margin-left:24px;}

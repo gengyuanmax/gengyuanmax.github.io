@@ -15,6 +15,18 @@ import {preferredResource} from '../../data/catalog';
 const venueOf=(m:string)=>m.split(',')[0].trim();
 const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
 import {screenScale} from '../../design/screen';
+import {homeLandscape} from '../../config/home-landscape';
+import {researchRecipe,plateVector} from '../../design/research-render';
+import {directions} from '../../data/research-map';
+import {design} from '../../config/design';
+import {resolve} from '../../design/settings';
+// Research circles, split: each direction's own screened circle (polygon-v1, the same
+// recipe as the research map) as a stamp under its name. Cropped to the circle.
+const researchSettings=resolve(design,'home').values;
+const circleRecipe=researchRecipe(researchSettings,design,640,undefined,{seed:resolve(design).values.seed,origin:{x:0,y:0},height:1440});
+const stamps=Object.fromEntries(directions.map(d=>{const c=circleRecipe.geometry.circles[d.id],k=circleRecipe.scale,r=circleRecipe.geometry.r*k*1.04;
+ const svg=plateVector(circleRecipe,d.id).replace(/<svg ([^>]*?)width="[^"]*" height="[^"]*"/,`<svg $1viewBox="${(c.x*k-r).toFixed(1)} ${(c.y*k-r).toFixed(1)} ${(2*r).toFixed(1)} ${(2*r).toFixed(1)}" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"`);
+ return [d.href.slice(1),svg];}));
 const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1');
 ---
 <GridGuides />
@@ -37,7 +49,7 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  </div></div>
 </div>
 <PrintMedia />
-<div class="he-home-block" aria-hidden="true"><span class="he-block-bar"></span><span class="he-block-foot"></span></div>
+<figure class="he-landscape" aria-hidden="true"><img src={homeLandscape.output} width={homeLandscape.width*homeLandscape.scale} height={homeLandscape.height*homeLandscape.scale} alt="" decoding="async"/></figure>
 <section class="he-home-research" aria-labelledby="research-core" data-flow-label="品牌与三个研究方向">
  <HomeDivider kind="chapter"/>
  <svg class="he-home-branches" aria-hidden="true"></svg>
@@ -46,7 +58,7 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
   <span class="he-number"><InkText text={String(i+1).padStart(2,'0')}/></span>
   <div><h3><a href={`#${p.id}`}><InkText text={p.label}/></a></h3></div>
  </li>)}</ol></div></div>
- <ol class="he-direction-summaries">{pillars.map((p,i)=><li><a href={`#${p.id}`}><span class="he-direction-index">{String(i+1).padStart(2,'0')}</span><span class="he-direction-name">{p.label}</span></a><p>{p.summary}</p></li>)}</ol>
+ <ol class="he-direction-summaries">{pillars.map((p,i)=><li><span class="he-direction-stamp" set:html={stamps[p.id]}/><a href={`#${p.id}`}><span class="he-direction-name">{p.label}</span></a><p>{p.summary}</p></li>)}</ol>
 </section>
 
 <section data-flow-label="News" class="he-news" aria-labelledby="news-heading">
