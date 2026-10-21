@@ -6,7 +6,7 @@ The selected Home reading flow is confirmed. On 2026-10-14 the user authorized p
 
 ## One main version
 
-`/` and `/design/` use the same Home component, responsive CSS and print pipeline. The order is name → introduction/contact → research brand and three aspects → News. Desktop uses the previously selected B composition; narrow screens preserve the same reading order. 1440 CSS px is the sole primary design canvas. At 1024px and above the brand sits left of the research circles; narrower views stack, and below 640px a compact legend precedes direction links. There is no A/B selector.
+`/` and `/design/` use the same Home component, responsive CSS and print pipeline. Home order (2026-10-21): name → role, job-market status, introduction, contacts (incl. CV) → mountain-and-portrait print → “visual intelligence” with the three directions → News → Selected projects. Two reading modes share the markup: **Poster** (Riso poster composition, phones always) and **Compact** (label | content index, desktop default); see design constraints §26 and §26e. 1440 CSS px is the sole primary design canvas. There is no A/B selector.
 
 - `/design/`: the only visual editing desk. Global, Area and Element scopes edit the current version; layout and print panels organize parameters. Inspection tools include grid, DOM reading order, screen tiers, ink proofs and responsive widths.
 - `/design/?view=preview`: the same 1440 canvas without the editing sidebar, carrying the current session draft; fit and original-size modes only change its display scale.
@@ -34,25 +34,42 @@ Run the server smoke check with the development server active. It tests redirect
 
 | File | Responsibility |
 | --- | --- |
+| `src/data/content.ts` | All public copy: `profile` (name, role, `status`, `introduction`, `affiliations`, `collaboration`, `contacts`), `pillars` (`detail`, `summary` per direction), `selectedProjects` + `selectedLines`, `projects`, `news`, `sectionCopy`. Public copy still requires the user's approval; the latest answers are in `docs/COPY_QA.md` |
+| `src/data/publications.ts` | Publication list (Research › Publications; own name bold, `*` equal contribution) |
+| `public/files/Gengyuan_Zhang_CV.pdf` | CV linked from every contact row (`contacts` entry `CV`); replace the file to update it |
+| `src/components/areas/Home.astro` | Home markup: intro, landscape figure, directions with split circle stamps, News, Selected projects |
+| `src/styles/home-layout.css` | **Home layout for both modes** (loaded last): poster placements, compact label/content grid, phones |
+| `src/styles/reading-modes.css` | Poster / Compact for the other pages (Research, Artifacts, About) and the mode toggle |
+| `src/styles/rhythm.css` + `scripts/rhythm.mjs` | Müller-Brockmann rows: every vertical size rounded to `--baseline` at build (PostCSS); opt out with a `rhythm:off` comment |
+| `src/config/home-landscape.ts` + `scripts/render-home-landscape.mjs` | Mountain-and-portrait print (sources `src/assets/home/mountain.jpg`, `public/images/portrait-source-cutout.png`; crop, size, person placement) rendered by `npm run media` |
+| `src/config/about-photo.ts` + `scripts/render-about-photo.mjs` | About photograph print |
+| `src/design/emphasis.ts`, `src/design/emphasis-print.ts`, `src/styles/body-emphasis.css` | Body emphasis band (colour/coverage with contrast guard; printed band masks; per-phrase misregistration from `print-pipeline/registration.ts`). Mark phrases in `src/config/body-emphasis.ts` or with `EmphasisText` |
 | `src/config/main-version.ts` | Selected directions, draft slogan, retired objects and draft version key |
-| `src/components/areas/Home.astro` | Shared static Home reading structure and research direction links |
-| `src/styles/home-main.css` | Selected Home layout and responsive rules |
-| `src/client/home-branches.ts` | Legacy tree comparison connectors; the main version uses ResearchMap |
 | `src/design/settings.ts` | Typed parameters, inheritance, validation and main-version normalization |
 | `src/config/design.json` | Saved global values and page/element overrides |
 | `src/design/screen.ts` | Three shared screen tiers and per-ink angle/shape tokens |
 | `src/design/print-pipeline/index.ts` | Shared print declaration and versioned N-ink core |
-| `src/config/portrait-composition.ts` | Selected portrait/circle composition from Print Lab |
-| `src/data/content.ts` | Content records; terminology and public copy still require approval |
-| `src/data/catalog.ts` | Chronology, primary research membership and resource priorities |
+| `src/design/reading-route.ts`, `src/client/reading-flow.ts`, `src/client/print-routes.ts` | Research/Artifacts metro-line reading guides (geometry → shared pipeline) |
+| `src/data/catalog.ts` | Chronology, primary research membership and resource priorities (link labels: Project, arXiv, GitHub, Dataset, Model …) |
 | `src/client/studio.ts`, `src/client/preview.ts` | Development-only editor and live preview connection |
 | `scripts/design-server.ts` | Local routes and validated save endpoint |
+
+### Common edits
+
+- **Change Home copy, status or links**: edit `src/data/content.ts`; record the approved wording in `docs/COPY_QA.md`.
+- **Choose or reorder Selected projects**: `selectedProjects` (ids from `projects`) and `selectedLines` in `content.ts`; links come from each project's `links`.
+- **Update the CV**: replace `public/files/Gengyuan_Zhang_CV.pdf` (keep the name).
+- **Add News**: append to `news` in `content.ts` (newest first; dates as `DD Mon YYYY` or `Mon YYYY`).
+- **Move something on Home**: `src/styles/home-layout.css`; keep whole columns on the 12-column grid and vertical sizes in rows; separate sections by scale, print and space, not full-width rules.
+- **Change the landscape**: edit `src/config/home-landscape.ts`, run `npm run media`, check 1440 poster/compact and 390.
+- **Emphasize a phrase**: add the exact substring to `src/config/body-emphasis.ts` (or wrap with `EmphasisText`); no emphasis in headings, metadata or links.
+- **Verify**: `npm test`, `npm run check`, `npm run build`; look at 1440 (both modes) and 390.
 
 Global → area → element overrides preserve literal zero and reset to inheritance. Per-ink palette, screen angles/shapes and registration are shared across the page. Retired composition directions cannot override the selected version. Unsupported parameter scopes fail validation.
 
 ## Print system
 
-The portrait and its own background circle share the medium 4 CSS px screen. Research circles retain the explicitly approved polygon recipe and 7px screen; see design constraints section 14. Screen tiers are fine 2px, medium 4px and type-relative 1/16em rounded to integer CSS pixels. At the current desktop name size the coarse pitch is 8px. Text follows the sharp-type-v3 size tiers: display type at 72px or above may use glyph-clipped uniform dots; 24–72px headings use solid two-ink text; smaller text remains clean single ink. Each ink has a global angle and dot shape. Texture density can vary without adding arbitrary frequencies. Integer CSS pixels reduce one source of inconsistency but do not guarantee absence of sampling moiré at every browser zoom or device scale.
+The Home landscape (mountain + portrait) and the About photograph are build-time prints on the medium 4px / coarse tiers. The display name keeps coarse dots at every size (1/16em, never below 4px). Research circles retain the explicitly approved polygon recipe and 7px screen; see design constraints section 14. Screen tiers are fine 2px, medium 4px and type-relative 1/16em rounded to integer CSS pixels. At the current desktop name size the coarse pitch is 8px. Text follows the sharp-type-v3 size tiers: display type at 72px or above may use glyph-clipped uniform dots; 24–72px headings use solid two-ink text; smaller text remains clean single ink. Each ink has a global angle and dot shape. Texture density can vary without adding arbitrary frequencies. Integer CSS pixels reduce one source of inconsistency but do not guarantee absence of sampling moiré at every browser zoom or device scale.
 
 Body text and metadata use clean blue ink; larger headings use shared two-ink overprint. Decorative text layers are hidden from accessibility and do not duplicate content. The screen audit is a development diagnostic, not an additional production palette. Ink proofs simulate digital plate composition, not press-ready separations.
 
