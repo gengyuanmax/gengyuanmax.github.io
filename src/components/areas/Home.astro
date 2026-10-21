@@ -11,7 +11,8 @@ import PrintWord from '../PrintWord.astro';
 import {profile,pillars,news,projects,selectedProjects,selectedLines} from '../../data/content';
 // Emphasize the institutions inside the introduction without changing its wording.
 const introParts=(()=>{const re=new RegExp(`(${profile.affiliations.map(a=>a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g');return profile.introduction.split(re);})();
-import {preferredResource} from '../../data/catalog';
+import {preferredResource,resourceEntries} from '../../data/catalog';
+const resourceLabel=(kind:string)=>({page:'Project',arxiv:'arXiv',github:'GitHub',demo:'Demo',article:'Article',dataset:'Dataset',model:'Model'} as Record<string,string>)[kind]||kind;
 const venueOf=(m:string)=>m.split(',')[0].trim();
 const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
 import {screenScale} from '../../design/screen';
@@ -68,11 +69,12 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
 </section>
 
 <section class="he-selected" aria-labelledby="selected-heading" data-flow-label="Selected projects">
- <h2 id="selected-heading" class="he-selected-title">Selected projects</h2>
+ <h2 id="selected-heading" class="he-selected-title"><InkText text="Selected projects"/></h2>
  <ol class="he-selected-list">{selectedProjects.map(id=>{const item=projects[id];const r=preferredResource(item.links);const pillar=pillars.find(p=>p.id===item.primaryTheme)!;return <li data-line={pillar.id}>
   <p class="he-selected-venue"><span class="he-venue">{venueOf(item.metadata)}</span>{yearOf(item.metadata)&&!venueOf(item.metadata).includes(yearOf(item.metadata))&&<span class="he-venue-year">{yearOf(item.metadata)}</span>}</p>
   <h3>{r?<a href={r.href}>{item.title}</a>:item.title}</h3>
   <p class="he-selected-description">{selectedLines[id]||item.description}</p>
+  <p class="he-selected-links">{resourceEntries(item.links).map(({kind,href})=><a href={href}>{resourceLabel(kind)}</a>)}</p>
   <a class="he-selected-direction" href={`#${pillar.id}`}>{pillar.label} →</a>
  </li>;})}</ol>
 </section>

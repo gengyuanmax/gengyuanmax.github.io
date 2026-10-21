@@ -49,6 +49,9 @@
 #personal-site .he-home[data-home-layout] .he-selected-list h3{margin:0;font:650 28px/1.1 var(--display-face);letter-spacing:-.03em;}
 #personal-site .he-home[data-home-layout] .he-selected-description{margin:8px 0 0;font-size:var(--body-size);line-height:1.5;}
 #personal-site .he-home[data-home-layout] .he-selected-direction{display:inline-block;margin-top:8px;}
+/* Resources, as on the Research page: short underlined mono links. */
+#personal-site .he-home[data-home-layout] .he-selected-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin:12px 0 0;}
+#personal-site .he-home[data-home-layout] .he-selected-links a{font:500 12px/1.6 var(--metadata-face);color:var(--blue-ink);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;}
 
 /* One title style for the three home sections; the brand's kicker repeats the directions. */
 #personal-site .he-home[data-home-layout] .he-brand .he-slogan-prefix{display:none;}
@@ -90,8 +93,10 @@
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-direction-summaries li:nth-child(3){margin-left:calc((100% + var(--column-gap)) * 2 / 8);}
  /* News under the portrait's columns. */
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news{grid-column:9/13;grid-row:3;display:block;margin-top:80px;padding:0;--news-height:600px;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li{display:block;padding:16px 0 0;border:0;}
- #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news .he-date{display:block;margin-bottom:4px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--column-gap);row-gap:16px;padding-top:16px;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li{grid-column:1/-1;display:grid;grid-template-columns:subgrid;padding:0;border:0;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news .he-date{grid-column:1;}
+ #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li p{grid-column:2/-1;}
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-news li p{max-width:none;font-size:15px;line-height:1.5;}
  /* Selected projects: staggered cards. */
  #personal-site[data-reading="poster"] .he-home[data-home-layout] .he-selected{grid-column:1/13;grid-row:4;margin-top:144px;}
@@ -111,8 +116,7 @@
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro>*{margin:0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-status{margin:8px 0 16px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-intro-copy .he-contact{margin-top:12px;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape{grid-column:1/13;grid-row:2;margin:24px calc(-1 * var(--page-gutter)) 0;height:360px;overflow:hidden;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape>img{height:100%;object-fit:cover;object-position:78% 15%;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape{grid-column:4/13;grid-row:2;margin:40px 0 0;}
  /* Sections: label (1–3) | content (4–12). */
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>:is(.he-home-research,.he-selected,.he-news){grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--column-gap);align-items:start;margin-top:80px;padding:0;--news-height:420px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout]>.he-home-research{grid-row:3;--section-number:"01";}
@@ -133,6 +137,7 @@
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-venue{grid-column:1/3;margin:0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-list h3{grid-column:3/6;font-size:20px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-description{grid-column:6/10;margin:0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-links{grid-column:6/10;margin-top:6px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected-direction{grid-column:6/10;margin-top:4px;justify-self:start;}
  /* News: date | text in the content columns. */
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news-scroll{grid-column:4/13;padding:0;}
