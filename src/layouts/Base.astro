@@ -23,6 +23,11 @@ import {aboutSections} from '../data/about-sections';
 import {profile,pillars} from '../data/content';
 import {resolve,styleText,designAttributes,areaIds} from '../design/settings';
 const values=resolve(design).values;
+import {emphasisBands} from '../design/emphasis-print';
+import {emphasisMaterial} from '../design/emphasis';
+import {getPalette} from '../design/settings';
+const bands=emphasisBands(values,design),emTint=emphasisMaterial(getPalette(design,values.palette),values.emphasisPitch,values.emphasisCoverage).tint;
+const emphasisVars=bands.map((b,i)=>`--em-band-${i}:${b}`).join(';')+`;--em-tint:${emTint}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -44,7 +49,7 @@ const values=resolve(design).values;
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=Newsreader:opsz,wght@6..72,400..600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Instrument+Serif&amp;display=swap"/>
  </head>
  <body style={styleText({palette:values.palette},design)}>
-  <div id="personal-site" style={styleText(values,design)} {...designAttributes(values)}>
+  <div id="personal-site" style={`${styleText(values,design)};${emphasisVars}`} {...designAttributes(values)}>
    {/* Before first paint: choose the area from the URL so the first frame is the page that stays.
         Without JS this never runs and the four areas remain one stacked document. */}
    <script is:inline define:vars={{areas:[...areaIds],chapters:[...pillars.map(p=>p.id),"publications"],aboutAnchors:aboutSections.map(s=>s.id)}}>

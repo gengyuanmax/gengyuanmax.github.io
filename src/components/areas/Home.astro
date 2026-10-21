@@ -17,6 +17,7 @@ const venueOf=(m:string)=>m.split(',')[0].trim();
 const yearOf=(m:string)=>(m.match(/\d{4}/)||[''])[0];
 import {screenScale} from '../../design/screen';
 import {homeLandscape} from '../../config/home-landscape';
+import {emphasisMisprint} from '../../design/emphasis-print';
 import {researchRecipe,plateVector} from '../../design/research-render';
 import {directions} from '../../data/research-map';
 import {design} from '../../config/design';
@@ -34,18 +35,18 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
 <div class="he-home-profile">
  <PrintTitle id="home-name" displayScreen area="home" class="he-name" lines={profile.name}/>
  <script is:inline define:vars={{coarseEm:screenScale.coarseEm,fine:screenScale.fine,medium:screenScale.medium}}>
-  /* Same pitch and tier rules as first-frame.ts dotPitch() and text.ts textTier(), applied while
+  /* Same pitch and tier rules as first-frame.ts dotPitch(size, display) and text.ts textTier(), applied while
      parsing so the name's CSS dot plate is exact in the first frame. print-material.ts keeps it current. */
   document.currentScript.previousElementSibling.querySelectorAll('.he-type-line').forEach(line=>{
    const size=parseFloat(getComputedStyle(line).fontSize),coarse=Math.max(2,Math.round(size*coarseEm));
-   line.style.setProperty('--dot-pitch',(coarse>=medium*1.5?coarse:fine)+'px');
+   line.style.setProperty('--dot-pitch',Math.max(medium,coarse)+'px');
    line.dataset.textTier='display';
   });
  </script>
  <div class="he-intro" data-flow-label="简介与联系">
   <p class="he-role">{profile.role.map((part,i)=><>{i>0&&<br/>}<span class="he-role-part">{part}{i<profile.role.length-1?",":""}</span></>)}</p>
   <p class="he-status"><span class="he-status-mark" aria-hidden="true"></span>{profile.status}</p>
-  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation he-body-emphasis em-ink">{part}</strong>:part)}</p>
+  <div class="he-intro-second"><div class="he-intro-copy"><p class="he-bio he-self-introduction">{introParts.map(part=>profile.affiliations.includes(part)?<strong class="he-affiliation he-body-emphasis em-ink" style={emphasisMisprint(part)}>{part}</strong>:part)}</p>
   <nav class="he-contact" aria-label="Profile links" data-native-scroll tabindex="0">{profile.contacts.map(link=><ContactLink {...link}/>)}</nav></div>
  </div></div>
 </div>

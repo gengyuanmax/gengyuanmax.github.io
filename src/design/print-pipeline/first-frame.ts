@@ -8,8 +8,11 @@ import {spotT} from './noise.ts';
 
 /** Same rule as typeScreenLevel/screen(): integer CSS px; below 1.5 × medium the
  * display name reuses the fine tier instead of inventing another frequency. */
-export function dotPitch(fontSize:number){
+export function dotPitch(fontSize:number,display=false){
  const coarse=Math.max(2,Math.round(fontSize*screenScale.coarseEm));
+ // The display name keeps its coarse-dot identity at every size (user, 2026-10-21: the
+ // poster name is the template): never below the medium tier, never fine.
+ if(display)return Math.max(screenScale.medium,coarse);
  return coarse>=screenScale.medium*1.5?coarse:screenScale.fine;
 }
 const tile=16,columns=400,rows=100,period=24;

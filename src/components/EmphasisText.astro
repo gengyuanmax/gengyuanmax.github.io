@@ -2,5 +2,6 @@
 interface Props {text:string;phrase?:string;variant?:'ink'|'knock';}
 const {text,phrase,variant='ink'}=Astro.props;
 const at=phrase?text.indexOf(phrase):-1;
+import {emphasisMisprint} from '../design/emphasis-print';
 ---
-{at<0?text:<>{text.slice(0,at)}<strong class={`he-body-emphasis em-${variant}`}>{phrase}</strong>{text.slice(at+phrase!.length)}</>}
+{at<0?text:<>{text.slice(0,at)}<strong class={`he-body-emphasis em-${variant}`} style={variant==="ink"?emphasisMisprint(phrase!):undefined}>{phrase}</strong>{text.slice(at+phrase!.length)}</>}
