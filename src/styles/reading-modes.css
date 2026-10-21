@@ -75,15 +75,10 @@
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research>.he-research-overview{grid-column:1/-1;grid-row:2;padding:calc(var(--baseline) * 3) 0 0;margin:0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .research-map{max-width:none;margin-inline:0;--map-max:100cqw;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-home-research{grid-row:2;}
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news{grid-column:7/13;grid-row:2/span 2;align-self:start;}
- /* Selected projects sit under the research directions, in the left six columns. */
- #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected{grid-column:1/7;grid-row:3;margin-top:calc(var(--baseline) * 5);}
- #personal-site[data-reading="compact"] .he-selected-list{grid-template-columns:repeat(6,minmax(0,1fr));}
- #personal-site[data-reading="compact"] .he-selected-list>li{grid-column:1/-1;row-gap:4px;}
- #personal-site[data-reading="compact"] .he-selected-venue{grid-column:1/3;}
- #personal-site[data-reading="compact"] .he-selected-list h3{grid-column:3/-1;}
- #personal-site[data-reading="compact"] .he-selected-description{grid-column:3/-1;}
- #personal-site[data-reading="compact"] .he-selected-direction{grid-column:3/-1;justify-self:start;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news{grid-column:7/13;grid-row:2;align-self:start;}
+ /* Selected projects: a regular full-width table under research and News. */
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-selected{grid-column:1/-1;grid-row:3;margin-top:calc(var(--baseline) * 5);}
+ #personal-site[data-reading="compact"] .he-selected-list>li{padding:calc(var(--baseline) * 1.5) 0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news h2{font-size:30px;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news li{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:var(--column-gap);row-gap:0;padding:calc(var(--baseline) * 1.5) 0;}
  #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-news .he-date{grid-column:1;}
