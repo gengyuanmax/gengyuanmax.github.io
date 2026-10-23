@@ -19,20 +19,20 @@ function motifParts(s:Settings,id:string,kind:Motif){
  const build:Partial<Record<Motif,()=>Solid[]>>={
   // ICQ: a video as a row of equal event tiles on one grid. The found event rises
   // out of the row; the query image hovers over it on exactly the same footprint.
-  query:()=>{const hot:Shade={top:{a:1,b:0},x:{a:0,b:1},y:{a:1,b:.75}},card:Shade={top:{a:0,b:1},x:{a:.35,b:1},y:{a:1,b:1}};
+  query:()=>{const hot:Shade={top:{a:1,b:0},x:{a:0,b:1},y:{a:1,b:.75}},card:Shade={top:{a:0,b:1},x:{a:0,b:.62},y:{a:0,b:.38}};
    const tile=(i:number,h:number,shade?:Shade)=>({faces:box(i*1.4,0,0,1,1,h),shade});
    return [tile(0,.3),tile(1,.3),tile(2,1.6,hot),{faces:box(2.8,0,2.3,1,1,.12),shade:card},tile(3,.3),tile(4,.3)];},
   // ReEXplore: a wall with a doorway, and the next frontier glimpsed through it.
   frontier:()=>{const wall:Ring=[[.4,1.5,.2],[1.3,1.5,.2],...arc(1.8,1.5,.5,Math.PI,0,14,1.5),[2.3,1.5,.2],[3.2,1.5,.2],[3.2,1.5,2.4],[.4,1.5,2.4]];
-   return [{faces:box(0,0,0,4,3.2,.2)},{faces:extrude(disc(1.12,1.18,.26,.2,28),[0,0,.55])},{faces:extrude(wall,[0,.35,0])}];},
+   return [{faces:box(0,0,0,4,3.2,.2)},{faces:extrude(disc(1.12,1.18,.26,.2,28),[0,0,.55]),concave:true},{faces:extrude(wall,[0,.35,0]),concave:true}];},
   // How to Train a Surgeon?: two instruments descend onto tissue in the operating field.
   scope:()=>{const rod=(p:V3,e:V3,plane:'xz'|'yz')=>{const s=.2,r:Ring=plane==='xz'?[[p[0]-s,p[1],p[2]-s],[p[0]+s,p[1],p[2]-s],[p[0]+s,p[1],p[2]+s],[p[0]-s,p[1],p[2]+s]]:[[p[0],p[1]-s,p[2]-s],[p[0],p[1]+s,p[2]-s],[p[0],p[1]+s,p[2]+s],[p[0],p[1]-s,p[2]+s]];return {faces:extrude(r,e)};};
-   return [{faces:extrude(disc(0,0,1.9,0),[0,0,.4])},{faces:box(-.45,-.45,.4,.9,.9,.5)},rod([.1,-3.6,2.8],[0,3,-1.7],'xz'),rod([-3.6,.1,2.8],[3,0,-1.7],'yz')];},
+   return [{faces:extrude(disc(0,0,1.9,0),[0,0,.4]),concave:true},{faces:box(-.45,-.45,.4,.9,.9,.5)},rod([.1,-3.6,2.8],[0,3,-1.7],'xz'),rod([-3.6,.1,2.8],[3,0,-1.7],'yz')];},
  };
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
- const solid=build[kind];if(solid){const m=solidsMarkup(id,solid());return {pattern,a:m.a,b:m.b};}
+ const solid=build[kind];if(solid){const m=solidsMarkup(id,solid(),{x:s.registration,y:s.registrationY});return {pattern,a:m.a,b:m.b};}
  return {pattern,a:kind==='earth'?earth:a,b};
 }
 

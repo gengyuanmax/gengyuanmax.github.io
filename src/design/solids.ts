@@ -32,9 +32,10 @@ export const box=(x:number,y:number,z:number,w:number,d:number,h:number)=>extrud
 export const arc=(cx:number,cz:number,r:number,from:number,to:number,steps:number,y=0):Ring=>Array.from({length:steps+1},(_,i)=>{const t=from+(to-from)*i/steps;return [cx+r*Math.cos(t),y,cz+r*Math.sin(t)] as V3;});
 export const disc=(cx:number,cy:number,r:number,z:number,steps=40):Ring=>Array.from({length:steps},(_,i)=>{const t=i/steps*Math.PI*2;return [cx+r*Math.cos(t),cy+r*Math.sin(t),z] as V3;});
 
-export type Solid={faces:Face[];shade?:Shade};
+/** concave: faces of this solid can overlap each other on screen (arch, faceted cylinder). */
+export type Solid={faces:Face[];shade?:Shade;concave?:boolean};
 /** Render solids to per-plate SVG groups in a 360×220 box. */
-export function solidsMarkup(uid:string,solids:Solid[],fit={x:16,y:14,w:328,h:194}){
+export function solidsMarkup(uid:string,solids:Solid[],reg={x:0,y:0},fit={x:16,y:14,w:328,h:194}){
  const raw=(p:V3)=>[(p[0]-p[1])*.866,(p[0]+p[1])*.5-p[2]];
  const all=solids.flatMap(s=>s.faces.flatMap(f=>f.pts.map(raw)));
  const minX=Math.min(...all.map(p=>p[0])),maxX=Math.max(...all.map(p=>p[0])),minY=Math.min(...all.map(p=>p[1])),maxY=Math.max(...all.map(p=>p[1]));
@@ -45,17 +46,28 @@ export function solidsMarkup(uid:string,solids:Solid[],fit={x:16,y:14,w:328,h:19
   const len=Math.hypot(...f.n),n=f.n.map(v=>v/len),shade=s.shade||riso;
   const axis=n[2]>=Math.max(n[0],n[1])?'top':n[0]>=n[1]?'x':'y';
   const c=f.pts.reduce((m,p)=>m+p[0]+p[1]+p[2],0)/f.pts.length;
-  return {d:ring(f.pts)+(f.holes||[]).map(ring).join(''),tint:shade[axis],c,order};
+  return {d:ring(f.pts)+(f.holes||[]).map(ring).join(''),tint:shade[axis],c,order,concave:!!s.concave};
  })).sort((p,q)=>p.order-q.order||p.c-q.c);
+ // Edges: every face is drawn slightly grown (fill + same-colour stroke, with the
+ // tint on the group) so neighbours overlap instead of leaving a paper seam.
+ // Occlusion: a face is masked by the grown outline of every later solid's
+ // faces; faces of one convex solid never overlap on screen.
+ const GROW=.7;
+ const grown=(d:string,fill:string,w=GROW)=>`<path d="${d}" fill="${fill}" fill-rule="evenodd" stroke="${fill}" stroke-width="${w}" stroke-linejoin="miter"/>`;
  const plate=(ink:'a'|'b')=>{
   const defs:string[]=[],paths:string[]=[];
   items.forEach((it,i)=>{
    const t=it.tint[ink];if(!t)return;
-   // Occluders give back a hairline at their edge so shared edges do not open a paper seam.
-   const later=items.slice(i+1).map(q=>`<path d="${q.d}" fill="#000" fill-rule="evenodd" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/>`).join('');
+   // Trapping: an occluder printed only on the other plate lands shifted by the
+   // press registration, so its knockout here is shifted the same way. Knockouts
+   // then register exactly; only true overprints show the Riso fringe.
+   const other=ink==='a'?'b':'a',sign=ink==='a'?1:-1;
+   const later=items.slice(i+1).filter(q=>q.order!==it.order||it.concave||!q.tint[ink]).map(q=>{
+    const shift=!q.tint[ink]&&q.tint[other]?` transform="translate(${sign*reg.x} ${sign*reg.y})"`:'';
+    return shift?`<g${shift}>${grown(q.d,'#000')}</g>`:grown(q.d,'#000');}).join('');
    const id=`${uid}-${ink}${i}`;
-   defs.push(`<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="360" height="220"><path d="${it.d}" fill="#fff" fill-rule="evenodd"/>${later}</mask>`);
-   paths.push(`<path d="${it.d}" fill="#000" fill-rule="evenodd" fill-opacity="${t}" mask="url(#${id})"/>`);
+   if(later)defs.push(`<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="360" height="220"><rect width="360" height="220" fill="#fff"/>${later}</mask>`);
+   paths.push(`<g opacity="${t}"${later?` mask="url(#${id})"`:''}>${grown(it.d,'#000')}</g>`);
   });
   return `<g data-print-tone="solid"><defs>${defs.join('')}</defs>${paths.join('')}</g>`;
  };
