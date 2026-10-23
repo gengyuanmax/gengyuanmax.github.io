@@ -62,7 +62,7 @@ cam.data.shift_y = (max(ys)+min(ys))/2/cam.data.ortho_scale
 sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'; sc.cycles.samples = 64
 sc.view_settings.view_transform = 'Standard'; sc.render.film_transparent = True
 sc.world = bpy.data.worlds.new('w')
-out = here / f'_{name}.png'; sc.render.filepath = str(out); sc.render.image_settings.color_mode = 'RGBA'
+out = here / 'out' / f'{name}-render.png'; out.parent.mkdir(exist_ok=True); sc.render.filepath = str(out); sc.render.image_settings.color_mode = 'RGBA'
 bpy.ops.render.render(write_still=True)
 
 rgba = np.asarray(Image.open(out).convert('RGBA')).astype(np.float32) / 255
@@ -72,7 +72,6 @@ for ch, plate in ((0, 'a'), (1, 'b')):
     density = np.clip(rgba[..., ch] * alpha, 0, 1)   # premultiplied colour = density × coverage
     img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(density * 255)
     Image.fromarray(img).save(dest / f'{name}-{plate}.png', optimize=True)
-out.unlink()
 # The print pipeline reads plates as data URIs in both Node and the browser.
 import base64
 ts = here.parent.parent / 'src' / 'design' / 'assets' / f'mark-{name}.ts'
