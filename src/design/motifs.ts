@@ -1,6 +1,6 @@
 import type {Settings} from './settings.ts';
 import {earthLandPath} from './assets/earth-land.ts';
-export type Motif = 'orbit'|'earth'|'windows'|'sequence';
+export type Motif = 'orbit'|'earth'|'windows'|'sequence'|'query'|'frontier'|'scope'|'retrieve';
 // Adaptation of the Element Lab studies, not a pixel-identical lab renderer.
 // This SVG is the source/fallback. The live screen uses the shared medium tier
 // at actual display size; legacy fieldPitch only describes this fallback.
@@ -13,9 +13,26 @@ function motifParts(s:Settings,id:string,kind:Motif){
  const dotsA=`url(#${id}-a-dots)`,dotsB=`url(#${id}-b-dots)`;
  const a=kind==='windows'?`<path d="M22 36h114v140H22zM128 15h114v140H128zM234 52h104v140H234z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 176h114v8H22zM128 155h114v8H128zM234 192h104v8H234z"/>`:kind==='sequence'?`<path d="M15 48h92v142H15zM133 48h92v142h-92zM251 48h92v142h-92z" fill="${dotsA}"/><path d="M15 208h328" fill="none" stroke="currentColor" stroke-width="3"/>`:`<circle cx="${185+o*35}" cy="107" r="87" fill="${dotsA}"/>`;
  const b=kind==='windows'?`<circle cx="${174+o*30}" cy="115" r="94" fill="${dotsB}"/>`:kind==='sequence'?`<path d="M27 106h306v16H27z"/><circle cx="${132+o*30}" cy="110" r="70" fill="${dotsB}"/><path d="M46 35v18m118-18v18m118-18v18" stroke="currentColor" stroke-width="2"/>`:`<circle cx="${137-o*35}" cy="112" r="73" fill="none" stroke="currentColor" stroke-width="26"/><path d="M40 192h236" stroke="currentColor" stroke-width="3"/>`;
+ // Project marks added 2026-10-23, same grammar: plate a = vermilion
+ // screened panels / outlines, plate b = blue sphere, ring or bars.
+ const extra:Partial<Record<Motif,{a:string;b:string}>>={
+  // ICQ: a reference image + refinement text query localizes a moment in a video strip.
+  query:{a:`<path d="M15 34h96v100H15z" fill="${dotsA}"/><path d="M139 64h36v86h-36zM181 64h36v86h-36zM223 64h36v86h-36zM265 64h36v86h-36zM307 64h36v86h-36z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 208h328" fill="none" stroke="currentColor" stroke-width="3"/>`,
+   b:`<path d="M15 152h96v12H15zM15 172h60v12H15z"/><circle cx="${262+o*30}" cy="107" r="66" fill="${dotsB}"/><path d="M223 40v14h78V40" fill="none" stroke="currentColor" stroke-width="3"/>`},
+  // ReEXplore: explored region, an unexplored room, and a path that turns back to a frontier.
+  frontier:{a:`<path d="M15 30h170v170H15z" fill="${dotsA}"/><path d="M185 15h158v140H185z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 208h328" fill="none" stroke="currentColor" stroke-width="3"/>`,
+   b:`<circle cx="${236+o*30}" cy="118" r="70" fill="${dotsB}"/><path d="M42 182V112h80V58h114v60" fill="none" stroke="currentColor" stroke-width="6"/>`},
+  // How to Train a Surgeon?: two instruments converge inside the endoscopic field.
+  scope:{a:`<path d="M24 22l136 92M336 22l-136 92" fill="none" stroke="currentColor" stroke-width="11"/><circle cx="180" cy="148" r="34" fill="${dotsA}"/><path d="M15 208h328" fill="none" stroke="currentColor" stroke-width="3"/>`,
+   b:`<circle cx="${180+o*30}" cy="112" r="92" fill="${dotsB}"/>`},
+  // Me-Retriever: a video made of unequal events; a lens retrieves one of them.
+  retrieve:{a:`<path d="M15 48h84v130H15zM107 48h132v130H107zM247 48h96v130h-96z" fill="${dotsA}"/><path d="M15 208h328" fill="none" stroke="currentColor" stroke-width="3"/>`,
+   b:`<circle cx="${172+o*30}" cy="104" r="58" fill="none" stroke="currentColor" stroke-width="22"/><path d="M${214+o*30} 146l46 46" fill="none" stroke="currentColor" stroke-width="16"/><path d="M107 30h132" fill="none" stroke="currentColor" stroke-width="6"/>`},
+ };
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
+ const x=extra[kind];if(x)return {pattern,a:x.a,b:x.b};
  return {pattern,a:kind==='earth'?earth:a,b};
 }
 
