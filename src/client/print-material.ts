@@ -1,5 +1,6 @@
 import {prepareInkGroup,paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
+import {motifScreenLevel,type Motif} from '../design/motif-levels';
 import {dotPitch} from '../design/print-pipeline/index';
 import {recordScreen,clearScreen} from './screen-data';
 import {design} from '../config/design';
@@ -77,7 +78,7 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
    const fm=fieldMetrics.get(svg)||measureField(svg);if(!fm.cw||!fm.ch)return;
    const el=svg.parentElement!;
    const s=resolve(config,svg.dataset.printArea as Area,svg.dataset.printField).values,global=resolve(config).values;
-   let p=elementPress(pressSettings({...s,registration:global.registration,registrationY:global.registrationY}),svg.dataset.printField!,'field');p={...p,fast:true};
+   let p=elementPress(pressSettings({...s,registration:global.registration,registrationY:global.registrationY},motifScreenLevel(svg.dataset.printKind as Motif)),svg.dataset.printField!,'field');p={...p,fast:true};
    const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(fm.cw*dpr),h=Math.round(fm.ch*dpr),origin=fm.origin;
    const palette=getPalette(config,s.palette),proof=root!.dataset.typeProof,key=JSON.stringify([w,h,s.fieldCoverage,s.fieldOverlap,fm.pageHeight,p,global.seed,palette,origin,proof]);p=onSheet(p,global.seed,origin,fm.pageHeight);let mount=mounts.get(svg);if(!mount){mount=createPrintMount();mounts.set(svg,mount);}const ticket=mount.begin(key);if(!ticket)return;
    try{

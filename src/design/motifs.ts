@@ -4,7 +4,9 @@ import * as icqPlates from './assets/mark-icq.ts';
 import * as reexplorePlates from './assets/mark-reexplore.ts';
 import * as surgeonPlates from './assets/mark-surgeon.ts';
 const icq={a:icqPlates.plateA,b:icqPlates.plateB},reexplore={a:reexplorePlates.plateA,b:reexplorePlates.plateB},surgeon={a:surgeonPlates.plateA,b:surgeonPlates.plateB};
-export type Motif = 'orbit'|'earth'|'windows'|'sequence'|'query'|'frontier'|'scope';
+export type {Motif} from './motif-levels.ts';
+import type {Motif} from './motif-levels.ts';
+export {motifScreenLevel} from './motif-levels.ts';
 // Adaptation of the Element Lab studies, not a pixel-identical lab renderer.
 // This SVG is the source/fallback. The live screen uses the shared medium tier
 // at actual display size; legacy fieldPitch only describes this fallback.
