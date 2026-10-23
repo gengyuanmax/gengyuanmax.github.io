@@ -1,6 +1,6 @@
 import type {Settings} from './settings.ts';
 import {earthLandPath} from './assets/earth-land.ts';
-import {solidsMarkup,box,extrude,arc,disc,type Solid,type Ring,type V3} from './solids.ts';
+import {solidsMarkup,box,extrude,arc,disc,type Solid,type Ring,type V3,type Shade} from './solids.ts';
 export type Motif = 'orbit'|'earth'|'windows'|'sequence'|'query'|'frontier'|'scope';
 // Adaptation of the Element Lab studies, not a pixel-identical lab renderer.
 // This SVG is the source/fallback. The live screen uses the shared medium tier
@@ -18,7 +18,17 @@ function motifParts(s:Settings,id:string,kind:Motif){
  // the Print Labs Element Lab (no halftone). See solids.ts.
  const build:Partial<Record<Motif,()=>Solid[]>>={
   // ICQ: a video as a row of event tiles; the one the query finds rises out of it.
-  query:()=>[0,1,2,3,4].map(i=>({faces:box(i*1.25,0,0,1,1.5,i===2?2:.32)})),
+  // The reference image hovers above it as a blue card and casts its shadow on the found event.
+  query:()=>{const hs=[.22,.4,2,.3,.16],tall:Shade={top:{a:1,b:0},x:{a:0,b:1},y:{a:1,b:.75}};
+   const card:Shade={top:{a:0,b:1},x:{a:.35,b:1},y:{a:1,b:1}},shadow:Shade={top:{a:1,b:.55},x:{a:0,b:0},y:{a:0,b:0}};
+   const tiles=hs.map((h,i)=>({faces:box(i*1.25,0,0,1,1.5,h),shade:i===2?tall:undefined}));
+   const sh:V3[]=[[2.55,.3,2.001],[3.5,.3,2.001],[3.5,1.5,2.001],[2.55,1.5,2.001]];
+   // The card's picture is printed on it in the other ink: a sun and two hills.
+   const [cx,cy,cw,cd,cz]=[2.05,-.15,1.4,1.7,3.311],uv=(u:number,v:number):V3=>[cx+u*cw,cy+v*cd,cz];
+   const pic:Shade={top:{a:1,b:1},x:{a:0,b:0},y:{a:0,b:0}},up:V3=[0,0,1];
+   const sun=Array.from({length:24},(_,i)=>{const t=i/24*Math.PI*2;return uv(.72+.13*Math.cos(t),.26+.13*Math.sin(t)*cw/cd);});
+   return [...tiles.slice(0,3),{faces:[{pts:sh,n:up}],shade:shadow},{faces:box(cx,cy,3.2,cw,cd,.11),shade:card},
+    {faces:[{pts:sun,n:up},{pts:[uv(.08,.92),uv(.42,.48),uv(.7,.92)],n:up},{pts:[uv(.44,.92),uv(.7,.6),uv(.92,.92)],n:up}],shade:pic},...tiles.slice(3)];},
   // ReEXplore: a wall with a doorway, and the next frontier glimpsed through it.
   frontier:()=>{const wall:Ring=[[.4,1.5,.2],[1.3,1.5,.2],...arc(1.8,1.5,.5,Math.PI,0,14,1.5),[2.3,1.5,.2],[3.2,1.5,.2],[3.2,1.5,2.4],[.4,1.5,2.4]];
    return [{faces:box(0,0,0,4,3.2,.2)},{faces:extrude(disc(1.12,1.18,.26,.2,28),[0,0,.55])},{faces:extrude(wall,[0,.35,0])}];},
