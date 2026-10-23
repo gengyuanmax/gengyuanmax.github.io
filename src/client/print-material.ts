@@ -82,8 +82,8 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
    const dpr=Math.max(1,devicePixelRatio||1),w=Math.round(fm.cw*dpr),h=Math.round(fm.ch*dpr),origin=fm.origin;
    const palette=getPalette(config,s.palette),proof=root!.dataset.typeProof,key=JSON.stringify([w,h,s.fieldCoverage,s.fieldOverlap,fm.pageHeight,p,global.seed,palette,origin,proof]);p=onSheet(p,global.seed,origin,fm.pageHeight);let mount=mounts.get(svg);if(!mount){mount=createPrintMount();mounts.set(svg,mount);}const ticket=mount.begin(key);if(!ticket)return;
    try{
-    const originals:FieldOriginal[]=[],screenedInks=new Set<'a'|'b'>();
-    for(const ink of ['a','b'] as const){
+    const originals:FieldOriginal[]=[],screenedInks=new Set<'a'|'b'|'c'|'d'>();
+    for(const ink of ['a','b','c','d'] as const){
      const children=[...(svg.querySelector(`.he-field-${ink}`)?.children||[])];
      for(const [index,node] of children.entries()){
       const patterned=(node.getAttribute('fill')||'').startsWith('url('),e=node.cloneNode(true) as Element;
@@ -96,13 +96,13 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
       originals.push({ink,coverage:source,screened,ring,kind,index});
      }
     }
-    const {pixels,tones,screens,inkLayers}=await printField({retainInks:!!el.parentElement?.matches('.he-project-imprint,.he-artifact'),kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});if(run!==generation||!ticket.current())return;
+    const {pixels,tones,screens,inkLayers}=await printField({retainInks:!!el.parentElement?.matches('.he-project-imprint,.he-artifact'),kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),c:proof?[255,255,255]:rgb(palette.yellow),d:proof?[255,255,255]:rgb(palette.dark),paper:[255,255,255]}});if(run!==generation||!ticket.current())return;
     if(import.meta.env.DEV)originals.forEach((item,i)=>{if(item.screened)rememberTone(`${svg.dataset.printField}:${item.ink}:${item.index}`,tones[i],screens[i],w,h,dpr);});
     let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field');
     if(!canvas){canvas=document.createElement('canvas');canvas.className='he-material-field';canvas.setAttribute('aria-hidden','true');el.append(canvas);}
     const prepared=pixelSurface(pixels,w,h);
     ticket.commit(()=>{publishCanvas(canvas!,prepared);el.dataset.materialReady='true';if(inkLayers)fieldInks.set(svg,{layers:inkLayers,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});});
-    recordScreen(canvas,p,[...screenedInks].join('') as 'a'|'b'|'ab');
+    recordScreen(canvas,p,[...screenedInks].filter(i=>i==='a'||i==='b').join('') as 'a'|'b'|'ab');
     canvas.dataset.pressRecipe=JSON.stringify({level:p.level,shapes:p.shapes,pitch:p.pitch,angles:p.angles,offset:p.offset,origin,tone:p.tone,units:'CSS px',materialVersion});
 
    }catch(error){console.warn('Keeping pre-rendered print fallback.',error);}

@@ -3,7 +3,9 @@ import {earthLandPath} from './assets/earth-land.ts';
 import * as icqPlates from './assets/mark-icq.ts';
 import * as reexplorePlates from './assets/mark-reexplore.ts';
 import * as surgeonPlates from './assets/mark-surgeon.ts';
-const icq={a:icqPlates.plateA,b:icqPlates.plateB},reexplore={a:reexplorePlates.plateA,b:reexplorePlates.plateB},surgeon={a:surgeonPlates.plateA,b:surgeonPlates.plateB};
+type Plates={a:string;b:string;c?:string;d?:string};
+const platesOf=(m:Record<string,string>):Plates=>({a:m.plateA,b:m.plateB,c:m.plateC,d:m.plateD});
+const icq=platesOf(icqPlates),reexplore=platesOf(reexplorePlates),surgeon=platesOf(surgeonPlates);
 export type {Motif} from './motif-levels.ts';
 import type {Motif} from './motif-levels.ts';
 export {motifScreenLevel} from './motif-levels.ts';
@@ -21,22 +23,24 @@ function motifParts(s:Settings,id:string,kind:Motif){
  const b=kind==='windows'?`<circle cx="${174+o*30}" cy="115" r="94" fill="${dotsB}"/>`:kind==='sequence'?`<path d="M27 106h306v16H27z"/><circle cx="${132+o*30}" cy="110" r="70" fill="${dotsB}"/><path d="M46 35v18m118-18v18m118-18v18" stroke="currentColor" stroke-width="2"/>`:`<circle cx="${137-o*35}" cy="112" r="73" fill="none" stroke="currentColor" stroke-width="26"/><path d="M40 192h236" stroke="currentColor" stroke-width="3"/>`;
  // Project marks modelled in Blender (design/marks/*.py) and rendered to two
  // ink-density plates by design/marks/render.py. The pipeline only prints them.
- const plates:Partial<Record<Motif,{a:string;b:string}>>={query:icq,frontier:reexplore,scope:surgeon};
+ const plates:Partial<Record<Motif,Plates>>={query:icq,frontier:reexplore,scope:surgeon};
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
- const plate=plates[kind];if(plate){const img=(href:string)=>`<image data-print-tone="source" href="${href}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`;return {pattern,a:img(plate.a),b:img(plate.b)};}
- return {pattern,a:kind==='earth'?earth:a,b};
+ const plate=plates[kind];if(plate){const img=(href:string)=>`<image data-print-tone="source" href="${href}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`;return {pattern,a:img(plate.a),b:img(plate.b),c:plate.c?img(plate.c):'',d:plate.d?img(plate.d):''};}
+ return {pattern,a:kind==='earth'?earth:a,b,c:'',d:''};
 }
 
 export function motifMarkup(s:Settings,id:string,kind:Motif){
- const {pattern,a,b}=motifParts(s,id,kind);
- return `<defs>${pattern}</defs><g><g class="he-field-a">${a}</g><g class="he-field-b" style="transform:translate(${s.registration}px,${s.registrationY}px)">${b}</g></g>`;
+ const {pattern,a,b,c,d}=motifParts(s,id,kind);
+ // Accent plates (c yellow, d dark) are drawn first so the fallback reads like the print.
+ const accent=(ink:'c'|'d',m:string,x:number,y:number)=>m?`<g class="he-field-${ink}" style="transform:translate(${x}px,${y}px)">${m}</g>`:'';
+ return `<defs>${pattern}</defs><g>${accent('c',c,s.yellowX,s.yellowY)}<g class="he-field-a">${a}</g><g class="he-field-b" style="transform:translate(${s.registration}px,${s.registrationY}px)">${b}</g>${accent('d',d,s.darkX,s.darkY)}</g>`;
 }
 /** Split only our generated XML siblings, retaining nested groups unchanged. */
 export function motifOriginals(s:Settings,id:string,kind:Motif){
- const parts=motifParts(s,id,kind),result:{ink:'a'|'b';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number}[]=[];
- for(const ink of ['a','b'] as const){let depth=0,start=0,index=0;
+ const parts=motifParts(s,id,kind),result:{ink:'a'|'b'|'c'|'d';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number}[]=[];
+ for(const ink of ['a','b','c','d'] as const){let depth=0,start=0,index=0;if(!parts[ink])continue;
   for(const match of parts[ink].matchAll(/<[^>]+>/g)){
    const tag=match[0];if(!depth)start=match.index!;
    if(tag.startsWith('</'))depth--;else if(!tag.endsWith('/>'))depth++;

@@ -87,4 +87,4 @@ gx, gy = np.meshgrid(np.arange(W, dtype=np.float32), np.arange(H, dtype=np.float
 fx, fy = gx + field(), gy + field()
 A, B = (cv2.remap(p, fx, fy, cv2.INTER_LINEAR) for p in (A, B))
 cv2.imwrite(str(here / 'sources' / 'surgeon-layout.png'), cv2.resize(photo, (W * 2, H * 2), interpolation=cv2.INTER_CUBIC).astype(np.uint8))
-write('surgeon', A, B, 'design/marks/surgeon_scan.py')
+write('surgeon', {'a': A, 'b': B}, 'design/marks/surgeon_scan.py')

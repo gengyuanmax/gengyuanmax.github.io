@@ -10,7 +10,7 @@ export async function staticFieldPreview(settings,id,kind,palette,sheetSeed){
  }));
  const p=onSheet(elementPress(pressSettings(settings,motifScreenLevel(kind)),id,'field'),sheetSeed,origin);
  const rgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
- const {pixels}=renderFieldOriginals(originals,width,height,scale,origin,p,settings,{a:rgb(palette.secondary),b:rgb(palette.primary),paper:[255,255,255]});
+ const {pixels}=renderFieldOriginals(originals,width,height,scale,origin,p,settings,{a:rgb(palette.secondary),b:rgb(palette.primary),c:rgb(palette.yellow??'#dfba29'),d:rgb(palette.dark??'#2c2a2e'),paper:[255,255,255]});
  const png=await sharp(Buffer.from(pixels),{raw:{width,height,channels:4}}).png().toBuffer();
  return `data:image/png;base64,${png.toString('base64')}`;
 }

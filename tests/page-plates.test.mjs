@@ -8,7 +8,7 @@ import {defaults} from '../src/design/settings.ts';
 test('the page plate list is the single source of angle, shape and registration',()=>{
  const s={...defaults,registration:2,registrationY:1,yellowX:-1,yellowY:1.5,yellowAngle:0};
  const plates=pagePlates(s),p=pressSettings(s,'medium');
- assert.deepEqual(plates.map(x=>x.ink),['a','b','c']);
+ assert.deepEqual(plates.map(x=>x.ink),['a','b','c','d']);
  assert.deepEqual(plates.find(x=>x.ink===referencePlate).registration,{x:0,y:0});
  for(const plate of plates){
   assert.equal(p.angles[plate.ink],plate.angle);assert.equal(p.shapes[plate.ink],plate.shape);
