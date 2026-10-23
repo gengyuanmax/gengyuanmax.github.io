@@ -14,3 +14,5 @@ dist/
 .astro/
 .npm-cache/
 .design/
+design/marks/out/
+__pycache__/
