@@ -89,8 +89,9 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
       if(patterned)e.setAttribute('fill','black');
       const source=await svgCoverage(e.outerHTML,w,h);if(run!==generation||!ticket.current())return;
       const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
-      const screened=patterned||ring;if(screened)screenedInks.add(ink);
-      const kind=e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
+      const fromTool=e.tagName==='image'&&e.getAttribute('data-print-tone')==='source';
+      const screened=patterned||ring||fromTool;if(screened)screenedInks.add(ink);
+      const kind=fromTool?'source':e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
       originals.push({ink,coverage:source,screened,ring,kind,index});
      }
     }

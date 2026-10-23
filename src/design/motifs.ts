@@ -23,7 +23,7 @@ function motifParts(s:Settings,id:string,kind:Motif){
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
- const plate=plates[kind];if(plate){const img=(href:string)=>`<image href="${href}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`;return {pattern,a:img(plate.a),b:img(plate.b)};}
+ const plate=plates[kind];if(plate){const img=(href:string)=>`<image data-print-tone="source" href="${href}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`;return {pattern,a:img(plate.a),b:img(plate.b)};}
  return {pattern,a:kind==='earth'?earth:a,b};
 }
 
@@ -33,7 +33,7 @@ export function motifMarkup(s:Settings,id:string,kind:Motif){
 }
 /** Split only our generated XML siblings, retaining nested groups unchanged. */
 export function motifOriginals(s:Settings,id:string,kind:Motif){
- const parts=motifParts(s,id,kind),result:{ink:'a'|'b';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane';index:number}[]=[];
+ const parts=motifParts(s,id,kind),result:{ink:'a'|'b';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number}[]=[];
  for(const ink of ['a','b'] as const){let depth=0,start=0,index=0;
   for(const match of parts[ink].matchAll(/<[^>]+>/g)){
    const tag=match[0];if(!depth)start=match.index!;
@@ -41,7 +41,8 @@ export function motifOriginals(s:Settings,id:string,kind:Motif){
    if(depth)continue;
    let markup=parts[ink].slice(start,match.index!+tag.length);const circle=markup.startsWith('<circle'),patterned=/^<[^>]*fill="url\(/.test(markup),ring=circle&&/^<[^>]*fill="none"/.test(markup)&&Number(markup.match(/stroke-width="([^"]+)"/)?.[1])>=6;
    if(patterned)markup=markup.replace(/fill="url\([^)]*\)"/,'fill="black"');
-   result.push({ink,markup,screened:patterned||ring,ring,kind:markup.includes('data-print-tone="sphere"')||circle&&!ring?'sphere':'plane',index:index++});
+   const source=markup.startsWith('<image')&&markup.includes('data-print-tone="source"');
+   result.push({ink,markup,screened:patterned||ring||source,ring,kind:source?'source':markup.includes('data-print-tone="sphere"')||circle&&!ring?'sphere':'plane',index:index++});
   }
  }return result;
 }

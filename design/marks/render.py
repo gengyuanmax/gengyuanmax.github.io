@@ -39,25 +39,33 @@ def ink(label, top, x, y):
     nt.links.new(a2.outputs[0], em.inputs['Color']); nt.links.new(em.outputs[0], out.inputs[0])
     return m
 
-target = scene_mod.build(ink)
-
-# Isometric orthographic camera, auto-framed to the scene with a fixed margin.
-cam = bpy.data.objects.new('cam', bpy.data.cameras.new('cam')); sc.collection.objects.link(cam); sc.camera = cam
-cam.data.type = 'ORTHO'
-cam.rotation_euler = (math.radians(54.7356), 0, math.radians(135))
-d = 30
-cam.location = (target[0] + d*.57735, target[1] + d*.57735, target[2] + d*.57735)
-sc.render.resolution_x, sc.render.resolution_y = W, H
-bpy.context.view_layer.update()
+built = scene_mod.build(ink)
+spec = built if isinstance(built, dict) else {'target': built}
 from mathutils import Vector
-inv = cam.matrix_world.inverted()
-pts = [inv @ (o.matrix_world @ Vector(c)) for o in sc.objects if o.type == 'MESH' for c in o.bound_box]
-xs, ys = [p.x for p in pts], [p.y for p in pts]
-margin = 1.1
-w, h = (max(xs)-min(xs))*margin, (max(ys)-min(ys))*margin
-cam.data.ortho_scale = max(w, h*W/H)
-cam.data.shift_x = (max(xs)+min(xs))/2/cam.data.ortho_scale
-cam.data.shift_y = (max(ys)+min(ys))/2/cam.data.ortho_scale
+cam = bpy.data.objects.new('cam', bpy.data.cameras.new('cam')); sc.collection.objects.link(cam); sc.camera = cam
+sc.render.resolution_x, sc.render.resolution_y = W, H
+if 'camera' in spec:
+    # Scene-authored perspective camera.
+    c = spec['camera']; cam.data.type = 'PERSP'; cam.data.lens = c.get('lens', 35)
+    cam.location = c['location']
+    cam.rotation_euler = (Vector(c['look_at']) - Vector(c['location'])).to_track_quat('-Z', 'Y').to_euler()
+    cam.data.shift_x, cam.data.shift_y = c.get('shift', (0, 0))
+else:
+    # Isometric orthographic camera, auto-framed to the scene with a fixed margin.
+    target = spec['target']
+    cam.data.type = 'ORTHO'
+    cam.rotation_euler = (math.radians(54.7356), 0, math.radians(135))
+    d = 30
+    cam.location = (target[0] + d*.57735, target[1] + d*.57735, target[2] + d*.57735)
+    bpy.context.view_layer.update()
+    inv = cam.matrix_world.inverted()
+    pts = [inv @ (o.matrix_world @ Vector(c)) for o in sc.objects if o.type == 'MESH' for c in o.bound_box]
+    xs, ys = [p.x for p in pts], [p.y for p in pts]
+    margin = 1.1
+    w, h = (max(xs)-min(xs))*margin, (max(ys)-min(ys))*margin
+    cam.data.ortho_scale = max(w, h*W/H)
+    cam.data.shift_x = (max(xs)+min(xs))/2/cam.data.ortho_scale
+    cam.data.shift_y = (max(ys)+min(ys))/2/cam.data.ortho_scale
 
 sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'; sc.cycles.samples = 64
 sc.view_settings.view_transform = 'Standard'; sc.render.film_transparent = True
@@ -65,11 +73,29 @@ sc.world = bpy.data.worlds.new('w')
 out = here / 'out' / f'{name}-render.png'; out.parent.mkdir(exist_ok=True); sc.render.filepath = str(out); sc.render.image_settings.color_mode = 'RGBA'
 bpy.ops.render.render(write_still=True)
 
+shadow = None
+if 'shadow' in spec:
+    # Second pass: the floor becomes a shadow catcher lit by a sun, everything
+    # else a holdout, so the alpha of this render is exactly the cast shadow.
+    sh = spec['shadow']
+    plain = bpy.data.materials.new('plain')   # catcher needs a lit (non-emission) surface
+    for o in sc.objects:
+        if o.type == 'MESH':
+            o.data.materials.clear(); o.data.materials.append(plain)
+            o.is_holdout = o.name != sh['catcher']; o.is_shadow_catcher = o.name == sh['catcher']
+    sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN')); sc.collection.objects.link(sun)
+    sun.data.angle = math.radians(sh.get('softness', .5)); sun.rotation_euler = [math.radians(v) for v in sh['sun']]
+    shadow_out = here / 'out' / f'{name}-shadow.png'; sc.render.filepath = str(shadow_out)
+    bpy.ops.render.render(write_still=True)
+    shadow = np.asarray(Image.open(shadow_out).convert('RGBA')).astype(np.float32)[..., 3] / 255
+
 rgba = np.asarray(Image.open(out).convert('RGBA')).astype(np.float32) / 255
 alpha = rgba[..., 3]
 dest = here / 'out'; dest.mkdir(parents=True, exist_ok=True)
 for ch, plate in ((0, 'a'), (1, 'b')):
-    density = np.clip(rgba[..., ch] * alpha, 0, 1)   # premultiplied colour = density × coverage
+    density = np.clip(rgba[..., ch] * alpha, 0, 1)   # straight colour × coverage = density
+    if shadow is not None:
+        density = np.maximum(density, shadow * spec['shadow']['ink'][ch])
     img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(density * 255)
     Image.fromarray(img).save(dest / f'{name}-{plate}.png', optimize=True)
 # The print pipeline reads plates as data URIs in both Node and the browser.
