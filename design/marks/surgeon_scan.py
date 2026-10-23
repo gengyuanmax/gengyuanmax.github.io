@@ -67,14 +67,24 @@ for r, w in zip(rows, widths):
     h = int(round(r['length'] * scale))
     m = cv2.resize(r['mask'].T.astype(np.float32), (w, h), interpolation=cv2.INTER_AREA)
     g = cv2.resize(np.ascontiguousarray(r['gray'].T), (w, h), interpolation=cv2.INTER_AREA).astype(np.float32)
-    # Metal tone -> ink: bright steel prints lighter, reflections and shadows darker.
-    lo, hi = np.percentile(g[m > .5], [5, 95])
-    t = 1 - np.clip((g - lo) / max(1, hi - lo), 0, 1)
-    dens = m * (.62 + .38 * t)   # never back to paper inside the steel
+    # Riso illustration treatment (after the knolling print): flat ink fill, the
+    # steel's main contours drawn back in as paper lines, a slight hand wobble.
+    edges = cv2.Canny(cv2.GaussianBlur(g.astype(np.uint8), (0, 0), 1.6), 40, 110) / 255.
+    inner = cv2.erode((m > .5).astype(np.uint8), np.ones((5, 5), np.uint8))
+    lines = cv2.dilate(edges * inner, np.ones((2, 2), np.uint8))
+    dens = m * (1 - .9 * lines)   # solid ink, as a Riso flat
     region = photo[MARGIN:MARGIN + h, x:x + w]; region[:] = region * (1 - m) + g * m
     plate = A if r['ink'] == 'a' else B
     plate[MARGIN:MARGIN + h, x:x + w] = np.maximum(plate[MARGIN:MARGIN + h, x:x + w], dens)
     x += w + GAP
 
+# Hand wobble: one smooth displacement field (a few px) shared by both plates.
+rng = np.random.default_rng(3)
+def field():
+    f = cv2.resize(rng.standard_normal((9, 15)).astype(np.float32), (W, H), interpolation=cv2.INTER_CUBIC)
+    return f / np.abs(f).max() * 2.2
+gx, gy = np.meshgrid(np.arange(W, dtype=np.float32), np.arange(H, dtype=np.float32))
+fx, fy = gx + field(), gy + field()
+A, B = (cv2.remap(p, fx, fy, cv2.INTER_LINEAR) for p in (A, B))
 cv2.imwrite(str(here / 'sources' / 'surgeon-layout.png'), cv2.resize(photo, (W * 2, H * 2), interpolation=cv2.INTER_CUBIC).astype(np.uint8))
 write('surgeon', A, B, 'design/marks/surgeon_scan.py')
