@@ -10,7 +10,7 @@ export const printObjects = {
  'mark-icq': {area:'research',kind:'query',label:'Research · ICQ 查询'},
  'mark-reexplore': {area:'research',kind:'frontier',label:'Research · ReEXplore 前沿'},
  'mark-surgeon': {area:'research',kind:'scope',label:'Research · Surgeon 内镜视野'},
- 'mark-meretriever': {area:'research',kind:'retrieve',label:'Research · Me-Retriever 检索'},
+ 'mark-meretriever': {area:'research',kind:'sequence',label:'Research · Me-Retriever 检索'},
  'mark-printlab': {area:'artifacts',kind:'orbit',label:'Artifacts · Print Lab 底形'},
  'mark-paper': {area:'artifacts',kind:'windows',label:'Artifacts · Mosaic 底形'},
  'mark-wikitilo': {area:'artifacts',kind:'earth',label:'Artifacts · WikiTiLo 地球'},
