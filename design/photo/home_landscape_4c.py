@@ -1,7 +1,7 @@
 """Four-ink separation of the home "mountain and person" image, as a Riso print is made:
 from the inks and their overprints, not from the photo's continuous colour.
 
-python3 design/photo/home_landscape_4c.py  ->  src/assets/home/landscape-4c/{a,b,c,d}.png
+python3 design/photo/home_landscape_4c.py  ->  src/assets/home/landscape-4c/{,figure-}{a,b,c,d}.png
 
 Inks: a vermilion, b blue, c yellow, d dark. Every plate uses only four levels,
 0 / 35 / 70 / 100 %; a colour on the sheet is one of those levels per ink, overprinted
@@ -13,7 +13,8 @@ the region's colours come from a small, fixed overprint palette:
   rock    blue tints, dark only in the deepest shadow   -> a cool blue mountain
   forest  blue over yellow                              -> green
   person  vermilion over yellow for skin and jacket, dark for hair and shirt, blue plaid;
-          the head separately: solid dark hair, dark features, skin in two flat tones
+          the head separately: solid dark hair and features, skin in four flat tones;
+          the person has plates of his own, printed on the 3px figure screen
 (the swatch lists are SWATCHES below)
 
 The photo supplies only shapes and light/dark: each region is reduced to a few colours
@@ -109,7 +110,7 @@ SWATCHES = {
     'rock':   ['paper', 'b35', 'b70', 'b100', 'b100+d35'],
     'forest': ['b35+c35', 'b35+c70', 'b70+c70', 'b100+c35', 'b100+d70'],
     'person': ['paper', 'c35', 'a35+c35', 'a35+c70', 'a70+d35', 'b70', 'd70', 'd100'],
-    'head':   ['d100', 'd100', 'a35+c70', 'a35+c35'],             # hair, features (solid, so small shapes stay crisp), skin shadow, skin light
+    'skin':   ['a70+c70', 'a35+c70', 'a35+c35', 'c35'],           # dark -> light; hair and features print d100
 }
 for name, mask, n, mode in [('rock', rock, 6, 9), ('forest', forest, 5, 7)]:
     labels, dens = to_swatches(shaped, mask, SWATCHES[name], n, seed=len(name))
@@ -143,12 +144,12 @@ pd = np.zeros((ph, pw, 4), np.float32)
 labels, dens = to_swatches(prgb, body, SWATCHES['person'], 8, seed=7)
 place(dens, flatten(labels, body, 9), body, pd)
 
-# Head: few, large shapes. Hair is the largest dark, neutral region of the head with its
-# highlights closed in (scikit-image morphology): solid dark. The face is the rest:
-# its locally dark marks (brows, eyes, nostrils, mouth) print solid dark, and the
-# skin splits into light and shadow at its Otsu threshold.
-from skimage.filters import threshold_otsu
-hrgb = np.clip(restoration.denoise_tv_chambolle(person[..., :3], weight=.1, channel_axis=-1), 0, 1)
+# Head: small shapes, printed on the finer figure screen. Hair is the largest dark, neutral
+# region of the head with its highlights closed in (scikit-image morphology). The face is the
+# rest: the skin takes four tones from multi-level Otsu thresholds, and locally dark marks
+# (brows, eyes, nostrils, mouth, from an adaptive threshold) print solid dark on top.
+from skimage.filters import threshold_local, threshold_multiotsu
+hrgb = np.clip(restoration.denoise_tv_chambolle(person[..., :3], weight=.05, channel_axis=-1), 0, 1)
 hlab = color.rgb2lab(hrgb); hL = hlab[..., 0]; hC = np.hypot(hlab[..., 1], hlab[..., 2])
 dark = head & (hL < 40) & (hC < 16)          # hair is dark and neutral; face shadows are dark but warm
 dark = morphology.remove_small_holes(morphology.closing(dark, morphology.disk(max(2, ph // 160))), (ph // 25) ** 2)
@@ -156,29 +157,30 @@ lbl = measure.label(dark)
 hair = lbl == (max(measure.regionprops(lbl), key=lambda r: r.area).label if lbl.max() else -1)
 face = head & ~hair
 fL = hL[face]
-from skimage.filters import threshold_local
-# Features are locally dark (brows, eyes, nostrils, mouth): an adaptive threshold finds them
-# relative to the skin around them, not to the whole face.
-block = (ph // 24) | 1
-features = face & (hL < threshold_local(hL, block, offset=6)) & (hL < np.percentile(fL, 45))
-features = morphology.remove_small_objects(morphology.erosion(features, morphology.disk(1)), max(4, (ph // 300) ** 2))
-skin_cut = threshold_otsu(fL[fL >= np.percentile(fL, 13)])
-HEAD = SWATCHES['head']   # hair, features, skin shadow, skin light
+features = face & (hL < threshold_local(hL, (ph // 30) | 1, offset=5)) & (hL < np.percentile(fL, 50))
+features = morphology.remove_small_objects(features, max(3, (ph // 400) ** 2))
+SKIN = SWATCHES['skin']                                     # dark -> light
+cuts = threshold_multiotsu(fL, classes=len(SKIN))
 hl = np.full(head.shape, -1, np.int32)
-hl[hair] = 0; hl[face] = np.where(hL[face] < skin_cut, 2, 3)
-hdens = np.array([swatch(sp) for sp in HEAD])
-hl = flatten(hl, head, 7)
-hl[morphology.binary_dilation(features, morphology.disk(1)) & face] = 1          # features go on after the clean-up, so the mode filter cannot erase them
+hl[face] = np.digitize(hL[face], cuts)                      # 0 darkest .. 3 lightest
+hl[hair] = len(SKIN)
+hdens = np.array([swatch(sp) for sp in SKIN + ['d100']])
+hl = flatten(hl, head, 3)
+hl[features] = len(SKIN)                                    # after the clean-up, so it cannot erase them
 place(hdens, hl, head, pd)
-# Hard edge, as a cut plate: the matte is thresholded, not blended.
+
+# The person is cut out of the landscape plates and kept on plates of his own: he prints
+# on the figure screen (3px), the landscape on the image screen (4px).
 x0, x1 = max(px, 0), min(px + pw, W); sx = x0 - px
-sub = plates[py:py + ph, x0:x1]; a = inside[:, sx:sx + x1 - x0, None]
-plates[py:py + ph, x0:x1] = np.where(a, pd[:, sx:sx + x1 - x0], sub)
+a = inside[:, sx:sx + x1 - x0, None]
+plates[py:py + ph, x0:x1] = np.where(a, 0, plates[py:py + ph, x0:x1])
+figure = np.zeros_like(plates); figure[py:py + ph, x0:x1] = np.where(a, pd[:, sx:sx + x1 - x0], 0)
 
 # ---------------------------------------------------------------- output
 out = root / 'src' / 'assets' / 'home' / 'landscape-4c'; out.mkdir(parents=True, exist_ok=True)
-for i, ink in enumerate(INKS):
-    img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(np.clip(plates[..., i], 0, 1) * 255)
-    Image.fromarray(img).save(out / f'{ink}.png', optimize=True)
-used = {tuple(v) for v in plates.reshape(-1, 4)[::97]}
+for prefix, layer in (('', plates), ('figure-', figure)):
+    for i, ink in enumerate(INKS):
+        img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(np.clip(layer[..., i], 0, 1) * 255)
+        Image.fromarray(img).save(out / f'{prefix}{ink}.png', optimize=True)
+used = {tuple(v) for v in (plates + figure).reshape(-1, 4)[::97]}
 print('distinct ink combinations on the sheet (sampled):', len(used))

@@ -2,7 +2,7 @@ import '../styles/screen-audit.css';
 import {design} from '../config/design';
 import {resolve,type DesignConfig} from '../design/settings';
 import {screen,type ScreenLevel} from '../design/screen';
-const labels={coarse:'字级',medium:'图像',fine:'平网'};
+const labels={coarse:'字级',medium:'图像',figure:'人物',fine:'平网'};
 export function initScreenAudit(root:HTMLElement){
  let config:DesignConfig=design,raf=0,last='';
  const overlay=document.createElement('div');overlay.className='he-screen-audit-layer';overlay.setAttribute('aria-hidden','true');root.append(overlay);

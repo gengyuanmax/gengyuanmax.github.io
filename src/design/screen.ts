@@ -2,8 +2,10 @@
  * The em tier follows type; actual rendering snaps its pitch to whole CSS px.
  * Pixel alignment reduces sampling variation; it cannot eliminate moiré at all
  * zoom levels, DPRs, or scaled previews. All current production screens use AM. */
-export const screenScale = {fine:2,medium:4,coarseEm:1/16} as const;
-export type ScreenLevel = 'fine'|'medium'|'coarse';
+/** figure (3px, user 2026-10-25): people in printed images. Faces need more than 4px gives,
+ * and 2px loses the visible dot. Not for geometry, grounds or type. */
+export const screenScale = {fine:2,figure:3,medium:4,coarseEm:1/16} as const;
+export type ScreenLevel = 'fine'|'figure'|'medium'|'coarse';
 export type ScreenInk = 'a'|'b';
 export type ScreenShape = 'round'|'square';
 export interface ScreenSettings {primaryAngle:number;secondaryAngle:number;primaryDotShape:string;secondaryDotShape:string;}
@@ -20,7 +22,7 @@ export function typeScreenLevel(fontSize:number):ScreenLevel|null{
  return Math.round(fontSize*screenScale.coarseEm)>=screenScale.medium*1.5?'coarse':'fine';
 }
 export function screenTokens(s:ScreenSettings){
- return {'--screen-fine':`${screenScale.fine}px`,'--screen-medium':`${screenScale.medium}px`,'--screen-coarse':`${screenScale.coarseEm}em`,
+ return {'--screen-fine':`${screenScale.fine}px`,'--screen-figure':`${screenScale.figure}px`,'--screen-medium':`${screenScale.medium}px`,'--screen-coarse':`${screenScale.coarseEm}em`,
   '--screen-angle-a':`${s.secondaryAngle}deg`,'--screen-angle-b':`${s.primaryAngle}deg`,
   '--screen-shape-a':s.secondaryDotShape,'--screen-shape-b':s.primaryDotShape};
 }

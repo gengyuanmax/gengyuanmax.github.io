@@ -13,10 +13,10 @@ const sm=(e0,e1,x)=>{const t=Math.max(0,Math.min(1,(x-e0)/(e1-e0)));return t*t*(
 function boxBlur(a,W,H,r){const t=new Float32Array(W*H),o=new Float32Array(W*H);
  for(let y=0;y<H;y++){let acc=0;for(let x=-r;x<W;x++){if(x+r<W)acc+=a[y*W+x+r];if(x-r-1>=0)acc-=a[y*W+x-r-1];if(x>=0)t[y*W+x]=acc/(2*r+1);}}
  for(let x=0;x<W;x++){let acc=0;for(let y=-r;y<H;y++){if(y+r<H)acc+=t[(y+r)*W+x];if(y-r-1>=0)acc-=t[(y-r-1)*W+x];if(y>=0)o[y*W+x]=acc/(2*r+1);}}return o;}
-async function fourInkTones(W,H){
+async function fourInkTones(W,H,prefix=''){
  const out={};
  for(const ink of ['a','b','c','d']){
-  const {data,info}=await sharp(new URL(`../${L.fourInkPlates}/${ink}.png`,import.meta.url).pathname).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  const {data,info}=await sharp(new URL(`../${L.fourInkPlates}/${prefix}${ink}.png`,import.meta.url).pathname).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   if(info.width!==W||info.height!==H)throw new Error(`Four-ink plate ${ink} is ${info.width}×${info.height}, expected ${W}×${H}; re-run design/photo/home_landscape_4c.py`);
   out[ink]=Float32Array.from({length:W*H},(_,i)=>data[i*4+3]/255);
  }
@@ -48,6 +48,12 @@ export async function renderHomeLandscape(config,{separation=L.separation,output
  // Four-ink separation (design/photo/home_landscape_4c.py) replaces the two-ink one when selected.
  const tones=separation==='four-ink'?await fourInkTones(W,H):{a:ta,b:tb};
  const plates=Object.entries(tones).map(([ink,tone])=>({ink,coverage:screenOriginal(`home-landscape-${ink}`,{kind:'photo',mask,tone},W,H,ink,press,k,L.origin)}));
+ if(separation==='four-ink'){
+  // The person has plates of his own on the figure screen; same inks, merged per ink by the composite.
+  const figurePress={...press,pitch:pressSettings(s,L.figureScreen,L.displaySize).pitch,level:L.figureScreen};
+  for(const [ink,tone] of Object.entries(await fourInkTones(W,H,'figure-')))
+   plates.push({ink,coverage:screenOriginal(`home-figure-${ink}`,{kind:'photo',mask,tone},W,H,ink,figurePress,k,L.origin)});
+ }
  const inks={a:rgb(p.secondary),b:rgb(p.primary),c:rgb(p.yellow),d:rgb(p.dark),paper:[255,255,255]};
  const rgba=paintMaterial(plates,W,H,inks,press,k);
  await sharp(Buffer.from(rgba),{raw:{width:W,height:H,channels:4}}).removeAlpha().png({compressionLevel:9,palette:true,colors:separation==='four-ink'?160:64,dither:0}).toFile(output);

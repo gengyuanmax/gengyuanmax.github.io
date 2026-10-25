@@ -21,4 +21,6 @@ export const homeLandscape={
  fourInkPlates:'src/assets/home/landscape-4c',
  /** Four inks keep the landscape's medium tier: the dots should read (user, 2026-10-25). */
  fourInkScreen:'medium' as const,
+ /** The person prints on the figure screen (3px): faces need it (user, 2026-10-25). */
+ figureScreen:'figure' as const,
 };
