@@ -13,7 +13,6 @@ per ink. The photo is first reduced to a few hundred colours (scikit-learn k-mea
 so only those are solved. Region recipes only set the per-ink costs:
   mountain  dark ink is expensive (it would turn the rock grey and heavy);
   person    blue is expensive on skin and jacket, dark is cheap for hair and the black shirt.
-The person's matte is refined with rembg so the cutout's orange halo does not print.
 """
 import json, pathlib, subprocess
 import numpy as np
@@ -98,17 +97,13 @@ plates[top:] = m * fade[..., None]
 cut = Image.open(root / L['personSource']).convert('RGBA')
 ph = round(H * L['placement']['height']); pw = round(ph * cut.width / cut.height)
 px, py = round(W * L['placement']['x'] - pw / 2), H - ph
-from rembg import remove, new_session
-on_white = Image.alpha_composite(Image.new('RGBA', cut.size, 'white'), cut).convert('RGB')
-refined = np.minimum(np.asarray(cut)[..., 3], np.asarray(remove(on_white, session=new_session('isnet-general-use'), only_mask=True)))
-from scipy import ndimage
-refined = ndimage.grey_erosion(refined, size=(7, 7))   # pull the matte inside the old cutout's warm fringe
-cut = Image.fromarray(np.dstack([np.asarray(cut)[..., :3], refined])).resize((pw, ph), Image.LANCZOS)
+cut = cut.resize((pw, ph), Image.LANCZOS)   # the approved cutout's own matte, uncut
 person = np.asarray(cut, np.float32) / 255
 alpha = person[..., 3:4]
 plab = color.rgb2lab(person[..., :3]); plab[..., 0] = exposure.equalize_adapthist(plab[..., 0] / 100, clip_limit=.015) * 100
 prgb = np.clip(color.lab2rgb(plab), 0, 1)   # local contrast so the face keeps its features
-pd = separate(poster(prgb, sat=1.2, gamma=1.1).reshape(-1, 3), cost=np.array([.03, .5, .03, .06]), n_colors=14, seed=7).reshape(ph, pw, 4)
+# Few flat tones (posterised), so the screen, not photographic gradation, carries the image.
+pd = separate(poster(prgb, sat=1.2, gamma=1.1).reshape(-1, 3), cost=np.array([.03, .5, .03, .06]), n_colors=7, seed=7).reshape(ph, pw, 4)
 x0, x1 = max(px, 0), min(px + pw, W); sx = x0 - px
 region = plates[py:py + ph, x0:x1]
 plates[py:py + ph, x0:x1] = region * (1 - alpha[:, sx:sx + x1 - x0]) + pd[:, sx:sx + x1 - x0] * alpha[:, sx:sx + x1 - x0]
