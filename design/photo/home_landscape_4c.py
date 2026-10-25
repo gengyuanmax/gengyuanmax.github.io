@@ -12,7 +12,8 @@ the region's colours come from a small, fixed overprint palette:
   clouds  paper
   rock    blue tints, dark only in the deepest shadow   -> a cool blue mountain
   forest  blue over yellow                              -> green
-  person  vermilion over yellow for skin and jacket, dark for hair and shirt, blue plaid
+  person  vermilion over yellow for skin and jacket, dark for hair and shirt, blue plaid;
+          the head separately: solid dark hair, dark features, skin in two flat tones
 (the swatch lists are SWATCHES below)
 
 The photo supplies only shapes and light/dark: each region is reduced to a few colours
@@ -107,7 +108,8 @@ m = np.zeros((BH, W, 4), np.float32)
 SWATCHES = {
     'rock':   ['paper', 'b35', 'b70', 'b100', 'b100+d35'],
     'forest': ['b35+c35', 'b35+c70', 'b70+c70', 'b100+c35', 'b100+d70'],
-    'person': ['paper', 'c35', 'a35+c35', 'a35+c70', 'a70+c70', 'a70+d35', 'b70', 'd70', 'd100'],
+    'person': ['paper', 'c35', 'a35+c35', 'a35+c70', 'a70+d35', 'b70', 'd70', 'd100'],
+    'head':   ['d100', 'd100', 'a35+c70', 'a35+c35'],             # hair, features (solid, so small shapes stay crisp), skin shadow, skin light
 }
 for name, mask, n, mode in [('rock', rock, 6, 9), ('forest', forest, 5, 7)]:
     labels, dens = to_swatches(shaped, mask, SWATCHES[name], n, seed=len(name))
@@ -129,9 +131,45 @@ person = np.asarray(cut, np.float32) / 255
 alpha = person[..., 3]; inside = alpha > .5
 plab = color.rgb2lab(person[..., :3]); plab[..., 0] = exposure.equalize_adapthist(plab[..., 0] / 100, clip_limit=.015) * 100
 prgb = smooth_rgb(np.clip(color.lab2rgb(plab), 0, 1))
-labels, dens = to_swatches(prgb, inside, SWATCHES['person'], 8, seed=7)
-labels = flatten(labels, inside, 5)
-pd = np.zeros((ph, pw, 4), np.float32); place(dens, labels, inside, pd)
+# Head and body are drawn separately. The head ends at the neck: the narrowest row of
+# the matte below its top (scipy.signal.find_peaks on the smoothed width profile).
+from scipy.signal import find_peaks
+width = ndimage.uniform_filter1d(inside.sum(1).astype(float), max(3, ph // 70))
+crown = int(np.nonzero(width)[0][0]); search = width[crown:crown + ph // 2]
+neck = crown + int(find_peaks(-search, prominence=search.max() * .05)[0][0]) + ph // 80
+head = inside & (np.arange(ph)[:, None] < neck); body = inside & ~head
+
+pd = np.zeros((ph, pw, 4), np.float32)
+labels, dens = to_swatches(prgb, body, SWATCHES['person'], 8, seed=7)
+place(dens, flatten(labels, body, 9), body, pd)
+
+# Head: few, large shapes. Hair is the largest dark, neutral region of the head with its
+# highlights closed in (scikit-image morphology): solid dark. The face is the rest:
+# its locally dark marks (brows, eyes, nostrils, mouth) print solid dark, and the
+# skin splits into light and shadow at its Otsu threshold.
+from skimage.filters import threshold_otsu
+hrgb = np.clip(restoration.denoise_tv_chambolle(person[..., :3], weight=.1, channel_axis=-1), 0, 1)
+hlab = color.rgb2lab(hrgb); hL = hlab[..., 0]; hC = np.hypot(hlab[..., 1], hlab[..., 2])
+dark = head & (hL < 40) & (hC < 16)          # hair is dark and neutral; face shadows are dark but warm
+dark = morphology.remove_small_holes(morphology.closing(dark, morphology.disk(max(2, ph // 160))), (ph // 25) ** 2)
+lbl = measure.label(dark)
+hair = lbl == (max(measure.regionprops(lbl), key=lambda r: r.area).label if lbl.max() else -1)
+face = head & ~hair
+fL = hL[face]
+from skimage.filters import threshold_local
+# Features are locally dark (brows, eyes, nostrils, mouth): an adaptive threshold finds them
+# relative to the skin around them, not to the whole face.
+block = (ph // 24) | 1
+features = face & (hL < threshold_local(hL, block, offset=6)) & (hL < np.percentile(fL, 45))
+features = morphology.remove_small_objects(morphology.erosion(features, morphology.disk(1)), max(4, (ph // 300) ** 2))
+skin_cut = threshold_otsu(fL[fL >= np.percentile(fL, 13)])
+HEAD = SWATCHES['head']   # hair, features, skin shadow, skin light
+hl = np.full(head.shape, -1, np.int32)
+hl[hair] = 0; hl[face] = np.where(hL[face] < skin_cut, 2, 3)
+hdens = np.array([swatch(sp) for sp in HEAD])
+hl = flatten(hl, head, 7)
+hl[morphology.binary_dilation(features, morphology.disk(1)) & face] = 1          # features go on after the clean-up, so the mode filter cannot erase them
+place(hdens, hl, head, pd)
 # Hard edge, as a cut plate: the matte is thresholded, not blended.
 x0, x1 = max(px, 0), min(px + pw, W); sx = x0 - px
 sub = plates[py:py + ph, x0:x1]; a = inside[:, sx:sx + x1 - x0, None]
