@@ -67,4 +67,5 @@ def build(ink, emit):
     return {
         'camera': {'location': (-1.4, -6.4, 1.0), 'look_at': (6.2, 0, 1.4), 'lens': 26, 'shift': (0, .05)},
         'shadow': {'catcher': 'ground', 'sun': (-28, 0, 35), 'ink': {'d': 1}, 'softness': .3},
+        'fade_edges': {'c': .16},   # yellow ground and horizon band only
     }

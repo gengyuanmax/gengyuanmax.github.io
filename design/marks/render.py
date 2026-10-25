@@ -120,4 +120,13 @@ if 'shadow' in spec:
     for k, amount in sh['ink'].items():
         plates[k] = np.maximum(plates.get(k, 0), shadow * amount)
 
+if 'fade_edges' in spec:
+    # Layers that run off the artboard (ground, horizon) fade out at its left and right
+    # edges, so the frame's edge never shows as a hard cut when the page box is wider
+    # than 360:220 and the art is letterboxed inside it.
+    xs = np.linspace(0, 1, W, dtype=np.float32)
+    for k, width in spec['fade_edges'].items():
+        t = np.clip(np.minimum(xs, 1 - xs) / width, 0, 1); ramp = t * t * (3 - 2 * t)
+        if k in plates: plates[k] = plates[k] * ramp[None, :]
+
 write(name, {k: plates[k] for k in INKS if k in plates and plates[k].max() > .05}, f'design/marks/render.py {name}')
