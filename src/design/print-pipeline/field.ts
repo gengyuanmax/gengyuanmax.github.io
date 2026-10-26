@@ -13,7 +13,7 @@ export function renderFieldOriginals(originals:FieldOriginal[],w:number,h:number
  const plates=used.map(ink=>({ink,coverage:new Float32Array(w*h)})),tones:Float32Array[]=[],screens:Float32Array[]=[];
  for(const item of originals){
   const source=item.kind==='source';
-  const tone=source?item.coverage:item.screened?makeToneField(item.coverage,w,h,scale,item.kind,toneSettings(settings,item.ring?1:settings.fieldCoverage/.42),press.seed+item.index*97):item.coverage;
+  const tone=item.kind==='source'?item.coverage:item.screened?makeToneField(item.coverage,w,h,scale,item.kind,toneSettings(settings,item.ring?1:settings.fieldCoverage/.42),press.seed+item.index*97):item.coverage;
   const mask=source?item.coverage.map(v=>v>.004?1:0):item.coverage;
   const printed=screenOriginal(`field:${item.ink}:${item.index}`,{kind:'shape',mask,tone},w,h,item.ink,press,scale,origin,!item.screened);
   tones.push(tone);screens.push(printed);const dest=plates.find(p=>p.ink===item.ink)!.coverage;for(let i=0;i<dest.length;i++)dest[i]=Math.max(dest[i],printed[i]);
@@ -21,7 +21,7 @@ export function renderFieldOriginals(originals:FieldOriginal[],w:number,h:number
  // Retain transferred, registered ink coverage for cross-element sheet assembly.
  // Cross-element ink groups know the two type inks only; accent-ink elements keep their own output.
  const inkLayers=retainInks&&used.length===2?(['a','b'] as const).map(ink=>{
-  const monochrome=paintMaterial(plates,w,h,{a:ink==='a'?[0,0,0]:[255,255,255],b:ink==='b'?[0,0,0]:[255,255,255],paper:[255,255,255]},press,scale);
+  const monochrome=paintMaterial(plates,w,h,{a:ink==='a'?[0,0,0]:[255,255,255],b:ink==='b'?[0,0,0]:[255,255,255],c:[255,255,255],d:[255,255,255],paper:[255,255,255]},press,scale);
   return {ink,coverage:Float32Array.from({length:w*h},(_,i)=>(255-monochrome[i*4])/255)};
  }):undefined;
  return {inkLayers,pixels:paintMaterial(plates,w,h,inks as Record<PlateInk,RGB>&{paper:RGB},press,scale),tones,screens};
