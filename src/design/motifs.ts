@@ -15,7 +15,9 @@ export {motifScreenLevel} from './motif-levels.ts';
 // Same ink shares one plate; material is applied by the shared print pipeline.
 // Composition overlap is distinct from plate registration; the latter uses
 // reference SVG units and scales with the printed object, not the viewport.
-function motifParts(s:Settings,id:string,kind:Motif){
+/** Plate href: the data URL itself (static render, design desk) or a published file URL (page HTML). */
+export type PlateHref=(dataUrl:string,ink:'a'|'b'|'c'|'d',kind:Motif)=>string;
+function motifParts(s:Settings,id:string,kind:Motif,href:PlateHref=u=>u){
  const p=s.fieldPitch,r=p*Math.sqrt(s.fieldCoverage/Math.PI),o=1-s.fieldOverlap;
  const pattern=['a','b'].map(plate=>`<pattern id="${id}-${plate}-dots" width="${p}" height="${p}" patternUnits="userSpaceOnUse" patternTransform="rotate(${plate==='a'?s.secondaryAngle:s.primaryAngle})"><circle cx="${p/2}" cy="${p/2}" r="${r}" fill="var(--${plate==='a'?'red':'blue'}-ink)"/></pattern>`).join('');
  const dotsA=`url(#${id}-a-dots)`,dotsB=`url(#${id}-b-dots)`;
@@ -27,12 +29,12 @@ function motifParts(s:Settings,id:string,kind:Motif){
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
- const plate=plates[kind];if(plate){const img=(href:string)=>`<image data-print-tone="source" href="${href}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`;return {pattern,a:img(plate.a),b:img(plate.b),c:plate.c?img(plate.c):'',d:plate.d?img(plate.d):''};}
+ const plate=plates[kind];if(plate){const img=(ink:'a'|'b'|'c'|'d')=>plate[ink]?`<image data-print-tone="source" href="${href(plate[ink]!,ink,kind)}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`:'';return {pattern,a:img('a'),b:img('b'),c:img('c'),d:img('d')};}
  return {pattern,a:kind==='earth'?earth:a,b,c:'',d:''};
 }
 
-export function motifMarkup(s:Settings,id:string,kind:Motif){
- const {pattern,a,b,c,d}=motifParts(s,id,kind);
+export function motifMarkup(s:Settings,id:string,kind:Motif,href?:PlateHref){
+ const {pattern,a,b,c,d}=motifParts(s,id,kind,href);
  // Accent plates (c yellow, d dark) are drawn first so the fallback reads like the print.
  const accent=(ink:'c'|'d',m:string,x:number,y:number)=>m?`<g class="he-field-${ink}" style="transform:translate(${x}px,${y}px)">${m}</g>`:'';
  return `<defs>${pattern}</defs><g>${accent('c',c,s.yellowX,s.yellowY)}<g class="he-field-a">${a}</g><g class="he-field-b" style="transform:translate(${s.registration}px,${s.registrationY}px)">${b}</g>${accent('d',d,s.darkX,s.darkY)}</g>`;

@@ -91,15 +91,15 @@ src = L['band']['source']
 band = Image.open(root / L['mountain']).convert('RGB').crop((src['left'], src['top'], src['left'] + src['width'], src['top'] + src['height']))
 band = np.asarray(band.resize((W, BH), Image.LANCZOS), np.float32) / 255
 hsv = color.rgb2hsv(band)
-clean = lambda m: morphology.remove_small_holes(morphology.remove_small_objects(morphology.opening(m, morphology.disk(2)), 4000), 4000)
+clean = lambda m: morphology.remove_small_holes(morphology.remove_small_objects(morphology.opening(m, morphology.disk(2)), max_size=3999), max_size=3999)
 sky = clean((hsv[..., 0] > .52) & (hsv[..., 0] < .7) & (hsv[..., 1] > .3) & (hsv[..., 2] > .45))
 forest = clean(~sky & (hsv[..., 2] < .36)) & ~sky
 bright = clean((hsv[..., 2] > .7) & (hsv[..., 1] < .2)) & ~sky
-lab_ = measure.label(bright); near_sky = morphology.binary_dilation(sky, morphology.disk(6))
+lab_ = measure.label(bright); near_sky = morphology.dilation(sky, morphology.disk(6))
 clouds = np.zeros_like(sky)
 for r in measure.regionprops(lab_):
     if r.centroid[0] < .6 * BH and near_sky[lab_ == r.label].any(): clouds |= lab_ == r.label
-clouds = morphology.binary_dilation(clouds, morphology.disk(9)) & (hsv[..., 2] > .5) & ~sky
+clouds = morphology.dilation(clouds, morphology.disk(9)) & (hsv[..., 2] > .5) & ~sky
 rock = ~sky & ~clouds & ~forest
 
 lab = color.rgb2lab(band); lab[..., 0] = exposure.equalize_adapthist(lab[..., 0] / 100, clip_limit=.02) * 100
@@ -158,7 +158,7 @@ plates[py:py + ph, x0:x1] = np.where(a, 0, plates[py:py + ph, x0:x1])
 figure = np.zeros_like(plates); figure[py:py + ph, x0:x1] = np.where(a, pd[:, sx:sx + x1 - x0], 0)
 
 # ---------------------------------------------------------------- output
-out = root / 'src' / 'assets' / 'home' / 'landscape-4c'; out.mkdir(parents=True, exist_ok=True)
+out = root / L['plates']; out.mkdir(parents=True, exist_ok=True)
 for prefix, layer in (('', plates), ('figure-', figure)):
     for i, ink in enumerate(INKS):
         img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(np.clip(layer[..., i], 0, 1) * 255)

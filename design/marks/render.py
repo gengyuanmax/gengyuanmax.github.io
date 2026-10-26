@@ -86,6 +86,9 @@ def setup():
         cam.data.shift_x = (max(xs)+min(xs))/2/cam.data.ortho_scale
         cam.data.shift_y = (max(ys)+min(ys))/2/cam.data.ortho_scale
     sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'; sc.cycles.samples = 64
+    # Reproducible output: fixed seed, no adaptive sampling, a fixed thread count.
+    sc.cycles.seed = 0; sc.cycles.use_animated_seed = False; sc.cycles.use_adaptive_sampling = False
+    sc.render.threads_mode = 'FIXED'; sc.render.threads = 4
     sc.view_settings.view_transform = 'Standard'; sc.render.film_transparent = True
     sc.world = bpy.data.worlds.new('w'); sc.render.image_settings.color_mode = 'RGBA'
     sc.render.dither_intensity = 0   # dither would leave faint ink in unused channels

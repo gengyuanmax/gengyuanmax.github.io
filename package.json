@@ -11,7 +11,10 @@
     "media": "node --experimental-strip-types scripts/render-media.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:server": "node tests/server-smoke.mjs",
-    "test:name-visual": "node scripts/verify-name-visual.mjs"
+    "test:name-visual": "node scripts/verify-name-visual.mjs",
+    "design": "python3 design/build.py",
+    "verify": "npm run check && npm test && npm run build",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "engines": {
     "node": ">=22.19.0"

@@ -350,7 +350,7 @@ Research 次级目录编号 01/02/03 不收缩、不拆行；文字标签独立�
 ## 26e. 首页两种版式（用户，2026-10-21 修订）
 
 - 原则：Poster 负责设计感（Riso 海报），Compact 负责规整（索引）。都在 12 栏网格上；分隔不用全宽细线，而用尺度反差、印刷图像、错落和留白。实现 `src/styles/home-layout.css`（最后加载）。
-- 首页不再使用肖像加圆形的组合，也不用朱红实心色块：改为一张“山与人”的整幅印刷图（Max 拍的 Wetterstein 山脊 + 本人肖像站在前方），构建时按双墨分色、加网和转印印好（`scripts/render-home-landscape.mjs`，配置 `src/config/home-landscape.ts`，源图 `src/assets/home/mountain.jpg` 与 `portrait-source-cutout.png`）。分色：树林与暗部岩石→蓝版，受光岩石→朱红中间调，云→纸，天空→浅蓝网点并向上渐隐为纸；人物在前，挖空其后的山，暗部蓝、中间调朱红。
+- 首页不再使用肖像加圆形的组合，也不用朱红实心色块：改为一张“山与人”的整幅印刷图（Max 拍的 Wetterstein 山脊 + 本人肖像站在前方），用四色印刷（用户 2026-10-26 确定，双墨分色已删除）：分色由 `design/photo/home_landscape_4c.py` 用现成图像工具做成四色墨量版，提交在 `src/assets/home/landscape-4c/`；构建时 `scripts/render-home-landscape.mjs` 只负责加网、转印和合成（配置 `src/config/home-landscape.ts`，源图 `src/assets/home/mountain.jpg` 与 `portrait-source-cutout.png`）。分色按色卡：每版只有 0/35/70/100% 四档，各区域只用指定的叠印色（岩石蓝、森林蓝叠黄、天空单档浅蓝向上渐隐、云为纸；人物朱红叠黄、头发与 T 恤深色、格子蓝）。风景用 medium 4px，人物单独成版用 fine 2px。
 - Poster：超大姓名，第二行缩进一栏；身份、状态、简介、链接在 2–6 栏；山与人整幅出血到页面两边，图的上部纸色天空升到简介旁，人物在 9–12 栏。下方左 1–8 栏是 “visual intelligence” 与三个方向，逐级向右下错开；研究圆拆开，每个方向自己的那一个网点圆（与研究圆同一 polygon-v1 配方与颜色）作为压印垫在方向名下，名字叠印其上；不用编号和色条。右 9–12 栏 News（日期在左 1 栏、内容 3 栏，栏内滚动）。最下 Selected projects 为错开的卡片（会议实心标签 + 标题 + 一句话 + 资源链接 Project/arXiv/GitHub/Dataset 等 + 方向）；标题用双墨叠印字，与另两个版块标题同色。
 - 三个版块标题（visual intelligence、News、Selected projects）同一字体字号（展示字体 650，48px；Compact 标签 24px）。
 - Compact：首屏左侧 1–7 栏为姓名与简介上下排列，山与人在 8–12 栏、与左侧等高，裁去上方纸色天空、保留人物与山（2026-10-26 用户：原先 4–12 栏整幅占掉首屏、下方留大块空白），首屏可见研究方向。之后每个版块“标签栏 1–3 | 内容栏 4–12”，标签由短粗墨条加编号开头；方向三等栏（各自的小圆压印）；Selected 为规整表格；News 为“日期 | 内容”列表。
@@ -514,3 +514,10 @@ Publications 附录章题（2026-10-18）：复用研究章节的蓝版网点 Pr
 - 朱红与蓝仍是全站主墨，用于标题、正文强调与界面；黄与深色只用于插图类元素（项目标记、预览、底版），不印字、不放在文字下。
 - 每个元素最多用三到四块版，按需取用；只用两块主墨的元素仍可参与跨元素同墨合版，用到辅墨的元素保持自身输出。
 - 设计工具原稿按墨分版输出（`design/marks/render.py`：一次渲染写三墨，用到深色时再渲一遍）。
+
+## 构建期图片以文件发布（2026-10-26）
+
+- 静态后备图（无 JS 访客用）、设计工具原稿、联系图标不再以 base64 内联进 HTML，而由 `src/design/static-files.mjs` 按内容哈希写成文件，构建时发布到 `/_print/`（`scripts/print-static.ts`，开发服务器同样提供）。
+- 后备图放在 `<noscript>` 里：有 JS 的访客不会下载；有 JS 时页面在印刷完成前保持纸色，与之前一致。后备图按原比例 `object-fit:contain` 显示。
+- 浏览器印刷工具原稿时直接加载该文件取墨量（`imageCoverage`），不经 SVG 栅格化。
+- `verify-build.mjs` 禁止 `src`/`href` 中出现 PNG data URL，并限制 `index.html` 体积。

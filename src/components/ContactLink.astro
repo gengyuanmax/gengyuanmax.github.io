@@ -4,6 +4,7 @@ import {design} from '../config/design';
 import {resolve} from '../design/settings';
 import {screenOriginal,pressSettings,paintMaterial} from '../design/print-pipeline/index';
 import {encodeAlphaPNG} from '../design/print-pipeline/png';
+import {publishPng} from '../design/static-files.mjs';
 interface Props { label: string; href: string }
 const {label,href}=Astro.props;
 // Small solid stamps use the shared material/transfer recipe, baked before first paint.
@@ -28,7 +29,8 @@ const press={...pressSettings(settings,'fine'),offset:{x:0,y:0},registration:{},
 const plate=screenOriginal(`contact-${label}`,{kind:'shape',mask:coverage,tone:coverage},size,size,'b',press,scale,{x:0,y:0},true);
 const printed=paintMaterial([{ink:'b',coverage:plate}],size,size,{b:[0,0,0],paper:[255,255,255]},press,scale);
 const alpha=Uint8Array.from({length:size*size},(_,i)=>255-printed[i*4]);
-const mask=`data:image/png;base64,${btoa(String.fromCharCode(...encodeAlphaPNG(alpha,size,size)))}`;
+// Published once per icon as a file; each contact list reuses it (it was inlined 30 times).
+const mask=publishPng(encodeAlphaPNG(alpha,size,size),`contact-${label}`);
 
 ---
 <a class="he-contact-link" href={href}>
