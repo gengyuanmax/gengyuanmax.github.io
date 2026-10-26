@@ -13,7 +13,7 @@ the region's colours come from a small, fixed overprint palette:
   rock    blue tints, dark only in the deepest shadow   -> a cool blue mountain
   forest  blue over yellow                              -> green
   person  vermilion over yellow for skin and jacket, dark for hair and shirt, blue plaid;
-          the head separately: solid dark hair and features, skin in four flat tones;
+          the head from the earlier one-pass mapping (the approved face);
           the person has plates of his own, printed on the 3px figure screen
 (the swatch lists are SWATCHES below)
 
@@ -110,7 +110,7 @@ SWATCHES = {
     'rock':   ['paper', 'b35', 'b70', 'b100', 'b100+d35'],
     'forest': ['b35+c35', 'b35+c70', 'b70+c70', 'b100+c35', 'b100+d70'],
     'person': ['paper', 'c35', 'a35+c35', 'a35+c70', 'a70+d35', 'b70', 'd70', 'd100'],
-    'skin':   ['a70+c70', 'a35+c70', 'a35+c35', 'c35'],           # dark -> light; hair and features print d100
+    'face':   ['paper', 'c35', 'a35+c35', 'a35+c70', 'a70+c70', 'a70+d35', 'b70', 'd70', 'd100'],
 }
 for name, mask, n, mode in [('rock', rock, 6, 9), ('forest', forest, 5, 7)]:
     labels, dens = to_swatches(shaped, mask, SWATCHES[name], n, seed=len(name))
@@ -144,30 +144,11 @@ pd = np.zeros((ph, pw, 4), np.float32)
 labels, dens = to_swatches(prgb, body, SWATCHES['person'], 8, seed=7)
 place(dens, flatten(labels, body, 9), body, pd)
 
-# Head: small shapes, printed on the finer figure screen. Hair is the largest dark, neutral
-# region of the head with its highlights closed in (scikit-image morphology). The face is the
-# rest: the skin takes four tones from multi-level Otsu thresholds, and locally dark marks
-# (brows, eyes, nostrils, mouth, from an adaptive threshold) print solid dark on top.
-from skimage.filters import threshold_local, threshold_multiotsu
-hrgb = np.clip(restoration.denoise_tv_chambolle(person[..., :3], weight=.05, channel_axis=-1), 0, 1)
-hlab = color.rgb2lab(hrgb); hL = hlab[..., 0]; hC = np.hypot(hlab[..., 1], hlab[..., 2])
-dark = head & (hL < 40) & (hC < 16)          # hair is dark and neutral; face shadows are dark but warm
-dark = morphology.remove_small_holes(morphology.closing(dark, morphology.disk(max(2, ph // 160))), (ph // 25) ** 2)
-lbl = measure.label(dark)
-hair = lbl == (max(measure.regionprops(lbl), key=lambda r: r.area).label if lbl.max() else -1)
-face = head & ~hair
-fL = hL[face]
-features = face & (hL < threshold_local(hL, (ph // 30) | 1, offset=5)) & (hL < np.percentile(fL, 50))
-features = morphology.remove_small_objects(features, max(3, (ph // 400) ** 2))
-SKIN = SWATCHES['skin']                                     # dark -> light
-cuts = threshold_multiotsu(fL, classes=len(SKIN))
-hl = np.full(head.shape, -1, np.int32)
-hl[face] = np.digitize(hL[face], cuts)                      # 0 darkest .. 3 lightest
-hl[hair] = len(SKIN)
-hdens = np.array([swatch(sp) for sp in SKIN + ['d100']])
-hl = flatten(hl, head, 3)
-hl[features] = len(SKIN)                                    # after the clean-up, so it cannot erase them
-place(hdens, hl, head, pd)
+# Head: the face as the user approved it (2026-10-26) - the whole figure mapped to the
+# person swatches in one pass (with the heavier vermilion-over-yellow tone), lightly
+# cleaned; only the head region of that mapping is kept.
+labels, dens = to_swatches(prgb, inside, SWATCHES['face'], 8, seed=7)
+place(dens, flatten(labels, inside, 5), head, pd)
 
 # The person is cut out of the landscape plates and kept on plates of his own: he prints
 # on the figure screen (3px), the landscape on the image screen (4px).
