@@ -16,4 +16,11 @@ export const homeLandscape={
  screen:'medium' as const,displaySize:96,
  /** Reference sheet position (home at 1440). */
  origin:{x:40,y:420},
+ /** 'two-ink' (approved) or 'four-ink' (trial, 2026-10-25): plates from design/photo/home_landscape_4c.py. */
+ separation:'two-ink' as 'two-ink'|'four-ink',
+ fourInkPlates:'src/assets/home/landscape-4c',
+ /** Four inks keep the landscape's medium tier: the dots should read (user, 2026-10-25). */
+ fourInkScreen:'medium' as const,
+ /** The person prints on the fine screen (2px), like the portrait (user, 2026-10-26). */
+ figureScreen:'fine' as const,
 };

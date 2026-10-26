@@ -14,11 +14,11 @@ export type Parameter = { label: string; group: string; scopes: readonly Scope[]
 const all: readonly Scope[] = ['global', 'area', 'element'];
 const globalOnly: readonly Scope[] = ['global'];
 export const palettes = {
-  blueVermilion: { label: '蓝 / 朱红', yellow:'#dfba29', paper: '#f0ebdf', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
-  pinkBlue: { label: '荧光粉 / 蓝', yellow:'#dfba29', paper: '#f3f1e9', text: '#20212a', muted: '#626370', rule: '#bdbdc2', primary: '#173d9a', secondary: '#e341a1' },
-  blackRed: { label: '黑 / 红', yellow:'#dfba29', paper: '#f0eee7', text: '#232323', muted: '#63605b', rule: '#bab6ae', primary: '#292927', secondary: '#b7392f' },
+  blueVermilion: { label: '蓝 / 朱红', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f0ebdf', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
+  pinkBlue: { label: '荧光粉 / 蓝', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f3f1e9', text: '#20212a', muted: '#626370', rule: '#bdbdc2', primary: '#173d9a', secondary: '#e341a1' },
+  blackRed: { label: '黑 / 红', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f0eee7', text: '#232323', muted: '#63605b', rule: '#bab6ae', primary: '#292927', secondary: '#b7392f' },
 };
-export const paletteRoles = { yellow:'黄色版 · 研究圆', paper:'纸色', text:'正文墨色', muted:'次要文字', rule:'分隔线', primary:'主墨色', secondary:'第二墨色' };
+export const paletteRoles = { yellow:'黄色版 · 研究圆与插图', dark:'深色版 · 插图投影与暗部', paper:'纸色', text:'正文墨色', muted:'次要文字', rule:'分隔线', primary:'主墨色', secondary:'第二墨色' };
 export type PaletteRole=keyof typeof paletteRoles;
 export type InkPalette=Record<PaletteRole,string>;
 export const fontFamilies = {
@@ -48,6 +48,9 @@ export const parameters = {
   yellowAngle:{label:'黄色版 · 网角',group:'印刷墨层',type:'number',default:0,min:0,max:180,step:1,scopes:globalOnly},
   yellowX:{label:'黄色版 · 错版 X',group:'印刷墨层',type:'number',default:-1,min:-2,max:2,step:.5,scopes:globalOnly},
   yellowY:{label:'黄色版 · 错版 Y',group:'印刷墨层',type:'number',default:1.5,min:-2,max:2,step:.5,scopes:globalOnly},
+  darkAngle:{label:'深色版 · 网角',group:'印刷墨层',type:'number',default:45,min:0,max:180,step:1,scopes:globalOnly},
+  darkX:{label:'深色版 · 错版 X',group:'印刷墨层',type:'number',default:1,min:-2,max:2,step:.5,scopes:globalOnly},
+  darkY:{label:'深色版 · 错版 Y',group:'印刷墨层',type:'number',default:-1,min:-2,max:2,step:.5,scopes:globalOnly},
 
   homeDividerStyle:{label:'首页分隔处理',group:'构图',type:'select',default:'print',options:{print:'双墨章节线 + News 细网过渡',plain:'原细线 · 对照'},scopes:['global','area']},
   dividerMotion:{label:'分隔印出动态 · 全局',group:'构图',type:'select',default:'once',options:{once:'首次进入视口印出',none:'静态'},scopes:globalOnly},

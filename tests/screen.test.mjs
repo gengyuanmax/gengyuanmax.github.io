@@ -17,7 +17,7 @@ test('all tiers share each ink angle and shape while each ink retains its own se
  const s={...defaults,primaryAngle:75,secondaryAngle:15,primaryDotShape:'square',secondaryDotShape:'round'};
  for(const level of ['fine','medium','coarse']){
   const p=pressSettings(s,level,128);
-  assert.deepEqual(p.angles,{a:15,b:75,c:defaults.yellowAngle});assert.deepEqual(p.shapes,{a:'round',b:'square',c:'square'});
+  assert.deepEqual(p.angles,{a:15,b:75,c:defaults.yellowAngle,d:defaults.darkAngle});assert.deepEqual(p.shapes,{a:'round',b:'square',c:'square',d:'square'});
   const tone=new Float32Array(64*64).fill(.35),clean={...p,edge:0,gain:0};
   assert.notDeepEqual(screenPlate(tone,64,64,'b',clean),screenPlate(tone,64,64,'b',{...clean,shapes:{...clean.shapes,b:'round'}}));
  }

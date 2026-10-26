@@ -8,9 +8,9 @@ import type {ScreenShape} from '../screen.ts';
  * Registration is relative to the reference plate (offset 0). A real sheet has one
  * offset per drum, so this is the only place a plate's offset is defined. Text keeps
  * its tighter CSS clamp (duotone-type.css) as an explicit legibility rule. */
-export type PlateInk='a'|'b'|'c';
-export type PagePlate={ink:PlateInk;palette:'secondary'|'primary'|'yellow';label:string;angle:number;shape:ScreenShape;registration:{x:number;y:number}};
-export type PlateSettings={secondaryAngle:number;primaryAngle:number;yellowAngle:number;secondaryDotShape:string;primaryDotShape:string;registration:number;registrationY:number;yellowX:number;yellowY:number};
+export type PlateInk='a'|'b'|'c'|'d';
+export type PagePlate={ink:PlateInk;palette:'secondary'|'primary'|'yellow'|'dark';label:string;angle:number;shape:ScreenShape;registration:{x:number;y:number}};
+export type PlateSettings={secondaryAngle:number;primaryAngle:number;yellowAngle:number;darkAngle:number;secondaryDotShape:string;primaryDotShape:string;registration:number;registrationY:number;yellowX:number;yellowY:number;darkX:number;darkY:number};
 export const referencePlate:PlateInk='a';
 export function pagePlates(s:PlateSettings):readonly PagePlate[]{
  const offset=(x:number,y:number)=>({x:withinSigned(x,noiseBudget.registration.plate),y:withinSigned(y,noiseBudget.registration.plate)});
@@ -20,6 +20,8 @@ export function pagePlates(s:PlateSettings):readonly PagePlate[]{
   {ink:'b',palette:'primary',label:'blue',angle:s.primaryAngle,shape:shape(s.primaryDotShape),registration:offset(s.registration,s.registrationY)},
   // Yellow shares the blue plate's dot shape until it has its own setting.
   {ink:'c',palette:'yellow',label:'yellow',angle:s.yellowAngle,shape:shape(s.primaryDotShape),registration:offset(s.yellowX,s.yellowY)},
+  // Dark (near-black) accent plate for illustrations: shadows, steel. 45° keeps it clear of the other three.
+  {ink:'d',palette:'dark',label:'dark',angle:s.darkAngle,shape:shape(s.primaryDotShape),registration:offset(s.darkX,s.darkY)},
  ];
 }
 /** Lookup tables in the shape the screening and transfer stages consume. The transfer

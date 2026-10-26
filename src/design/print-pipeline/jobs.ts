@@ -14,7 +14,7 @@ import type {RGB} from './types.ts';
 export type MaskJob={kind:'mask';w:number;h:number;dpr:number;ground:boolean;groundOpacity:number;tone:ToneSettings;identity:string;ink:'a'|'b';press:Press;origin:{x:number;y:number};fontSize:number;radius:number;proof?:boolean;crop?:{x:number;y:number;width:number;height:number};route?:RouteShape};
 /** Metro lines printed as a ground: their geometry is the coverage the plane is screened in. */
 export type RouteShape={paths:RoutePath[];radius:number;stations:RouteStation[]};
-export type FieldJob={kind:'field';retainInks?:boolean;originals:FieldOriginal[];w:number;h:number;dpr:number;origin:{x:number;y:number};press:Press;settings:Settings;inks:{a:RGB;b:RGB;paper:RGB}};
+export type FieldJob={kind:'field';retainInks?:boolean;originals:FieldOriginal[];w:number;h:number;dpr:number;origin:{x:number;y:number};press:Press;settings:Settings;inks:{a:RGB;b:RGB;c?:RGB;d?:RGB;paper:RGB}};
 export type MaskResult={png:Uint8Array;tone?:Float32Array;screened?:Float32Array};
 export type FieldResult={inkLayers?:{ink:'a'|'b';coverage:Float32Array}[];pixels:Uint8ClampedArray;tones:Float32Array[];screens:Float32Array[]};
 export function runMaskJob(j:MaskJob):MaskResult{

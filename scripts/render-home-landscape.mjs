@@ -13,7 +13,16 @@ const sm=(e0,e1,x)=>{const t=Math.max(0,Math.min(1,(x-e0)/(e1-e0)));return t*t*(
 function boxBlur(a,W,H,r){const t=new Float32Array(W*H),o=new Float32Array(W*H);
  for(let y=0;y<H;y++){let acc=0;for(let x=-r;x<W;x++){if(x+r<W)acc+=a[y*W+x+r];if(x-r-1>=0)acc-=a[y*W+x-r-1];if(x>=0)t[y*W+x]=acc/(2*r+1);}}
  for(let x=0;x<W;x++){let acc=0;for(let y=-r;y<H;y++){if(y+r<H)acc+=t[(y+r)*W+x];if(y-r-1>=0)acc-=t[(y-r-1)*W+x];if(y>=0)o[y*W+x]=acc/(2*r+1);}}return o;}
-export async function renderHomeLandscape(config){
+async function fourInkTones(W,H,prefix=''){
+ const out={};
+ for(const ink of ['a','b','c','d']){
+  const {data,info}=await sharp(new URL(`../${L.fourInkPlates}/${prefix}${ink}.png`,import.meta.url).pathname).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  if(info.width!==W||info.height!==H)throw new Error(`Four-ink plate ${ink} is ${info.width}×${info.height}, expected ${W}×${H}; re-run design/photo/home_landscape_4c.py`);
+  out[ink]=Float32Array.from({length:W*H},(_,i)=>data[i*4+3]/255);
+ }
+ return out;
+}
+export async function renderHomeLandscape(config,{separation=L.separation,output=new URL('../public'+L.output,import.meta.url).pathname}={}){
  const s=resolve(config,'home').values,p=getPalette(config,s.palette),seed=resolve(config).values.seed,k=L.scale;
  const W=L.width*k,H=L.height*k,BH=L.band.height*k,top=H-BH,n=W*H;
  const band=await sharp(new URL('../'+L.mountain,import.meta.url).pathname).extract(L.band.source).resize(W,BH,{fit:'cover'}).ensureAlpha().raw().toBuffer();
@@ -35,10 +44,18 @@ export async function renderHomeLandscape(config){
   const dark=sm(.62,.12,l)*.92,mid=sm(.96,.5,l)*.5*(1-dark*.8);
   tb[i]=tb[i]*(1-a)+dark*a;ta[i]=ta[i]*(1-a)+mid*a;}
  const mask=new Float32Array(n).fill(1);
- const press=onSheet(elementPress(pressSettings(s,L.screen,L.displaySize),'home-landscape','image'),seed,L.origin,1440);
- const a=screenOriginal('home-landscape-a',{kind:'photo',mask,tone:ta},W,H,'a',press,k,L.origin);
- const b=screenOriginal('home-landscape-b',{kind:'photo',mask,tone:tb},W,H,'b',press,k,L.origin);
- const rgba=paintMaterial([{ink:'a',coverage:a},{ink:'b',coverage:b}],W,H,{a:rgb(p.secondary),b:rgb(p.primary),paper:[255,255,255]},press,k);
- await sharp(Buffer.from(rgba),{raw:{width:W,height:H,channels:4}}).removeAlpha().png({compressionLevel:9,palette:true,colors:64,dither:0}).toFile(new URL('../public'+L.output,import.meta.url).pathname);
- console.log(`Rendered home landscape ${L.output} (${W}×${H}, ${press.pitch}px ${L.screen} screen)`);
+ const press=onSheet(elementPress(pressSettings(s,separation==='four-ink'?L.fourInkScreen:L.screen,L.displaySize),'home-landscape','image'),seed,L.origin,1440);
+ // Four-ink separation (design/photo/home_landscape_4c.py) replaces the two-ink one when selected.
+ const tones=separation==='four-ink'?await fourInkTones(W,H):{a:ta,b:tb};
+ const plates=Object.entries(tones).map(([ink,tone])=>({ink,coverage:screenOriginal(`home-landscape-${ink}`,{kind:'photo',mask,tone},W,H,ink,press,k,L.origin)}));
+ if(separation==='four-ink'){
+  // The person has plates of his own on a finer screen (L.figureScreen); same inks, merged per ink by the composite.
+  const figurePress={...press,pitch:pressSettings(s,L.figureScreen,L.displaySize).pitch,level:L.figureScreen};
+  for(const [ink,tone] of Object.entries(await fourInkTones(W,H,'figure-')))
+   plates.push({ink,coverage:screenOriginal(`home-figure-${ink}`,{kind:'photo',mask,tone},W,H,ink,figurePress,k,L.origin)});
+ }
+ const inks={a:rgb(p.secondary),b:rgb(p.primary),c:rgb(p.yellow),d:rgb(p.dark),paper:[255,255,255]};
+ const rgba=paintMaterial(plates,W,H,inks,press,k);
+ await sharp(Buffer.from(rgba),{raw:{width:W,height:H,channels:4}}).removeAlpha().png({compressionLevel:9,palette:true,colors:separation==='four-ink'?160:64,dither:0}).toFile(output);
+ console.log(`Rendered home landscape ${output} [${separation}] (${W}×${H}, ${press.pitch}px ${press.level} screen)`);
 }
