@@ -102,3 +102,8 @@
 #personal-site .he-nav a[aria-current="page"] .he-type-line>.he-type-b{
  transform:translate(clamp(-1px,var(--registration-x),1px),clamp(-.5px,var(--registration-y),.5px));
 }
+/* Display lines use a tight line-height (.87). The transfer mask on each ink layer is painted
+   only inside its box, so descenders (g, y, p) were cut off. The box is padded past the
+   glyphs and the padding taken back with negative margins, so the layout is unchanged
+   (user, 2026-10-26). */
+#personal-site .he-type-line :is([data-print-transfer],.he-type-b){padding-bottom:.3em;margin-bottom:-.3em;}
