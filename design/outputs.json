@@ -1,0 +1,52 @@
+{
+ "home-landscape": {
+  "inputs": {
+   "design/photo/home_landscape_4c.py": "56da26b8f223c2f89ceed53cd97277c8bf9735822a96bc2d1bc1a608c66ee962",
+   "public/images/portrait-source-cutout.png": "c26168d66336dfbf299486a14aa9e490c0d60d3811e2061ade730ec317b1515b",
+   "src/assets/home/mountain.jpg": "fd3bcc541c11aa28583548320c4df7ac619e626124202801c857682d2f2779a7",
+   "src/config/design.json": "1dd228f964968758432fe33a59c07a6c792da2c0151cf8b86129080a2e1a9e79",
+   "src/config/home-landscape.ts": "a7722e32faa50324972524b7a7a643cc2a6738afbca1b15d814221bc5bce48fd",
+   "src/design/settings.ts": "8859f36445ce3d29ec05b27a89fd245cf301ef7c4df577122ed36bc9867907e0"
+  },
+  "outputs": {
+   "src/assets/home/landscape-4c/a.png": "bfc64f02ddc344907ed8d54779bf4d1a9c7db7dd9221acd08756cf2256cc9a08",
+   "src/assets/home/landscape-4c/b.png": "864862181d0b626bb5b3c531c8ec9daef1d410c3a4c13b775bbcf2e2a0549b30",
+   "src/assets/home/landscape-4c/c.png": "bb3eea85c8e4ae7186fe7a8db89c06bbecccaae008747b5cbf94d42784be7557",
+   "src/assets/home/landscape-4c/d.png": "809058a371de7a5ee963181a65697d95bd54dfbcca2651cb4418430a8616463a",
+   "src/assets/home/landscape-4c/figure-a.png": "f371c0e3da88f52d78ad19450bee0ba34a1abb932e2ae9c8ba0debe3e1419566",
+   "src/assets/home/landscape-4c/figure-b.png": "fe04b540f8d20ed836163312b9e1da9d91e7f041e94a8ee51fe209b8b0672e80",
+   "src/assets/home/landscape-4c/figure-c.png": "937e67f1c018ffed2fe5f811b13568fc95301307729283340ed3d604533651e7",
+   "src/assets/home/landscape-4c/figure-d.png": "39e58430595a689ac9b3e3af388db258be28f6ac86b58462f68205c7c4abb30f"
+  }
+ },
+ "mark-icq": {
+  "inputs": {
+   "design/marks/icq.py": "8b9614326ebe056afaf335b9d1f8f30d4e16924fb526969141c217c9e6fffbbf",
+   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/render.py": "a8f25da8308e71f81e8ecaa654f6f0505c11f8ef4181f2a4e43ace206e6e0a2e"
+  },
+  "outputs": {
+   "src/design/assets/mark-icq.ts": "6c1586d031c76ea87e437c3cba93160d04dd8533c0de88e164ab6e1e02d89e6e"
+  }
+ },
+ "mark-reexplore": {
+  "inputs": {
+   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/reexplore.py": "c6ffc0d9affc069364c2a626ad774f6ef29ed68db4400576706992b7b594e8d0",
+   "design/marks/render.py": "a8f25da8308e71f81e8ecaa654f6f0505c11f8ef4181f2a4e43ace206e6e0a2e"
+  },
+  "outputs": {
+   "src/design/assets/mark-reexplore.ts": "a13e7f7b7da8aeb7b5b922a9971ab93220c054155fffc3dc106ec190c8ae5183"
+  }
+ },
+ "mark-surgeon": {
+  "inputs": {
+   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/sources/gliax-instruments-scan-1.jpg": "e9307ff17866562e8cfcb5fd4f97668e56eb1805f4d2ba339d3da520a090df4e",
+   "design/marks/surgeon_scan.py": "11e80f3e1887a4e52774c6012c5b95d51f85eb24d9d99c79803135373eeb9a80"
+  },
+  "outputs": {
+   "src/design/assets/mark-surgeon.ts": "ce5257853c171eab406cfd2280e96932e6fd77a14e799a89908a7b27819e3f2e"
+  }
+ }
+}

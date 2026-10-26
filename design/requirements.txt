@@ -1,0 +1,13 @@
+# Design-tool environment for design/ (marks and the four-ink landscape).
+# Python 3.13. Install: pip install -r design/requirements.txt
+# The site build does not need these: generated plates are committed and checked by
+# tests/design-outputs.test.mjs against design/outputs.json.
+bpy==5.2.3
+numpy==2.5.3
+pillow==12.3.0
+scipy==1.18.1
+scikit-image==0.26.0
+scikit-learn==1.9.1
+opencv-python-headless==5.0.0.93
+rembg==2.0.86
+onnxruntime==1.29.0

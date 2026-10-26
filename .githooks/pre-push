@@ -1,0 +1,4 @@
+#!/bin/sh
+# Same steps as the deploy workflow (check, test, build), so a push never fails CI on
+# something that could have been caught locally. Skip once with: git push --no-verify
+exec npm run verify

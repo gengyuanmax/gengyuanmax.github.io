@@ -11,6 +11,11 @@ Read `docs/DESIGN_CONSTRAINTS.md` before changing visual design, content present
 - Follow the parent project's read-only rule for `sources/`; do not modify synced references or CV material for this task.
 - When the user changes a global constraint, update the constraint document with its implementation. Do not replace it with a pointer to a chronological handoff.
 
+## Verify before pushing
+
+- `npm run verify` runs the deploy workflow's steps: `astro check`, tests, build. The versioned `.githooks/pre-push` hook runs it (enabled by `npm install`/`npm ci` via `prepare`).
+- Design-tool outputs (Blender marks, the four-ink landscape plates) are regenerated with `npm run design` (Python environment: `design/requirements.txt`); never edit them by hand. `tests/design-outputs.test.mjs` fails if a generator, source or output drifts.
+
 ## Print pipeline boundary
 
 - Before adding or changing a printed element, read `docs/ADDING_A_PRINT_ELEMENT.md`.
