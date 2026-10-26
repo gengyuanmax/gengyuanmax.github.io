@@ -34,6 +34,16 @@ export async function svgCoverage(markup:string,w:number,h:number){
  try{await new Promise<void>((ok,bad)=>{image.onload=()=>ok();image.onerror=bad;image.src=url;});ctx.drawImage(image,0,0);}finally{URL.revokeObjectURL(url);}
  const rgba=ctx.getImageData(0,0,w,h).data;return Float32Array.from({length:w*h},(_,i)=>rgba[i*4+3]/255);
 }
+/** Coverage of a tool-rendered plate (alpha = ink density) published as a file. An SVG
+ * rasterised as an image may not load external files, so the plate is drawn directly,
+ * stretched to the 360×220 artboard like its <image> element. */
+export async function imageCoverage(href:string,w:number,h:number){
+ const c=surface(w,h),ctx=c.getContext('2d',{willReadFrequently:true})!,image=new Image();
+ image.decoding='async';
+ await new Promise<void>((ok,bad)=>{image.onload=()=>ok();image.onerror=bad;image.src=href;});
+ ctx.drawImage(image,0,0,w,h);
+ const rgba=ctx.getImageData(0,0,w,h).data;return Float32Array.from({length:w*h},(_,i)=>rgba[i*4+3]/255);
+}
 /** Development-only geometry markers; never part of an ink plate. */
 export function drawAnchorProof(canvas:HTMLCanvasElement,points:{x:number;y:number}[],color:string,dpr:number){
  const context=canvas.getContext('2d')!;context.save();context.setTransform(dpr,0,0,dpr,0,0);context.strokeStyle=color;context.lineWidth=1;

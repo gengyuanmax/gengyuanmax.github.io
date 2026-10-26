@@ -158,7 +158,7 @@ plates[py:py + ph, x0:x1] = np.where(a, 0, plates[py:py + ph, x0:x1])
 figure = np.zeros_like(plates); figure[py:py + ph, x0:x1] = np.where(a, pd[:, sx:sx + x1 - x0], 0)
 
 # ---------------------------------------------------------------- output
-out = root / 'src' / 'assets' / 'home' / 'landscape-4c'; out.mkdir(parents=True, exist_ok=True)
+out = root / L['plates']; out.mkdir(parents=True, exist_ok=True)
 for prefix, layer in (('', plates), ('figure-', figure)):
     for i, ink in enumerate(INKS):
         img = np.zeros((H, W, 4), np.uint8); img[..., 3] = np.round(np.clip(layer[..., i], 0, 1) * 255)

@@ -25,7 +25,10 @@ for(const name of ['design','__design'])await assert.rejects(fs.access(`dist/${n
 async function walk(dir){const result=[];for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())result.push(...await walk(file));else result.push(file);}return result;}
 const files=await walk('dist');
 for(const file of files.filter(f=>/\.(html|js|css)$/.test(f))){const body=await fs.readFile(file,'utf8');assert(!body.includes('X-Design-Token')&&!body.includes('/__design/config')&&!body.includes('本地设计台')&&!body.includes('design:layout-study')&&!body.includes('he-layout-research')&&!body.includes('he-screen-audit-layer')&&!body.includes('homepage-layout-study')&&!body.includes('design-preview=current')&&!body.includes('当前调整预览'),`Authoring code leaked: ${file}`);}
-for(const [,src]of html.matchAll(/(?:src|href)="(\/(?:_astro|images)\/[^"?#]+)"/g))await fs.access('dist'+src);
+for(const [,src]of html.matchAll(/(?:src|href)="(\/(?:_astro|images|_print)\/[^"?#]+)"/g))await fs.access('dist'+src);
+// Build-time print images are published as files, not inlined (page weight, 2026-10-26).
+assert.ok(!/(?:src|href)="data:image\/png;base64,/.test(html),'Print fallbacks and plates must be published under /_print/, not inlined');
+assert.ok(html.length<1_350_000,`index.html is ${html.length} bytes; inline images have crept back in`);
 console.log(`Build verified: ${ids.length} unique IDs, four areas, four shortcuts, five interleaved artifacts, no authoring route or editor code.`);
 
 assert(!html.includes('noindex'),'Production homepage must be indexable');

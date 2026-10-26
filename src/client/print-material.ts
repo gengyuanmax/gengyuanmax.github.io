@@ -1,4 +1,4 @@
-import {prepareInkGroup,paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
+import {prepareInkGroup,paperOrigin,textCoverage,pixelSurface,publishCanvas,svgCoverage,imageCoverage,createPrintMount,alphaMaskURL,publishMask,clearMask} from '../design/print-pipeline/browser';
 import {typeScreenLevel} from '../design/screen';
 import {motifScreenLevel,type Motif} from '../design/motif-levels';
 import {dotPitch} from '../design/print-pipeline/index';
@@ -88,9 +88,9 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
      for(const [index,node] of children.entries()){
       const patterned=(node.getAttribute('fill')||'').startsWith('url('),e=node.cloneNode(true) as Element;
       if(patterned)e.setAttribute('fill','black');
-      const source=await svgCoverage(e.outerHTML,w,h);if(run!==generation||!ticket.current())return;
-      const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
       const fromTool=e.tagName==='image'&&e.getAttribute('data-print-tone')==='source';
+      const source=fromTool?await imageCoverage(e.getAttribute('href')!,w,h):await svgCoverage(e.outerHTML,w,h);if(run!==generation||!ticket.current())return;
+      const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
       const screened=patterned||ring||fromTool;if(screened)screenedInks.add(ink);
       const kind=fromTool?'source':e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
       originals.push({ink,coverage:source,screened,ring,kind,index});

@@ -4,58 +4,34 @@ import {resolve,getPalette} from '../src/design/settings.ts';
 import {rgb} from '../src/design/element-composition.ts';
 import {screenOriginal,paintMaterial,pressSettings,elementPress,onSheet} from '../src/design/print-pipeline/index.ts';
 
-/** Separation (source adapter only; screening, transfer and inks are the shared
- * pipeline's): forest and dark rock to the blue plate, lit rock to vermilion midtones,
- * cloud to paper, blue sky to a light blue screen fading to paper towards the top. The
- * person stands in front: the mountain is knocked out under him, his darks print blue
- * and his midtones vermilion. */
-const sm=(e0,e1,x)=>{const t=Math.max(0,Math.min(1,(x-e0)/(e1-e0)));return t*t*(3-2*t);};
-function boxBlur(a,W,H,r){const t=new Float32Array(W*H),o=new Float32Array(W*H);
- for(let y=0;y<H;y++){let acc=0;for(let x=-r;x<W;x++){if(x+r<W)acc+=a[y*W+x+r];if(x-r-1>=0)acc-=a[y*W+x-r-1];if(x>=0)t[y*W+x]=acc/(2*r+1);}}
- for(let x=0;x<W;x++){let acc=0;for(let y=-r;y<H;y++){if(y+r<H)acc+=t[(y+r)*W+x];if(y-r-1>=0)acc-=t[(y-r-1)*W+x];if(y>=0)o[y*W+x]=acc/(2*r+1);}}return o;}
-async function fourInkTones(W,H,prefix=''){
+/** Prints the home "mountain and person" sheet in four inks (user, 2026-10-26).
+ * The separation is made beforehand by design/photo/home_landscape_4c.py (existing image
+ * tools) and committed as ink-density plates; this script only prints them with the
+ * shared pipeline: the landscape plates on L.screen, the person's plates on L.figureScreen,
+ * merged per ink by the composite. */
+async function plateTones(W,H,prefix){
  const out={};
  for(const ink of ['a','b','c','d']){
-  const {data,info}=await sharp(new URL(`../${L.fourInkPlates}/${prefix}${ink}.png`,import.meta.url).pathname).ensureAlpha().raw().toBuffer({resolveWithObject:true});
-  if(info.width!==W||info.height!==H)throw new Error(`Four-ink plate ${ink} is ${info.width}×${info.height}, expected ${W}×${H}; re-run design/photo/home_landscape_4c.py`);
+  const {data,info}=await sharp(new URL(`../${L.plates}/${prefix}${ink}.png`,import.meta.url).pathname).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  if(info.width!==W||info.height!==H)throw new Error(`Plate ${prefix}${ink} is ${info.width}×${info.height}, expected ${W}×${H}; re-run npm run design:landscape`);
   out[ink]=Float32Array.from({length:W*H},(_,i)=>data[i*4+3]/255);
  }
  return out;
 }
-export async function renderHomeLandscape(config,{separation=L.separation,output=new URL('../public'+L.output,import.meta.url).pathname}={}){
+export async function printHomeLandscape(config){
  const s=resolve(config,'home').values,p=getPalette(config,s.palette),seed=resolve(config).values.seed,k=L.scale;
- const W=L.width*k,H=L.height*k,BH=L.band.height*k,top=H-BH,n=W*H;
- const band=await sharp(new URL('../'+L.mountain,import.meta.url).pathname).extract(L.band.source).resize(W,BH,{fit:'cover'}).ensureAlpha().raw().toBuffer();
- const lum=new Float32Array(W*BH);for(let i=0;i<W*BH;i++)lum[i]=(.299*band[i*4]+.587*band[i*4+1]+.114*band[i*4+2])/255;
- const m1=boxBlur(lum,W,BH,4),m2=boxBlur(lum.map(v=>v*v),W,BH,4),tex=boxBlur(m1.map((m,i)=>Math.sqrt(Math.max(0,m2[i]-m*m))),W,BH,6);
- const ta=new Float32Array(n),tb=new Float32Array(n);
- for(let y=0;y<BH;y++)for(let x=0;x<W;x++){const j=y*W+x,i=(y+top)*W+x,r=band[j*4]/255,g=band[j*4+1]/255,b=band[j*4+2]/255,l=lum[j];
-  const sky=sm(.06,.2,b-r)*sm(.3,.55,l),forest=sm(.4,.22,l)*sm(-.03,.05,g-b)*(1-sky),rock=sm(.025,.06,tex[j])*(1-sky)*(1-forest);
-  const fade=sm(BH*.02,BH*.55,y)**1.4,rockFade=sm(BH*.08,BH*.3,y);
-  tb[i]=forest*.88+sky*.24*fade+rock*rockFade*sm(.55,.3,l)*.3;
-  ta[i]=rock*rockFade*sm(.97,.45,l)*.58;
- }
- // Person, bottom-aligned, in front of the mountain.
- const ph=Math.round(H*L.placement.height),meta=await sharp(new URL('../'+L.personSource,import.meta.url).pathname).metadata(),pw=Math.round(ph*meta.width/meta.height);
- const px=Math.round(W*L.placement.x-pw/2),py=H-ph;
- const person=await sharp(new URL('../'+L.personSource,import.meta.url).pathname).resize(pw,ph,{kernel:'lanczos3'}).ensureAlpha().raw().toBuffer();
- for(let y=0;y<ph;y++)for(let x=0;x<pw;x++){const X=px+x,Y=py+y;if(X<0||X>=W||Y<0||Y>=H)continue;const j=y*pw+x,a=person[j*4+3]/255;if(a<.02)continue;
-  const l=(.299*person[j*4]+.587*person[j*4+1]+.114*person[j*4+2])/255,i=Y*W+X;
-  const dark=sm(.62,.12,l)*.92,mid=sm(.96,.5,l)*.5*(1-dark*.8);
-  tb[i]=tb[i]*(1-a)+dark*a;ta[i]=ta[i]*(1-a)+mid*a;}
- const mask=new Float32Array(n).fill(1);
- const press=onSheet(elementPress(pressSettings(s,separation==='four-ink'?L.fourInkScreen:L.screen,L.displaySize),'home-landscape','image'),seed,L.origin,1440);
- // Four-ink separation (design/photo/home_landscape_4c.py) replaces the two-ink one when selected.
- const tones=separation==='four-ink'?await fourInkTones(W,H):{a:ta,b:tb};
- const plates=Object.entries(tones).map(([ink,tone])=>({ink,coverage:screenOriginal(`home-landscape-${ink}`,{kind:'photo',mask,tone},W,H,ink,press,k,L.origin)}));
- if(separation==='four-ink'){
-  // The person has plates of his own on a finer screen (L.figureScreen); same inks, merged per ink by the composite.
-  const figurePress={...press,pitch:pressSettings(s,L.figureScreen,L.displaySize).pitch,level:L.figureScreen};
-  for(const [ink,tone] of Object.entries(await fourInkTones(W,H,'figure-')))
-   plates.push({ink,coverage:screenOriginal(`home-figure-${ink}`,{kind:'photo',mask,tone},W,H,ink,figurePress,k,L.origin)});
- }
+ const W=L.width*k,H=L.height*k,mask=new Float32Array(W*H).fill(1);
+ const press=onSheet(elementPress(pressSettings(s,L.screen,L.displaySize),'home-landscape','image'),seed,L.origin,1440);
+ const figurePress={...press,pitch:pressSettings(s,L.figureScreen,L.displaySize).pitch,level:L.figureScreen};
+ const plates=[];
+ for(const [prefix,id,pr] of [['','home-landscape',press],['figure-','home-figure',figurePress]])
+  for(const [ink,tone] of Object.entries(await plateTones(W,H,prefix)))
+   plates.push({ink,coverage:screenOriginal(`${id}-${ink}`,{kind:'photo',mask,tone},W,H,ink,pr,k,L.origin)});
  const inks={a:rgb(p.secondary),b:rgb(p.primary),c:rgb(p.yellow),d:rgb(p.dark),paper:[255,255,255]};
- const rgba=paintMaterial(plates,W,H,inks,press,k);
- await sharp(Buffer.from(rgba),{raw:{width:W,height:H,channels:4}}).removeAlpha().png({compressionLevel:9,palette:true,colors:separation==='four-ink'?160:64,dither:0}).toFile(output);
- console.log(`Rendered home landscape ${output} [${separation}] (${W}×${H}, ${press.pitch}px ${press.level} screen)`);
+ return {rgba:paintMaterial(plates,W,H,inks,press,k),W,H,press};
+}
+export async function renderHomeLandscape(config,{output=new URL('../public'+L.output,import.meta.url).pathname}={}){
+ const {rgba,W,H,press}=await printHomeLandscape(config);
+ await sharp(Buffer.from(rgba),{raw:{width:W,height:H,channels:4}}).removeAlpha().png({compressionLevel:9,palette:true,colors:160,dither:0}).toFile(output);
+ console.log(`Rendered home landscape ${output} (${W}×${H}, four inks, ${press.pitch}px landscape / ${L.figureScreen} figure)`);
 }

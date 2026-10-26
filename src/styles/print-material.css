@@ -28,8 +28,8 @@
 #personal-site .he-project-ground{mix-blend-mode:multiply;}
 
 /* Pre-rendered material remains until a complete live plate is published. */
-#personal-site .he-field-fallback{position:absolute;inset:0;width:100%;height:100%;transform:scale(var(--field-scale));transform-origin:50% 60%;pointer-events:none;}
-#personal-site .he-field-fallback~.he-print-field{opacity:0;}
+#personal-site .he-field-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:scale(var(--field-scale));transform-origin:50% 60%;pointer-events:none;}
+#personal-site .he-print-object>.he-print-field{opacity:0;}
 #personal-site [data-material-ready="true"]>.he-field-fallback{visibility:hidden;}
 /* Same rule for decorative print fields: the reference-layout fallback is for no-JS visitors. */
 #personal-site[data-enhanced] .he-field-fallback{visibility:hidden;}
