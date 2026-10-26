@@ -49,7 +49,7 @@ export async function renderHomeLandscape(config,{separation=L.separation,output
  const tones=separation==='four-ink'?await fourInkTones(W,H):{a:ta,b:tb};
  const plates=Object.entries(tones).map(([ink,tone])=>({ink,coverage:screenOriginal(`home-landscape-${ink}`,{kind:'photo',mask,tone},W,H,ink,press,k,L.origin)}));
  if(separation==='four-ink'){
-  // The person has plates of his own on the figure screen; same inks, merged per ink by the composite.
+  // The person has plates of his own on a finer screen (L.figureScreen); same inks, merged per ink by the composite.
   const figurePress={...press,pitch:pressSettings(s,L.figureScreen,L.displaySize).pitch,level:L.figureScreen};
   for(const [ink,tone] of Object.entries(await fourInkTones(W,H,'figure-')))
    plates.push({ink,coverage:screenOriginal(`home-figure-${ink}`,{kind:'photo',mask,tone},W,H,ink,figurePress,k,L.origin)});

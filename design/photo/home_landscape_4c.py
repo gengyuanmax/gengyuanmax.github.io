@@ -14,7 +14,7 @@ the region's colours come from a small, fixed overprint palette:
   forest  blue over yellow                              -> green
   person  vermilion over yellow for skin and jacket, dark for hair and shirt, blue plaid;
           the head from the earlier one-pass mapping (the approved face);
-          the person has plates of his own, printed on the 3px figure screen
+          the person has plates of his own, printed on the 2px fine screen
 (the swatch lists are SWATCHES below)
 
 The photo supplies only shapes and light/dark: each region is reduced to a few colours
@@ -151,7 +151,7 @@ labels, dens = to_swatches(prgb, inside, SWATCHES['face'], 8, seed=7)
 place(dens, flatten(labels, inside, 5), head, pd)
 
 # The person is cut out of the landscape plates and kept on plates of his own: he prints
-# on the figure screen (3px), the landscape on the image screen (4px).
+# on the fine screen (2px), the landscape on the image screen (4px).
 x0, x1 = max(px, 0), min(px + pw, W); sx = x0 - px
 a = inside[:, sx:sx + x1 - x0, None]
 plates[py:py + ph, x0:x1] = np.where(a, 0, plates[py:py + ph, x0:x1])
