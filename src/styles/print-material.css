@@ -1,6 +1,10 @@
 /* One paper layer above the ink: Layout Lab's paper filter, multiplied over
    both the blank sheet and printing. Never intercepts text or interaction. */
-#personal-site .he-page::before,#personal-site .he-nav-shell::before{z-index:12;opacity:var(--paper-texture);mix-blend-mode:multiply;mask-image:none;}
+#personal-site .he-page::before{z-index:12;opacity:calc(var(--paper-texture) * 10);background-size:var(--paper-grain-size);mix-blend-mode:multiply;mask-image:none;}
+/* The sheet's grain layer is the only grain, and it lies above the sticky nav too (z 25 >
+   nav 20): during boot the nav could rise above a z 12 sheet and show as a flat, lighter
+   box for about a second (user, 2026-10-27). The nav keeps no grain of its own. */
+#personal-site .he-nav-shell::before{content:none;}
 #personal-site .he-print-object{position:relative;mix-blend-mode:multiply;}
 #personal-site .he-material-field{position:absolute;inset:0;display:block;width:100%;height:100%;transform:scale(var(--field-scale));transform-origin:50% 60%;pointer-events:none;}
 #personal-site .he-print-object[data-material-ready="true"]>.he-print-field{opacity:0;}
@@ -38,7 +42,7 @@
    one tile origin, so the texture is continuous everywhere. */
 html:has(#personal-site){overflow-x:clip;}
 #personal-site{position:relative;}
-#personal-site::after{content:"";position:absolute;top:calc(-1 * var(--sheet-margin,0px));bottom:calc(-1 * var(--sheet-margin,0px));left:calc(50% - 50vw);width:100vw;z-index:12;pointer-events:none;background-image:var(--paper-grain-image);background-size:var(--paper-grain-size);opacity:calc(var(--paper-texture) * 10);mix-blend-mode:multiply;}
+#personal-site::after{content:"";position:absolute;top:calc(-1 * var(--sheet-margin,0px));bottom:calc(-1 * var(--sheet-margin,0px));left:calc(50% - 50vw);width:100vw;z-index:25;pointer-events:none;background-image:var(--paper-grain-image);background-size:var(--paper-grain-size);opacity:calc(var(--paper-texture) * 10);mix-blend-mode:multiply;}
 #personal-site .he-page::before{content:none;}
 @media print{#personal-site::after{content:none;}}
 
