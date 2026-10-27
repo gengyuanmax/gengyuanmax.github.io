@@ -15,7 +15,15 @@ if(root){
  // Scrollable content owns its printed borders, so they move and clip with it.
  const hostSelector='.he-page,.he-nav-shell,.he-colophon,.he-news-scroll > ol';
  const skip=(el:Element)=>!!el.closest('.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.em-ink,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
- const ink=(c:string)=>!!c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)&&!/^rgb\(240, 235, 223\)$/.test(c);
+ // Paper is not ink. The paper colour is read from the live token, never hard-coded: when the
+ // paper changed (2026-10-27) a literal old value made every paper-backed page and the nav
+ // count as solid ink blocks, and printing those page-sized masks froze the page for seconds.
+ const paperRGB=()=>{const probe=document.createElement('span');probe.style.color='var(--paper)';root!.append(probe);const c=getComputedStyle(probe).color;probe.remove();return c;};
+ let paper=paperRGB();
+ const ink=(c:string)=>!!c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)&&c!==paper;
+ // The paper grain layers are paper too, whatever image the grain uses.
+ const grainImage=()=>getComputedStyle(root!).getPropertyValue('--paper-grain-image').trim();
+ const isGrain=(image:string)=>/feTurbulence|paper-grain|paper-vintage/.test(image)||(!!grainImage()&&image.includes(grainImage().replace(/^url\(["']?|["']?\)$/g,'')));
  const groundLike=(el:Element)=>el.matches('.he-project-ground,.he-divider-band,[data-material-mask],.he-type-a,.he-type-b,img,canvas,svg,svg *');
  function host(el:Element){return el.closest<HTMLElement>(hostSelector)||root!;}
  function measure(){
@@ -40,13 +48,14 @@ if(root){
     if(p.content==='none'||p.display==='none')continue;
     const pw=parseFloat(p.width),ph=parseFloat(p.height);if(!(pw>0&&ph>0))continue;
     // Paper grain layers are paper, not ink: never mask them.
-    if(/feTurbulence|paper-grain/.test(p.backgroundImage))continue;
+    if(isGrain(p.backgroundImage))continue;
     if(ink(p.backgroundColor)||p.backgroundImage!=='none')pseudos.push({el,which,w:pw,h:ph});}
   }
   return {borders,blocks,pseudos};
  }
  function draw(){
   if(root!.dataset.navigating)return;
+  paper=paperRGB();
   try{
    root!.dataset.rulesMeasure='';
    const {borders,blocks,pseudos}=measure();
