@@ -1,7 +1,7 @@
 #personal-site {
-  /* Vintage poster stock (user, 2026-10-27): design/paper/vintage.py, a 768 CSS px multiply tile. */
+  /* Vintage poster stock (user, 2026-10-27): design/paper/vintage.py, a 1024 CSS px multiply tile. */
   --paper-grain-image: url("/images/paper-vintage.webp");
-  --paper-grain-size: 768px 768px;
+  --paper-grain-size: 1024px 1024px;
   --page-gutter: clamp(22px, 4cqw, var(--page-gutter-max));
   --guide-fill: color-mix(in srgb, var(--blue-ink) 5%, transparent);
   --guide-line: color-mix(in srgb, var(--blue-ink) 20%, transparent);
