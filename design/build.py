@@ -3,6 +3,7 @@
     npm run design            # all
     npm run design -- marks   # only the project marks
     npm run design -- landscape
+    npm run design -- paper
 
 outputs.json records, per generator, the sha256 of its inputs (the scripts it runs, the
 shared helpers, its source images and the config/palette it reads) and of its outputs.
@@ -33,6 +34,11 @@ GENERATORS = {
         'inputs': ['design/marks/meretriever.py', 'design/marks/plates.py'],
         'outputs': ['src/design/assets/mark-meretriever.ts'],
     },
+    'paper-vintage': {
+        'group': 'paper', 'run': ['design/paper/vintage.py'],
+        'inputs': ['design/paper/vintage.py'],
+        'outputs': ['public/images/paper-vintage.webp'],
+    },
     'home-landscape': {
         'group': 'landscape', 'run': ['design/photo/home_landscape_4c.py'],
         'inputs': ['design/photo/home_landscape_4c.py', 'src/config/home-landscape.ts', 'src/config/design.json',
@@ -45,7 +51,7 @@ def sha(path):
     return hashlib.sha256((root / path).read_bytes()).hexdigest()
 
 def main():
-    groups = set(sys.argv[1:]) or {'marks', 'landscape'}
+    groups = set(sys.argv[1:]) or {'marks', 'landscape', 'paper'}
     manifest_path = root / 'design' / 'outputs.json'
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     for name, g in GENERATORS.items():

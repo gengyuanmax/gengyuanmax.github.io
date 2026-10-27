@@ -14,7 +14,7 @@ export type Parameter = { label: string; group: string; scopes: readonly Scope[]
 const all: readonly Scope[] = ['global', 'area', 'element'];
 const globalOnly: readonly Scope[] = ['global'];
 export const palettes = {
-  blueVermilion: { label: '蓝 / 朱红', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f0ebdf', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
+  blueVermilion: { label: '蓝 / 朱红', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f2eee4', text: '#242921', muted: '#62665a', rule: '#b9b8aa', primary: '#283eb5', secondary: '#cf5037' },
   pinkBlue: { label: '荧光粉 / 蓝', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f3f1e9', text: '#20212a', muted: '#626370', rule: '#bdbdc2', primary: '#173d9a', secondary: '#e341a1' },
   blackRed: { label: '黑 / 红', yellow:'#dfba29', dark:'#2c2a2e', paper: '#f0eee7', text: '#232323', muted: '#63605b', rule: '#bab6ae', primary: '#292927', secondary: '#b7392f' },
 };

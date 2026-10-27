@@ -2,7 +2,7 @@
    Only decorative ink/folio shapes bleed; prose, names and links stay intact.
    Plate recipes remain editable through PrintGround, globally and per element. */
 #personal-site .he-page::before,
-#personal-site .he-nav-shell::before {mask-image:none;opacity:var(--paper-texture);}
+#personal-site .he-nav-shell::before {mask-image:none;opacity:calc(var(--paper-texture) * 10);}
 #personal-site .he-page::after {background:linear-gradient(var(--blue-ink),var(--blue-ink)) center top/2px 12px no-repeat,linear-gradient(var(--blue-ink),var(--blue-ink)) center 6px/8px 2px no-repeat;}
 #personal-site .he-nav {grid-template-columns:2fr 4fr 3fr 3fr;}
 #personal-site .he-nav a {grid-column:auto;}

@@ -15,5 +15,5 @@ for(const [name,{inputs,outputs}] of Object.entries(manifest)){
  });
 }
 test('every tool-rendered mark and the landscape are covered',()=>{
- assert.deepEqual(Object.keys(manifest).sort(),['home-landscape','mark-icq','mark-meretriever','mark-reexplore','mark-surgeon']);
+ assert.deepEqual(Object.keys(manifest).sort(),['home-landscape','mark-icq','mark-meretriever','mark-reexplore','mark-surgeon','paper-vintage']);
 });

@@ -6,7 +6,7 @@
     "bodyFont": "newsreader",
     "bodySize": 18,
     "emphasisFont": "bricolage",
-    "paperTexture": 0.08,
+    "paperTexture": 0.1,
     "toneLight": 225,
     "toneNoise": 0.065,
     "toneNoiseScale": 140,
