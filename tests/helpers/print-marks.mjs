@@ -7,7 +7,7 @@ import {printHomeLandscape} from '../../scripts/render-home-landscape.mjs';
 
 /** Fingerprints of the printed output of every tool-rendered element: the static print of
  * the three project marks and the four-ink home landscape, from the committed config. */
-export const markIds=['mark-icq','mark-icqhl','mark-reexplore','mark-surgeon'];
+export const markIds=['mark-icq','mark-icqhl','mark-reexplore','mark-surgeon','mark-meretriever','mark-mevtr'];
 export async function printMarks(){
  const config=JSON.parse(fs.readFileSync(new URL('../../src/config/design.json',import.meta.url),'utf8'));validateConfig(config);
  const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),seed=resolve(config).values.seed,result={};

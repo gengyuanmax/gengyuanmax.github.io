@@ -153,6 +153,14 @@
 }
 
 /* ---------- Phones (always poster) ---------- */
+/* Compact, 721–860px (viewport below ~980px): two columns leave the picture a tall sliver (about 270px wide at
+   800). Name and intro take the full width; the landscape follows as a wide band, cropped
+   to the figure and the mountain behind him (user, 2026-10-27). */
+@container(min-width:721px) and (max-width:860px){
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] :is(.he-name,.he-intro){grid-column:1/13;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape{grid-column:1/13;grid-row:2;align-self:start;min-height:0;aspect-ratio:12/5;margin:16px 0 0;}
+ #personal-site[data-reading="compact"] .he-home[data-home-layout] .he-landscape>img{object-position:76% 100%;}
+}
 @container(max-width:720px){
  #personal-site .he-home[data-home-layout] .he-landscape{margin:24px calc(-1 * var(--page-gutter)) 0;height:300px;overflow:hidden;}
  #personal-site .he-home[data-home-layout] .he-landscape>img{height:100%;object-fit:cover;object-position:80% 100%;}

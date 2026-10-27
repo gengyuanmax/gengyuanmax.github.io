@@ -53,11 +53,11 @@
     compact size must be !important to win over those inline declarations. */
  #personal-site[data-reading="compact"],#personal-site[data-reading="compact"] [style*="--body-size"]{--body-size:15px!important;}
  #personal-site[data-reading="compact"] .he-project .he-project-description{line-height:1.6;margin-top:6px;}
- #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{height:140px;width:calc((100% - var(--column-gap)) / 2);max-width:none;margin-left:0;}
- #personal-site[data-reading="compact"] .he-artifact>.he-print-object{height:112px;max-width:200px;}
- #personal-site[data-reading="compact"] [data-content-id="artifact-b"]>.he-print-object{height:104px;}
- #personal-site[data-reading="compact"] [data-content-id="artifact-d"]>.he-print-object{height:112px;margin-bottom:8px;}
- #personal-site[data-reading="compact"] [data-content-id="artifact-e"]>.he-print-object{height:96px;margin:0 0 8px 24px;}
+ #personal-site[data-reading="compact"] .he-project-imprint>.he-print-object{--mark-h:140px;--mark-w:calc((100% - var(--column-gap)) / 2);max-width:none;margin-left:0;}
+ #personal-site[data-reading="compact"] .he-artifact>.he-print-object{--mark-h:112px;max-width:200px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-b"]>.he-print-object{--mark-h:104px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-d"]>.he-print-object{--mark-h:112px;margin-bottom:8px;}
+ #personal-site[data-reading="compact"] [data-content-id="artifact-e"]>.he-print-object{--mark-h:96px;margin:0 0 8px 24px;}
  #personal-site[data-reading="compact"] .he-print-lab-overview{width:min(100%,160px);}
  #personal-site[data-reading="compact"] .he-artifact-description{font-size:15px;}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{grid-column:auto/span 3;}
@@ -90,7 +90,7 @@
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact{display:flex;flex-direction:column;align-items:stretch;}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{align-self:flex-start;}
  #personal-site[data-reading="compact"] .he-artifact-spread{--art-slot:calc(var(--baseline) * 26);}
- #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-object{height:calc(var(--baseline) * 14);margin:calc(var(--art-slot) - var(--baseline) * 14) 0 0;}
+ #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-object{--mark-h:calc(var(--baseline) * 14);margin:calc(var(--art-slot) - var(--baseline) * 14) 0 0;}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-print-lab-overview{width:154px;height:var(--art-slot);margin:0;overflow:visible;}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact>.he-item-meta{margin-top:calc(var(--baseline) * 2);}
  #personal-site[data-reading="compact"] .he-artifact-spread>.he-artifact:not(:has(>.he-print-object,>.he-print-lab-overview))>.he-item-meta{margin-top:calc(var(--art-slot) + var(--baseline) * 2);}
@@ -99,7 +99,7 @@
  #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading{display:flex;align-items:flex-end;gap:calc(var(--baseline) * 2);min-height:0;padding:0 0 calc(var(--baseline) * 1.5);margin:0 0 calc(var(--baseline) * 2);}
  #personal-site[data-reading="compact"] .he-about-body .he-about-module .he-quiet-heading h2{margin:0;padding:0;}
  #personal-site[data-reading="compact"] .he-about-body .he-personal-heading{align-items:flex-end;}
- #personal-site[data-reading="compact"] .he-about-body .he-personal-heading>.he-print-object{height:calc(var(--baseline) * 4);flex-basis:56px;width:56px;}
+ #personal-site[data-reading="compact"] .he-about-body .he-personal-heading>.he-print-object{--mark-h:calc(var(--baseline) * 4);flex-basis:56px;--mark-w:56px;}
 }
 
 /* One persistent marker per control group; selection never changes layout. */

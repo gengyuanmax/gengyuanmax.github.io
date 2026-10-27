@@ -3,9 +3,10 @@ import {earthLandPath} from './assets/earth-land.ts';
 import * as icqPlates from './assets/mark-icq.ts';
 import * as reexplorePlates from './assets/mark-reexplore.ts';
 import * as surgeonPlates from './assets/mark-surgeon.ts';
+import * as meretrieverPlates from './assets/mark-meretriever.ts';
 type Plates={a:string;b:string;c?:string;d?:string};
 const platesOf=(m:Record<string,string>):Plates=>({a:m.plateA,b:m.plateB,c:m.plateC,d:m.plateD});
-const icq=platesOf(icqPlates),reexplore=platesOf(reexplorePlates),surgeon=platesOf(surgeonPlates);
+const icq=platesOf(icqPlates),reexplore=platesOf(reexplorePlates),surgeon=platesOf(surgeonPlates),meretriever=platesOf(meretrieverPlates);
 export type {Motif} from './motif-levels.ts';
 import type {Motif} from './motif-levels.ts';
 export {motifScreenLevel} from './motif-levels.ts';
@@ -25,7 +26,7 @@ function motifParts(s:Settings,id:string,kind:Motif,href:PlateHref=u=>u){
  const b=kind==='windows'?`<circle cx="${174+o*30}" cy="115" r="94" fill="${dotsB}"/>`:kind==='sequence'?`<path d="M27 106h306v16H27z"/><circle cx="${132+o*30}" cy="110" r="70" fill="${dotsB}"/><path d="M46 35v18m118-18v18m118-18v18" stroke="currentColor" stroke-width="2"/>`:`<circle cx="${137-o*35}" cy="112" r="73" fill="none" stroke="currentColor" stroke-width="26"/><path d="M40 192h236" stroke="currentColor" stroke-width="3"/>`;
  // Project marks modelled in Blender (design/marks/*.py) and rendered to two
  // ink-density plates by design/marks/render.py. The pipeline only prints them.
- const plates:Partial<Record<Motif,Plates>>={query:icq,frontier:reexplore,scope:surgeon};
+ const plates:Partial<Record<Motif,Plates>>={query:icq,frontier:reexplore,scope:surgeon,strips:meretriever};
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;

@@ -4,9 +4,9 @@
    "design/photo/home_landscape_4c.py": "56da26b8f223c2f89ceed53cd97277c8bf9735822a96bc2d1bc1a608c66ee962",
    "public/images/portrait-source-cutout.png": "c26168d66336dfbf299486a14aa9e490c0d60d3811e2061ade730ec317b1515b",
    "src/assets/home/mountain.jpg": "fd3bcc541c11aa28583548320c4df7ac619e626124202801c857682d2f2779a7",
-   "src/config/design.json": "1dd228f964968758432fe33a59c07a6c792da2c0151cf8b86129080a2e1a9e79",
+   "src/config/design.json": "70bfbb9863dd95b830f4e68b77fd22c7fc187a677b84ad35881e84467acd9162",
    "src/config/home-landscape.ts": "a7722e32faa50324972524b7a7a643cc2a6738afbca1b15d814221bc5bce48fd",
-   "src/design/settings.ts": "8859f36445ce3d29ec05b27a89fd245cf301ef7c4df577122ed36bc9867907e0"
+   "src/design/settings.ts": "bd850e473b027b21b8dec3e37f83cc363356f5e6adf10b6ed0ab2f36dcb55c15"
   },
   "outputs": {
    "src/assets/home/landscape-4c/a.png": "bfc64f02ddc344907ed8d54779bf4d1a9c7db7dd9221acd08756cf2256cc9a08",
@@ -29,6 +29,15 @@
    "src/design/assets/mark-icq.ts": "6c1586d031c76ea87e437c3cba93160d04dd8533c0de88e164ab6e1e02d89e6e"
   }
  },
+ "mark-meretriever": {
+  "inputs": {
+   "design/marks/meretriever.py": "f06e7c56444c8a3478be653434164bb72fd118240a04660312f1842c853a9ebe",
+   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48"
+  },
+  "outputs": {
+   "src/design/assets/mark-meretriever.ts": "44db4282513e2fa1101129577acb746b1762b208802d91fa41d942b80626793b"
+  }
+ },
  "mark-reexplore": {
   "inputs": {
    "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
@@ -47,6 +56,14 @@
   },
   "outputs": {
    "src/design/assets/mark-surgeon.ts": "ce5257853c171eab406cfd2280e96932e6fd77a14e799a89908a7b27819e3f2e"
+  }
+ },
+ "paper-vintage": {
+  "inputs": {
+   "design/paper/vintage.py": "65cf414410da922524ce821735e0d6f6999011c6bfcc369ce91a954d0869b26b"
+  },
+  "outputs": {
+   "public/images/paper-vintage.webp": "f97a465a960872a91cfd5c91c70e628effde2fd82fd78abc34acad9e0be4f39d"
   }
  }
 }

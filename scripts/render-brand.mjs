@@ -11,5 +11,5 @@ const side=Math.max(width,height)+12;
 const icon=await sharp({create:{width:side,height:side,channels:4,background:'#00000000'}}).composite([{input:mark,gravity:'centre'}]).png().toBuffer();
 await fs.writeFile(new URL('../public/favicon.svg',import.meta.url),`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${side} ${side}"><image width="${side}" height="${side}" href="data:image/png;base64,${icon.toString('base64')}"/></svg>\n`);
 await sharp(icon).resize(32,32).png().toFile(new URL('../public/favicon-32.png',import.meta.url).pathname);
-await sharp(icon).resize(180,180).flatten({background:'#f0ebdf'}).png().toFile(new URL('../public/apple-touch-icon.png',import.meta.url).pathname);
+await sharp(icon).resize(180,180).flatten({background:'#f2eee4'}).png().toFile(new URL('../public/apple-touch-icon.png',import.meta.url).pathname);
 console.log(`Brand mark: ${width}×${height}, transparent background`);

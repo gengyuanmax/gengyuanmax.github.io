@@ -17,7 +17,9 @@ export async function printBaseline(){
   result[`${role}-${scale}`]=hash(paintMaterial(compose({mask:a.mask,print:A},{mask:b.mask,print:B},width,height,scale,'over'),width,height,colors,p,scale));
   result[`${role}-${scale}-tone`]=hash(tone);result[`${role}-${scale}-screen`]=hash(B);
  }
- const settings={...defaults,researchSeed:20261014},config={version:1,global:{},areas:{},elements:{}};
+ // The fixtures record the pipeline for a fixed input; the paper colour is pinned to the one
+ // they were captured with (#f0ebdf), so a palette change (2026-10-27) is not a pipeline change.
+ const settings={...defaults,researchSeed:20261014},config={version:1,global:{},areas:{},elements:{},palettes:{blueVermilion:{paper:'#f0ebdf'}}};
  for(const width of [160,640]){
   const r=researchRecipe(settings,config,width);
   for(const id of ['benchmarking','domain','machines'])for(const state of ['normal','active','quiet'])result[`research-${width}-${id}-${state}`]=hash(r.stateDots(id,state));

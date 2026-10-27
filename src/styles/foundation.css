@@ -1,5 +1,7 @@
 #personal-site {
-  --paper-grain-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 .42 0 0 0 0 .38 0 0 0 0 .32 1.4 0 0 0 -.62'/%3E%3C/filter%3E%3Cpath filter='url(%23n)' d='M0 0h320v320H0z'/%3E%3C/svg%3E");
+  /* Vintage poster stock (user, 2026-10-27): design/paper/vintage.py, a 768 CSS px multiply tile. */
+  --paper-grain-image: url("/images/paper-vintage.webp");
+  --paper-grain-size: 768px 768px;
   --page-gutter: clamp(22px, 4cqw, var(--page-gutter-max));
   --guide-fill: color-mix(in srgb, var(--blue-ink) 5%, transparent);
   --guide-line: color-mix(in srgb, var(--blue-ink) 20%, transparent);

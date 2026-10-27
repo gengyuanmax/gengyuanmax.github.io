@@ -1,7 +1,7 @@
 /* One paper, one twelve-column grid. Typography uses the shared two-ink
    pipeline; small labels have tighter register than display type. */
 #personal-site .he-nav-shell {position:sticky;top:0;z-index:20;background:var(--paper);isolation:isolate;}
-#personal-site .he-nav-shell::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:var(--paper-grain-image);opacity:calc(var(--paper-texture)*2);mask-image:linear-gradient(to right,#000,transparent var(--edge-depth),transparent calc(100% - var(--edge-depth)),#000);}
+#personal-site .he-nav-shell::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:var(--paper-grain-image);background-size:var(--paper-grain-size);opacity:calc(var(--paper-texture)*2);mask-image:linear-gradient(to right,#000,transparent var(--edge-depth),transparent calc(100% - var(--edge-depth)),#000);}
 #personal-site .he-nav {display:grid;grid-template-columns:repeat(var(--columns),minmax(0,1fr));gap:var(--column-gap);padding:16px var(--page-gutter) 0;}
 #personal-site .he-nav a {grid-column:span 3;min-width:0;min-height:92px;position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px 0 18px;color:var(--ink);text-decoration:none;}
 #personal-site .he-nav-number {font:500 clamp(20px,2.1cqw,var(--geometry-size))/1 var(--metadata-face);letter-spacing:-.06em;color:inherit;}
