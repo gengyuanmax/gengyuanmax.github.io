@@ -27,7 +27,7 @@
 /* Chapter marks: same screened circle, different editorial anchors. */
 #personal-site .he-chapter-heading {position:relative;isolation:isolate;border-top:0;min-height:148px;padding-block:28px 18px;grid-template-columns:128px minmax(0,1fr);gap:6px 18px;align-items:center;}
 #personal-site .he-chapter-heading::after {content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--ink);clip-path:polygon(0 0,38% 15%,75% 0,100% 24%,100% 75%,65% 100%,12% 80%,0 100%);}
-#personal-site .he-chapter-heading > .he-print-object {position:absolute;left:-30px;top:0;width:205px;height:140px;z-index:-1;}
+#personal-site .he-chapter-heading > .he-print-object {position:absolute;left:-30px;top:0;--mark-w:205px;--mark-h:140px;z-index:-1;}
 #personal-site .he-chapter-number {font:750 112px/.9 var(--display-face);white-space:nowrap;letter-spacing:-.09em;color:var(--ink);paint-order:stroke fill;-webkit-text-stroke:5px var(--paper);}
 #personal-site .he-chapter-heading h2 {font:700 clamp(26px,3.2cqw,42px)/1.04 var(--display-face);letter-spacing:-.045em;}
 #personal-site .he-chapter-heading p {font:12px/1.6 var(--metadata-face);grid-column:2;}
@@ -48,7 +48,7 @@
 #personal-site .he-project-imprint .he-item-meta {margin-block:0 16px;}
 #personal-site .he-project-imprint .he-item-meta > span {border-left:3px solid var(--ink);padding-left:10px;}
 #personal-site .he-project-imprint h3 {font:700 clamp(28px,3cqw,40px)/1.08 var(--display-face);letter-spacing:-.04em;}
-#personal-site .he-project-imprint > .he-print-object {height:220px;width:62%;margin-left:10%;}
+#personal-site .he-project-imprint > .he-print-object {--mark-h:220px;--mark-w:62%;margin-left:10%;}
 #personal-site :is(.he-project-feature,.he-machine-feature) .he-project-imprint .he-item-meta {position:absolute;left:0;top:0;max-width:14ch;}
 #personal-site :is(.he-project-feature,.he-machine-feature) h3 {position:relative;font-size:clamp(48px,7.8cqw,92px);margin-top:-48px;}
 #personal-site :is(.he-project-feature,.he-machine-feature) .he-type-b {paint-order:stroke fill;-webkit-text-stroke:6px var(--paper);mix-blend-mode:normal;}
@@ -77,7 +77,7 @@
 #personal-site .he-artifact-controls select {border:0;border-bottom:2px solid var(--ink);background:transparent;padding-inline:8px 20px;}
 #personal-site .he-artifact-group-label {font:750 34px/1.1 var(--display-face);letter-spacing:-.03em;border:0;border-left:8px solid var(--red-ink);padding:0 0 0 14px;}
 #personal-site .he-print-lab-spread {position:relative;isolation:isolate;grid-template-columns:1.2fr 1fr 1fr .9fr;gap:12px;align-items:end;padding:10px 0 30px;}
-#personal-site .he-print-lab-spread > .he-print-object {position:absolute;right:-24px;top:-25px;width:48%;height:180px;z-index:-1;}
+#personal-site .he-print-lab-spread > .he-print-object {position:absolute;right:-24px;top:-25px;--mark-w:48%;--mark-h:180px;z-index:-1;}
 #personal-site .he-print-lab-spread a:nth-of-type(2) {margin-top:0;transform:translateY(24px);}
 #personal-site .he-print-lab-spread a:nth-of-type(3) {margin-top:0;transform:translateY(-28px);}
 #personal-site .he-print-lab-spread a:nth-of-type(4) {margin-top:0;transform:translateY(12px);}
@@ -85,20 +85,20 @@
 #personal-site .he-print-lab-spread span:not(.he-print-object) {font-size:12px;}
 #personal-site [data-content-id="artifact-a"] h2 {font-size:clamp(48px,7.4cqw,90px);margin-top:12px;}
 #personal-site [data-content-id="artifact-a"] .he-item-meta {margin-top:20px;}
-#personal-site .he-artifact > .he-print-object {height:160px;margin-bottom:4px;}
-#personal-site [data-content-id="artifact-b"] > .he-print-object {height:145px;}
+#personal-site .he-artifact > .he-print-object {--mark-h:160px;margin-bottom:4px;}
+#personal-site [data-content-id="artifact-b"] > .he-print-object {--mark-h:145px;}
 #personal-site [data-content-id="artifact-b"] h2 {font-size:clamp(32px,4.5cqw,54px);}
 #personal-site [data-content-id="artifact-b"] .he-item-meta {border:0;padding:0;}
 /* artifact-c no longer carries a side rule: no side rules (divider system, editorial-tension.css). */
 #personal-site [data-content-id="artifact-c"] h2 {font-size:clamp(28px,3.3cqw,42px);}
 #personal-site [data-content-id="artifact-c"] .he-type-a {display:none;}
 #personal-site [data-content-id="artifact-c"] .he-type-b {color:var(--ink);}
-#personal-site [data-content-id="artifact-d"] > .he-print-object {width:60%;height:180px;margin-left:20%;margin-bottom:-58px;}
+#personal-site [data-content-id="artifact-d"] > .he-print-object {--mark-w:60%;--mark-h:180px;margin-left:20%;margin-bottom:-58px;}
 #personal-site [data-content-id="artifact-d"] h2 {font-size:clamp(42px,6cqw,72px);}
 #personal-site [data-content-id="artifact-d"] .he-item-meta {position:relative;}
 #personal-site [data-content-id="artifact-d"] .he-type-b {paint-order:stroke fill;-webkit-text-stroke:5px var(--paper);mix-blend-mode:normal;}
 #personal-site [data-content-id="artifact-d"] .he-type-a {display:none;}
-#personal-site [data-content-id="artifact-e"] > .he-print-object {height:140px;width:320px;max-width:75%;margin:0 0 -42px 60px;}
+#personal-site [data-content-id="artifact-e"] > .he-print-object {--mark-h:140px;--mark-w:320px;max-width:75%;margin:0 0 -42px 60px;}
 #personal-site [data-content-id="artifact-e"] h2 {font-size:clamp(38px,5cqw,60px);}
 
 /* The smaller home and about details use the same print vocabulary. */
@@ -108,14 +108,14 @@
 #personal-site .he-pillars h3 {line-height:1.55;}
 #personal-site .he-role {padding-left:12px;border-left:3px solid var(--blue-ink);color:var(--ink);}
 #personal-site .he-news h2 {position:relative;display:block;font-size:clamp(42px,5.8cqw,70px);padding-top:18px;isolation:isolate;}
-#personal-site .he-news h2 > .he-print-object {position:absolute;width:195px;height:118px;left:-22px;top:-16px;z-index:-1;}
+#personal-site .he-news h2 > .he-print-object {position:absolute;--mark-w:195px;--mark-h:118px;left:-22px;top:-16px;z-index:-1;}
 #personal-site .he-news h2 .he-print-word {paint-order:stroke fill;-webkit-text-stroke:4px var(--paper);}
 #personal-site .he-news h2 .he-type-a {display:none;}
 #personal-site .he-news h2 .he-type-b {mix-blend-mode:normal;color:var(--ink);}
 #personal-site .he-news li {border-bottom:1.5px solid var(--ink);}
 #personal-site .he-date {color:var(--ink);border-left:2px solid var(--blue-ink);padding-left:8px;}
 #personal-site .he-about-personal {position:relative;padding-top:0;}
-#personal-site .he-about-personal > .he-print-object {height:190px;margin-bottom:24px;}
+#personal-site .he-about-personal > .he-print-object {--mark-h:190px;margin-bottom:24px;}
 #personal-site .he-about-body .he-secondary-list > section {border-top:3px solid var(--ink);padding-top:18px;}
 #personal-site .he-about-body .he-secondary-list > section > h2 {font:750 30px/1.1 var(--display-face);letter-spacing:-.04em;}
 #personal-site .he-timeline .he-item-meta {font:500 12px/1.7 var(--metadata-face);padding-left:10px;border-left:3px solid var(--blue-ink);}
@@ -125,8 +125,8 @@
 @container(max-width:900px){
  #personal-site .he-chapter-heading {grid-template-columns:92px minmax(0,1fr);}
  #personal-site .he-chapter-number {font-size:86px;}
- #personal-site .he-chapter-heading>.he-print-object {width:155px;left:-24px;}
- #personal-site .he-project-imprint>.he-print-object {height:190px;}
+ #personal-site .he-chapter-heading>.he-print-object {--mark-w:155px;left:-24px;}
+ #personal-site .he-project-imprint>.he-print-object {--mark-h:190px;}
 }
 @container(max-width:720px){
  #personal-site .he-print-lab-spread {grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 16px;}
@@ -137,21 +137,21 @@
  #personal-site .he-artifact>.he-print-object {max-width:300px;}
  #personal-site .he-chapter-heading {min-height:126px;padding-top:22px;}
  #personal-site .he-chapter-heading h2 {font-size:28px;}
- #personal-site .he-project-imprint>.he-print-object {height:180px;width:100%;margin-left:0;}
+ #personal-site .he-project-imprint>.he-print-object {--mark-h:180px;--mark-w:100%;margin-left:0;}
  #personal-site :is(.he-project-feature,.he-machine-feature) h3 {font-size:56px;margin-top:-25px;}
  #personal-site :is(.he-project-side,.he-embodied-project,.he-surgical-project,.he-machine-note) h3 {font-size:30px;}
  #personal-site .he-news h2 {min-height:105px;padding-top:18px;}
- #personal-site .he-news h2>.he-print-object {width:170px;height:108px;}
+ #personal-site .he-news h2>.he-print-object {--mark-w:170px;--mark-h:108px;}
  #personal-site .he-about-personal {grid-column:1/-1;}
- #personal-site .he-about-personal>.he-print-object {width:60%;max-width:280px;margin:16px 0 24px auto;}
- #personal-site [data-content-id="artifact-e"]>.he-print-object {height:100px;max-width:50%;margin-bottom:0;}
- #personal-site [data-content-id="artifact-d"]>.he-print-object {width:60%;height:140px;margin-left:40%;}
+ #personal-site .he-about-personal>.he-print-object {--mark-w:60%;max-width:280px;margin:16px 0 24px auto;}
+ #personal-site [data-content-id="artifact-e"]>.he-print-object {--mark-h:100px;max-width:50%;margin-bottom:0;}
+ #personal-site [data-content-id="artifact-d"]>.he-print-object {--mark-w:60%;--mark-h:140px;margin-left:40%;}
 }
 @container(max-width:400px){
  #personal-site .he-chapter-heading {grid-template-columns:64px minmax(0,1fr);gap:12px;}
  #personal-site .he-chapter-number {font-size:56px;}
  #personal-site .he-chapter-heading h2 {font-size:25px;}
- #personal-site .he-chapter-heading>.he-print-object {width:115px;left:-23px;}
+ #personal-site .he-chapter-heading>.he-print-object {--mark-w:115px;left:-23px;}
  #personal-site [data-content-id="artifact-a"] h2 {font-size:48px;}
  #personal-site .he-project-imprint .he-item-meta {font-size:12px;}
  #personal-site .he-print-field {overflow:hidden;}

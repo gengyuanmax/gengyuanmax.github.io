@@ -50,7 +50,9 @@
  #personal-site .he-artifacts-masthead>p{grid-column:1/-1;}
 }
 
-#personal-site .he-role-part{display:inline-block;}
+/* Each role part is its own line; a part that must wrap splits evenly instead of leaving
+   one word (with a trailing comma) alone on the next line (user, 2026-10-27). */
+#personal-site .he-role-part{display:block;text-wrap:balance;}
 @container(max-width:720px){
  #personal-site .he-slogan-opening,#personal-site .he-slogan-pair{display:block;white-space:nowrap;}
 }

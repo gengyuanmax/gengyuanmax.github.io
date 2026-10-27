@@ -521,3 +521,8 @@ Publications 附录章题（2026-10-18）：复用研究章节的蓝版网点 Pr
 - 后备图放在 `<noscript>` 里：有 JS 的访客不会下载；有 JS 时页面在印刷完成前保持纸色，与之前一致。后备图按原比例 `object-fit:contain` 显示。
 - 浏览器印刷工具原稿时直接加载该文件取墨量（`imageCoverage`），不经 SVG 栅格化。
 - `verify-build.mjs` 禁止 `src`/`href` 中出现 PNG data URL，并限制 `index.html` 体积。
+
+## 标记比例与 Me-Retriever 标记（2026-10-27）
+
+- 所有印刷标记（PrintMotif）的框统一为原稿比例 360:220，不再在别的比例的框里留白。各处只设定目标高度 `--mark-h` 和可选宽度上限 `--mark-w`，框取同时满足两者的最大 360:220 矩形（`print-material.css`）。
+- Me-Retriever / MeVTR 标记：两种模态是两条同形的打孔条——视频为蓝色圆孔条（帧），文本为朱红长孔条（词）；文本条是视频条绕中心旋转 180° 的同一条立体路径，两者合成一个等轴立方体形，相交处叠印为深色，即对齐点。由 `design/marks/meretriever.py`（Shapely）生成。

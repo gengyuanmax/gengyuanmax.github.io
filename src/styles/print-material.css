@@ -81,3 +81,8 @@ html:has(#personal-site){overflow-x:clip;}
    multiply inside their local sheet rather than covering one another. */
 #personal-site :is(.he-rule-layer,.he-timeline-guides){isolation:isolate;mix-blend-mode:multiply;}
 #personal-site .he-guide{mix-blend-mode:multiply;}
+/* Every printed mark keeps its artboard's proportion (360:220), so no mark is letterboxed
+   inside a box of another shape (user, 2026-10-27). Contexts set the size they want as
+   --mark-h (target height) and optionally --mark-w (width cap); the box takes the largest
+   360:220 rectangle that fits both. */
+#personal-site .he-print-object{width:min(var(--mark-w,100%),calc(var(--mark-h,220px) * 360 / 220));height:auto;aspect-ratio:360/220;}

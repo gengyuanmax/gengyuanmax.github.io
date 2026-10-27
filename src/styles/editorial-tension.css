@@ -18,7 +18,7 @@
 #personal-site .he-home .he-pillars a {text-decoration-color:var(--ink);}
 #personal-site .he-home .he-news {border:0;}
 #personal-site .he-home .he-news h2 {font-size:clamp(46px,6.5cqw,78px);}
-#personal-site .he-home .he-news h2>.he-print-object {width:190px;height:116px;left:calc(-1 * var(--page-gutter) * var(--spread-bleed));top:-16px;}
+#personal-site .he-home .he-news h2>.he-print-object {--mark-w:190px;--mark-h:116px;left:calc(-1 * var(--page-gutter) * var(--spread-bleed));top:-16px;}
 #personal-site .he-home .he-date {border-top:3px solid var(--blue-ink);}
 #personal-site .he-home .he-news li {border-bottom:2px solid var(--ink);}
 

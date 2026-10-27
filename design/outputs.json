@@ -29,6 +29,15 @@
    "src/design/assets/mark-icq.ts": "6c1586d031c76ea87e437c3cba93160d04dd8533c0de88e164ab6e1e02d89e6e"
   }
  },
+ "mark-meretriever": {
+  "inputs": {
+   "design/marks/meretriever.py": "f06e7c56444c8a3478be653434164bb72fd118240a04660312f1842c853a9ebe",
+   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48"
+  },
+  "outputs": {
+   "src/design/assets/mark-meretriever.ts": "44db4282513e2fa1101129577acb746b1762b208802d91fa41d942b80626793b"
+  }
+ },
  "mark-reexplore": {
   "inputs": {
    "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",

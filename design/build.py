@@ -28,6 +28,11 @@ GENERATORS = {
         'inputs': ['design/marks/surgeon_scan.py', 'design/marks/plates.py', 'design/marks/sources/gliax-instruments-scan-1.jpg'],
         'outputs': ['src/design/assets/mark-surgeon.ts'],
     },
+    'mark-meretriever': {
+        'group': 'marks', 'run': ['design/marks/meretriever.py'],
+        'inputs': ['design/marks/meretriever.py', 'design/marks/plates.py'],
+        'outputs': ['src/design/assets/mark-meretriever.ts'],
+    },
     'home-landscape': {
         'group': 'landscape', 'run': ['design/photo/home_landscape_4c.py'],
         'inputs': ['design/photo/home_landscape_4c.py', 'src/config/home-landscape.ts', 'src/config/design.json',
