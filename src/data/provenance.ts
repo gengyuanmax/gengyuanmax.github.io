@@ -3,12 +3,15 @@ export const sources:Record<string,{label:string;url?:string}>={
  homepage:{label:'现有主页',url:'https://gengyuanmax.github.io/'},scholar:{label:'Google Scholar · 已展开全部 20 个条目并去重',url:'https://scholar.google.com/citations?user=LN2tYr0AAAAJ'},
  'print-lab':{label:'Print Lab · 四个实验室',url:'https://gengyuanmax.github.io/print-labs/index.html'},
  neurips:{label:'NeurIPS 2026 poster 页面',url:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078'},
+ vitagent:{label:'VITAgent · public website and launch news, verified 2026-11-09',url:'https://vitagent.github.io/'},
+ 'vitagent-bench':{label:'SurgKnow-Bench · VITAgent project page, verified 2026-11-09',url:'https://vitagent.github.io/bench/'},
  'mosaic-release':{label:'Mosaic · public resources, verified 2026-10-17',url:'https://github.com/gengyuanmax/Mosaic'},
  mosaic:{label:'Mosaic · arXiv',url:'https://arxiv.org/abs/2609.39363'},avila:{label:'AViLA · arXiv',url:'https://arxiv.org/abs/2506.18472'},
  reexplore:{label:'ReEXplore · arXiv',url:'https://arxiv.org/abs/2511.19033'},icq:{label:'ICQ 项目页面',url:'https://icq-benchmark.github.io/'},
  mevtr:{label:'MeVTR · 官方仓库',url:'https://github.com/gengyuanmax/MeVTR'},wikitilo:{label:'WikiTiLo · 官方仓库',url:'https://github.com/gengyuanmax/WikiTiLo'},
 };
 export const reviewNotes=[
+ 'VITAgent 于 2026-11-09 核对公开主页、News 配置和 SurgKnow-Bench 子页。网站已上线，News 仅记录 Nov 2026；How to Train a Surgeon? 的 Project 入口指向 bench/，论文链接仍指向 NeurIPS。网站上的代码、论文和轨迹资源仍为占位，不据此宣称已发布代码或数据。',
  '除用户明确确认的条目外，其余文案仍为待确认：标题、作者、日期与经历主要转录自 CV；短简介和项目描述经过压缩或改写。资料核对不等于用户批准文案。',
  'Oxford 访学由用户确认为 2026 年 3 月 16 日至 7 月 31 日；博士身份仍在读，预计 2026 年 12 月完成。没有改写成已毕业。',
  'Scholar 的 20 条记录含 prompt survey 重复条目，以及同一 arXiv 2505.23798 的两个题名。按 arXiv 当前题名与 CV 合并；再加入 CV 和 NeurIPS 页面确认的 surgical benchmark，共 19 篇。',
