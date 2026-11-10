@@ -51,7 +51,13 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  </div></div>
 </div>
 <PrintMedia />
-<figure class="he-landscape" aria-hidden="true"><img src={homeLandscape.output} width={homeLandscape.width*homeLandscape.scale} height={homeLandscape.height*homeLandscape.scale} alt="" decoding="async"/></figure>
+<figure class="he-landscape" aria-hidden="true" data-passes={JSON.stringify(homeLandscape.passes)}><img src={homeLandscape.output} width={homeLandscape.width*homeLandscape.scale} height={homeLandscape.height*homeLandscape.scale} alt="" decoding="async"/></figure>
+<script is:inline>
+ /* Plate pass (landscape-pass.ts): hold the finished sheet back from the first frame only
+    when the entrance can play; if the module never takes over, show it after 3s. */
+ (f=>{const r=document.getElementById('personal-site');if(!r||r.dataset.printMotion!=='press'||!('animate' in f)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  f.dataset.passState='pending';setTimeout(()=>{if(f.dataset.passState==='pending')f.dataset.passState='done';},3000);})(document.currentScript.previousElementSibling);
+</script>
 <section class="he-home-research" aria-labelledby="research-core" data-flow-label="品牌与三个研究方向">
  <HomeDivider kind="chapter"/>
  <svg class="he-home-branches" aria-hidden="true"></svg>
@@ -80,4 +86,4 @@ const monthDate=(date:string)=>date.replace(/^\d{1,2} ([A-Za-z]{3} \d{4})$/,'$1'
  </li>;})}</ol>
 </section>
 
-<script>import "../../client/news-scroll";</script>
+<script>import "../../client/news-scroll";import "../../client/landscape-pass";</script>

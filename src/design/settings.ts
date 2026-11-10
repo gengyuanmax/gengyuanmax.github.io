@@ -54,6 +54,7 @@ export const parameters = {
 
   homeDividerStyle:{label:'首页分隔处理',group:'构图',type:'select',default:'print',options:{print:'双墨章节线 + News 细网过渡',plain:'原细线 · 对照'},scopes:['global','area']},
   dividerMotion:{label:'分隔印出动态 · 全局',group:'构图',type:'select',default:'once',options:{once:'首次进入视口印出',none:'静态'},scopes:globalOnly},
+  printMotion:{label:'印刷动态 · 全局（逐版过机 / 套准落位 / 滚筒换页）',group:'构图',type:'select',default:'press',options:{press:'印刷工序动态',none:'静态'},scopes:globalOnly},
   homeDividerCoverage:{label:'News 过渡带墨量',group:'构图',type:'number',default:.18,min:.08,max:.3,step:.01,scopes:['global','area']},
   homeSectionGap:{label:'个人信息 / 品牌间距',group:'构图',type:'number',default:56,min:32,max:104,step:8,unit:'px',scopes:['global','area'],css:'--home-section-gap'},
   homeBrandSize:{label:'品牌字号',group:'构图',type:'number',default:56,min:36,max:68,step:4,unit:'px',scopes:['global','area'],css:'--home-brand-size'},
@@ -297,7 +298,7 @@ export function cssVariables(settings: Overrides,config?:DesignConfig): Record<s
 }
 export function styleText(settings: Overrides,config?:DesignConfig) { return Object.entries(cssVariables(settings,config)).map(([k,v]) => `${k}:${v}`).join(';'); }
 
-export function designAttributes(s:Settings) { return {'data-home-dividers':s.homeDividerStyle,'data-divider-motion':s.dividerMotion,'data-reading-guide':s.readingGuide,'data-reading-ink':s.readingInk,'data-ground-ink':s.groundInk,'data-ground-edge':s.groundEdge,'data-navigation':s.navigationStyle,'data-home-composition':s.homeComposition,'data-cue':s.cueStyle,'data-treatment':s.titleTreatment,'data-rhythm':s.rhythm,'data-mask':s.portraitMaterial!=='recipe'?'source':s.imageMask,'data-material':s.portraitMaterial,'data-cue-motion':s.cueMotion}; }
+export function designAttributes(s:Settings) { return {'data-home-dividers':s.homeDividerStyle,'data-divider-motion':s.dividerMotion,'data-print-motion':s.printMotion,'data-reading-guide':s.readingGuide,'data-reading-ink':s.readingInk,'data-ground-ink':s.groundInk,'data-ground-edge':s.groundEdge,'data-navigation':s.navigationStyle,'data-home-composition':s.homeComposition,'data-cue':s.cueStyle,'data-treatment':s.titleTreatment,'data-rhythm':s.rhythm,'data-mask':s.portraitMaterial!=='recipe'?'source':s.imageMask,'data-material':s.portraitMaterial,'data-cue-motion':s.cueMotion}; }
 
 export function editorialBounds(config:DesignConfig,id:string){
  const p=placements[id as keyof typeof placements];if(!p)return null;

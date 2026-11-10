@@ -6,6 +6,9 @@ export const homeLandscape={
  mountain:'src/assets/home/mountain.jpg',
  personSource:'public/images/portrait-source-cutout.png',
  output:'/images/home-landscape.png',
+ /** Plate-pass entrance sheets (user, 2026-11-10): the same print after the first 1–3
+  * passes, light to dark (yellow → vermilion → blue; dark is the final output). */
+ passes:['/images/home-landscape-pass-1.png','/images/home-landscape-pass-2.png','/images/home-landscape-pass-3.png'],
  /** Reference size in CSS px (the 1440 canvas content plus bleed), rendered at 2×. */
  width:1360,height:600,scale:2,
  /** Mountain band: bottom part of the sheet, cropped from the source (source px). */

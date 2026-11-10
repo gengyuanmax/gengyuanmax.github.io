@@ -177,3 +177,10 @@
  #personal-site .he-home[data-home-layout] .he-selected-list>li{grid-column:1/-1;}
  #personal-site .he-home[data-home-layout] .he-selected-list>li:nth-child(even){margin-left:24px;}
 }
+
+/* Plate pass (landscape-pass.ts, user 2026-11-10): the finished sheet waits for its pass;
+   intermediate sheets sit exactly under it with the same fit and crop. */
+#personal-site .he-home[data-home-layout] .he-landscape:is([data-pass-state="pending"],[data-pass-state="waiting"])>img{clip-path:inset(0 0 100% 0);}
+#personal-site .he-home[data-home-layout] .he-landscape>img.he-landscape-pass{position:absolute;inset:0;width:100%;height:100%;}
+@media(prefers-reduced-motion:reduce){#personal-site .he-home[data-home-layout] .he-landscape>img{clip-path:none!important;}}
+@media print{#personal-site .he-home[data-home-layout] .he-landscape>img{clip-path:none!important;}}
