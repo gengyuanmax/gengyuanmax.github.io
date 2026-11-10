@@ -28,6 +28,35 @@ if(root) {
  function settled(){clearTimeout(settle);applyHidden(active);if(!root!.dataset.navigating)return;delete root!.dataset.navigating;root!.dispatchEvent(new CustomEvent("navigation:settled"));}
  track.addEventListener("transitionend",e=>{if(e.target===track&&e.propertyName==="transform")settled();});
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Drum pass (user, 2026-11-10): on wider screens a page change is printed, not slid. The
+ // incoming page is laid over the outgoing one and revealed behind the vermilion line-v3
+ // drum band as it rolls in the reading direction; then the track is committed to the new index with
+ // no transition, so the settled layout is identical to the slide's. Phones keep the slide.
+ const drumBand=viewport.querySelector<HTMLElement>('.he-drum-pass');
+ const DRUM=520,drumEase='cubic-bezier(.45,.05,.4,1)';
+ const drumWide=matchMedia('(min-width: 768px)');
+ let drumEnd:(()=>void)|null=null;
+ const drums=()=>!!drumBand&&root!.dataset.printMotion==='press'&&drumWide.matches&&'animate' in track;
+ function drumPass(from:number,to:number){
+  const incoming=pages[to],width=viewport.clientWidth,band=drumBand!.offsetWidth||48;
+  track.style.transition='none';
+  incoming.style.transform=`translateX(${(from-to)*100}%)`;
+  incoming.style.position='relative';incoming.style.zIndex='2';
+  const timing={duration:DRUM,easing:drumEase,fill:'both' as FillMode};
+  // The drum rolls the way the reader moves: forward (to a later area) left → right, back right → left.
+  const forward=to>from,start=forward?-band:width,end=forward?width:-band;
+  const page=incoming.animate([{clipPath:forward?'inset(0 100% 0 0)':'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0)'}],timing);
+  const roll=drumBand!.animate([{transform:`translateX(${start}px)`,visibility:'visible'},{transform:`translateX(${end}px)`,visibility:'visible'}],timing);
+  const finish=()=>{
+   if(drumEnd!==finish)return;drumEnd=null;
+   track.style.transform=`translateX(-${to*100}%)`;
+   incoming.style.removeProperty('transform');incoming.style.removeProperty('position');incoming.style.removeProperty('z-index');
+   page.cancel();roll.cancel();void track.offsetWidth;track.style.removeProperty('transition');
+   settled();
+  };
+  drumEnd=finish;
+  page.finished.then(finish,finish);
+ }
  function fit() {
   const height=pages[active].offsetHeight+'px',navHeight=header.offsetHeight+'px',headerHeight=(header.offsetHeight+(active===1?shortcuts.offsetHeight:0))+'px';
   if(root!.style.getPropertyValue('--he-nav-height')!==navHeight)root!.style.setProperty('--he-nav-height',navHeight);
@@ -44,15 +73,17 @@ if(root) {
   if(chapter instanceof HTMLDetailsElement)chapter.open=true;
   clearTimeout(jump);
   releaseChapter();
-  const changed=index!==active;
+  drumEnd?.();
+  const changed=index!==active,from=active;
   // The boot takeover never slides (transitions are off while booting), so it must not
   // hold printing back as "navigating" either.
   const slides=changed&&!reduced()&&root!.dataset.booting===undefined;
+  const drum=slides&&drums();
   clearTimeout(settle);
   if(slides){
    root!.dataset.navigating='true';
    // Fallback also covers an interrupted transition or a background tab.
-   settle=window.setTimeout(settled,550);
+   settle=window.setTimeout(()=>{drumEnd?.();settled();},drum?DRUM+300:550);
   }else settled();
   active=index;
   // Moving focus out of a panel precedes making that panel inert.
@@ -65,7 +96,7 @@ if(root) {
   header.dataset.activeArea=pages[index].id;
   if(!slides)applyHidden(index);
   links.forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  track.style.transform=`translateX(-${index*100}%)`;
+  if(drum)drumPass(from,index);else track.style.transform=`translateX(-${index*100}%)`;
   fit();
   if(history&&location.hash!==`#${id}`)window.history.pushState(null,'',`#${id}`);
   root!.querySelector('[data-navigation-status]')!.textContent=chapter?(aboutSection?aboutNav:shortcuts).querySelector(`[href="#${id}"]`)!.textContent:links[index].dataset.label!;
@@ -83,7 +114,7 @@ if(root) {
     const heading=chapter.querySelector<HTMLElement>('h2, summary')!;
     heading.tabIndex=-1;heading.focus({preventScroll:true});heading.addEventListener('blur',()=>heading.removeAttribute('tabindex'),{once:true});
    }
-  },slides?490:0);
+  },slides?(drum?DRUM+20:490):0);
   }
  }
  root.dataset.enhanced='true';

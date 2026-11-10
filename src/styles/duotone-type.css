@@ -107,3 +107,13 @@
    glyphs and the padding taken back with negative margins, so the layout is unchanged
    (user, 2026-10-26). */
 #personal-site .he-type-line :is([data-print-transfer],.he-type-b){padding-bottom:.3em;margin-bottom:-.3em;}
+
+/* Registration settle (user, 2026-11-10): on load the name's blue plate starts off register and
+   steps into the approved registration in three adjustments, like proof sheets while the
+   operator turns the register knob. Uses the separate `translate` property, so the approved
+   register and the hover offset (both in `transform`) are untouched; the end state is zero. */
+@keyframes he-register-settle{0%{translate:9px -5px}25%{translate:4px -2px}50%{translate:1.5px -.5px}75%,100%{translate:0 0}}
+@media (prefers-reduced-motion:no-preference){
+ #personal-site[data-print-motion="press"] [data-style-element="home-name"]>.he-type-line>.he-type-b{animation:he-register-settle 880ms step-end 160ms 1 both;}
+}
+@media print{#personal-site [data-style-element="home-name"] .he-type-b{animation:none;}}

@@ -5,8 +5,8 @@
    "public/images/portrait-source-cutout.png": "c26168d66336dfbf299486a14aa9e490c0d60d3811e2061ade730ec317b1515b",
    "src/assets/home/mountain.jpg": "fd3bcc541c11aa28583548320c4df7ac619e626124202801c857682d2f2779a7",
    "src/config/design.json": "70bfbb9863dd95b830f4e68b77fd22c7fc187a677b84ad35881e84467acd9162",
-   "src/config/home-landscape.ts": "a7722e32faa50324972524b7a7a643cc2a6738afbca1b15d814221bc5bce48fd",
-   "src/design/settings.ts": "bd850e473b027b21b8dec3e37f83cc363356f5e6adf10b6ed0ab2f36dcb55c15"
+   "src/config/home-landscape.ts": "5e81930261b8707f35e989d3116849d3dd38b9d036e5413b268cc5d05207fc32",
+   "src/design/settings.ts": "d9b8a60572abc1e8e215401a32426854a40d06952144eb1a65eef57483c9e52c"
   },
   "outputs": {
    "src/assets/home/landscape-4c/a.png": "bfc64f02ddc344907ed8d54779bf4d1a9c7db7dd9221acd08756cf2256cc9a08",
