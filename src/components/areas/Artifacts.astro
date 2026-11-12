@@ -26,7 +26,7 @@ const wordIds:Record<string,string>={a:'word-printlab',b:'word-mosaic',c:'word-i
  <label>Category <select data-artifact-filter><option value="all">All</option>{Object.entries(artifactCategories).map(([id,label])=><option value={id}>{label}</option>)}</select></label>
  <span class="he-announcement" data-artifact-status role="status"/>
 </div>
-<div class="he-artifact-groups">{<div class="he-artifact-spread" data-reading-host>{artifactGroups(Object.values(artifacts),'date')[0].entries.map((item,index)=>{
+<ChapterIndicator id="artifact-drum" texture="line" class="he-artifact-drum"/><div class="he-artifact-groups">{<div class="he-artifact-spread" data-reading-host>{artifactGroups(Object.values(artifacts),'date')[0].entries.map((item,index)=>{
  const placement=artifactComposition[index%artifactComposition.length];const id=`artifact-${placement.id}`;const position=placements[id as keyof typeof placements];const resource=preferredResource(item.links);
  return <Styled as="article" id={id} area="artifacts" style={`--item-row:${position.row+Math.floor(index/artifactComposition.length)*3}`} data-flow-label={item.title} class={`he-artifact he-artifact-${placement.slot}`} data-content-id={`artifact-${item.id}`}>
  <span class="he-reading-marker" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>

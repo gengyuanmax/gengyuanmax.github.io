@@ -21,6 +21,12 @@ export const noiseBudget={
   dots:{radius:.18,shift:.06,registration:1.25}},
  /** Printed guide lines (rule-v1): edge wander in CSS px and its smallest feature. */
  rule:{edge:.35,wave:14},
+ /** Solid ink (rule-v1 + solid, user 2026-11-12, option A): small solid marks — bars, nav
+  * and section indicators, ink blocks — print as a Riso solid, not a flat fill: ink mottles
+  * (± fraction over a feature of `mottleScale` CSS px), pinholes where fibres lift (`pinholeArea`
+  * of the area loses up to `pinholeLoss`), and the edges wander more (`edge` CSS px over
+  * `wave` px). Only marks at least `minThickness` px thick get mottle and pinholes. */
+ solid:{mottle:.11,mottleScale:9,detail:.04,detailScale:3,pinholeArea:.012,pinholeLoss:.45,edge:.4,wave:7,minThickness:3},
  /** Worn plate edges (wear-v1): inset depth in CSS px, missing-dot share at the edge, and
   * the inset's smallest feature in CSS px. Kept small (user, 2026-10-16): real print
   * wear, but a high-quality press — the edge is alive, never ragged. */

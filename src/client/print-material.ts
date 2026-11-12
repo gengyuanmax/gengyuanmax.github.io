@@ -144,7 +144,9 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
   const visible:Promise<void>[]=[];
   const now=async(job:()=>void|Promise<void>)=>{visible.push(Promise.resolve(job()).catch(()=>{}));await yieldToMain();return run===generation;};
   // Read phase: every geometry and style the jobs need, before anything is written.
-  const fields=[...root!.querySelectorAll<SVGSVGElement>('[data-print-field]')],lines=[...root!.querySelectorAll<HTMLElement>('.he-type-line')];
+  // A sheet still on screen for the drum (artifacts.ts) is already printed: never reprint it.
+  const fresh=(el:Element)=>!el.closest('.he-sheet-old');
+  const fields=[...root!.querySelectorAll<SVGSVGElement>('[data-print-field]')].filter(fresh),lines=[...root!.querySelectorAll<HTMLElement>('.he-type-line')].filter(fresh);
   const grounds=[...root!.querySelectorAll<HTMLElement>('.he-project-ground')],bands=[...root!.querySelectorAll<HTMLElement>('.he-divider-band')];
   fieldMetrics=new Map(fields.map(svg=>[svg,measureField(svg)]));metrics=new Map();
   const sizes=new Map(lines.map(el=>[el,parseFloat(getComputedStyle(el).fontSize)]));
