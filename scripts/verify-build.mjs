@@ -8,7 +8,7 @@ for(const [,id]of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(id),`Mis
 for(const [,value]of html.matchAll(/aria-(?:controls|labelledby)="([^"]+)"/g))for(const id of value.split(/\s+/))assert(ids.includes(id),`Missing ARIA target: ${id}`);
 assert.equal((html.match(/data-area-link=/g)||[]).length,4);
 assert.equal((html.match(/data-chapter=/g)||[]).length,4);
-assert.equal((html.match(/data-content-id="artifact-/g)||[]).length,5);
+assert.equal((html.match(/data-content-id="artifact-/g)||[]).length,6);
 assert(!html.includes('data-enhanced'),'Static page must remain readable without JS');
 assert(!html.includes(' inert'),'Server HTML must not hide sections without JS');
 for(const [paragraph]of html.matchAll(/<p\b[^>]*>[\s\S]*?<\/p>/g))assert((paragraph.match(/class="[^\"]*\bem-ink\b/g)||[]).length<=2,'At most two primary emphases per paragraph');
@@ -29,7 +29,7 @@ for(const [,src]of html.matchAll(/(?:src|href)="(\/(?:_astro|images|_print)\/[^"
 // Build-time print images are published as files, not inlined (page weight, 2026-10-26).
 assert.ok(!/(?:src|href)="data:image\/png;base64,/.test(html),'Print fallbacks and plates must be published under /_print/, not inlined');
 assert.ok(html.length<1_350_000,`index.html is ${html.length} bytes; inline images have crept back in`);
-console.log(`Build verified: ${ids.length} unique IDs, four areas, four shortcuts, five interleaved artifacts, no authoring route or editor code.`);
+console.log(`Build verified: ${ids.length} unique IDs, four areas, four shortcuts, six interleaved artifacts, no authoring route or editor code.`);
 
 assert(!html.includes('noindex'),'Production homepage must be indexable');
 assert(html.includes('<title>Gengyuan Zhang</title>'),'Use the public page title');

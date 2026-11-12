@@ -15,6 +15,7 @@ export const printObjects = {
  'mark-paper': {area:'artifacts',kind:'windows',label:'Artifacts · Mosaic 底形'},
  'mark-wikitilo': {area:'artifacts',kind:'earth',label:'Artifacts · WikiTiLo 地球'},
  'mark-mevtr': {area:'artifacts',kind:'strips',label:'Artifacts · MeVTR 视频与文本条'},
+ 'mark-vitagent': {area:'artifacts',kind:'gauze',label:'Artifacts · VITAgent 纱布与镊子色块'},
  'mark-icqhl': {area:'artifacts',kind:'query',label:'Artifacts · ICQ-Highlight 查询'},
  'mark-about': {area:'about',kind:'orbit',label:'About · 页边底形'},
 } as const;
@@ -31,6 +32,7 @@ export const printWords = {
  'word-icq':{area:'artifacts',label:'Artifacts · ICQ 标题'},
  'word-wikitilo':{area:'artifacts',label:'Artifacts · WikiTiLo 标题'},
  'word-mevtr':{area:'artifacts',label:'Artifacts · MeVTR 标题'},
+ 'word-vitagent':{area:'artifacts',label:'Artifacts · VITAgent 标题'},
 } as const;
 
 // Ink fields are independent of foreground graphics and grid slots.

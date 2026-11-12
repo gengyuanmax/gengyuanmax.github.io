@@ -29,6 +29,11 @@ GENERATORS = {
         'inputs': ['design/marks/surgeon_scan.py', 'design/marks/plates.py', 'design/marks/sources/gliax-instruments-scan-1.jpg'],
         'outputs': ['src/design/assets/mark-surgeon.ts'],
     },
+    'mark-vitagent': {
+        'group': 'marks', 'run': ['design/marks/vitagent.py'],
+        'inputs': ['design/marks/plates.py', 'design/marks/vitagent.py'],
+        'outputs': ['src/design/assets/mark-vitagent.ts'],
+    },
     'mark-meretriever': {
         'group': 'marks', 'run': ['design/marks/meretriever.py'],
         'inputs': ['design/marks/meretriever.py', 'design/marks/plates.py'],

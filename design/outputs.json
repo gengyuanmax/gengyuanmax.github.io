@@ -22,7 +22,7 @@
  "mark-icq": {
   "inputs": {
    "design/marks/icq.py": "8b9614326ebe056afaf335b9d1f8f30d4e16924fb526969141c217c9e6fffbbf",
-   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/plates.py": "b0304c77c643ef6aa7756f65158cba5abebda04ee58e04bd4cd796807471b3d8",
    "design/marks/render.py": "a8f25da8308e71f81e8ecaa654f6f0505c11f8ef4181f2a4e43ace206e6e0a2e"
   },
   "outputs": {
@@ -32,7 +32,7 @@
  "mark-meretriever": {
   "inputs": {
    "design/marks/meretriever.py": "f06e7c56444c8a3478be653434164bb72fd118240a04660312f1842c853a9ebe",
-   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48"
+   "design/marks/plates.py": "b0304c77c643ef6aa7756f65158cba5abebda04ee58e04bd4cd796807471b3d8"
   },
   "outputs": {
    "src/design/assets/mark-meretriever.ts": "44db4282513e2fa1101129577acb746b1762b208802d91fa41d942b80626793b"
@@ -40,7 +40,7 @@
  },
  "mark-reexplore": {
   "inputs": {
-   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/plates.py": "b0304c77c643ef6aa7756f65158cba5abebda04ee58e04bd4cd796807471b3d8",
    "design/marks/reexplore.py": "c6ffc0d9affc069364c2a626ad774f6ef29ed68db4400576706992b7b594e8d0",
    "design/marks/render.py": "a8f25da8308e71f81e8ecaa654f6f0505c11f8ef4181f2a4e43ace206e6e0a2e"
   },
@@ -50,12 +50,21 @@
  },
  "mark-surgeon": {
   "inputs": {
-   "design/marks/plates.py": "fcd4367112c56b365e53ed5298ef44b22ce66c9cf5c9722066997fa54aa64b48",
+   "design/marks/plates.py": "b0304c77c643ef6aa7756f65158cba5abebda04ee58e04bd4cd796807471b3d8",
    "design/marks/sources/gliax-instruments-scan-1.jpg": "e9307ff17866562e8cfcb5fd4f97668e56eb1805f4d2ba339d3da520a090df4e",
    "design/marks/surgeon_scan.py": "11e80f3e1887a4e52774c6012c5b95d51f85eb24d9d99c79803135373eeb9a80"
   },
   "outputs": {
    "src/design/assets/mark-surgeon.ts": "ce5257853c171eab406cfd2280e96932e6fd77a14e799a89908a7b27819e3f2e"
+  }
+ },
+ "mark-vitagent": {
+  "inputs": {
+   "design/marks/plates.py": "b0304c77c643ef6aa7756f65158cba5abebda04ee58e04bd4cd796807471b3d8",
+   "design/marks/vitagent.py": "c64fd5479e730b90af2dfea62649087561896e3b24a6ede3a6a219280a2279e5"
+  },
+  "outputs": {
+   "src/design/assets/mark-vitagent.ts": "b2fa23df75d75c62675fb3654f28a1e2c34a514e45e70fbe2f95aba23e0aba8d"
   }
  },
  "paper-vintage": {

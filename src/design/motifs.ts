@@ -4,9 +4,18 @@ import * as icqPlates from './assets/mark-icq.ts';
 import * as reexplorePlates from './assets/mark-reexplore.ts';
 import * as surgeonPlates from './assets/mark-surgeon.ts';
 import * as meretrieverPlates from './assets/mark-meretriever.ts';
-type Plates={a:string;b:string;c?:string;d?:string};
-const platesOf=(m:Record<string,string>):Plates=>({a:m.plateA,b:m.plateB,c:m.plateC,d:m.plateD});
-const icq=platesOf(icqPlates),reexplore=platesOf(reexplorePlates),surgeon=platesOf(surgeonPlates),meretriever=platesOf(meretrieverPlates);
+import * as vitagentPlates from './assets/mark-vitagent.ts';
+import {partScreen,type PartScreen} from './screen.ts';
+type Ink='a'|'b'|'c'|'d';
+/** Sub-plates of a tool-rendered mark: key 'a', 'b', 'b2' … (ink + index), each optionally with its own screen. */
+type Part={key:string;ink:Ink;src:string;screen?:PartScreen};
+type Plates=Part[];
+const platesOf=(m:Record<string,unknown>):Plates=>{
+ const screens=(m.screens||{}) as Record<string,PartScreen>;
+ return Object.entries(m).flatMap(([name,src])=>{const k=name.match(/^plate([A-D])(\d*)$/);if(!k||typeof src!=='string')return [];
+  const key=k[1].toLowerCase()+k[2];return [{key,ink:k[1].toLowerCase() as Ink,src,screen:screens[key]}];});
+};
+const icq=platesOf(icqPlates),reexplore=platesOf(reexplorePlates),surgeon=platesOf(surgeonPlates),meretriever=platesOf(meretrieverPlates),vitagent=platesOf(vitagentPlates);
 export type {Motif} from './motif-levels.ts';
 import type {Motif} from './motif-levels.ts';
 export {motifScreenLevel} from './motif-levels.ts';
@@ -17,7 +26,7 @@ export {motifScreenLevel} from './motif-levels.ts';
 // Composition overlap is distinct from plate registration; the latter uses
 // reference SVG units and scales with the printed object, not the viewport.
 /** Plate href: the data URL itself (static render, design desk) or a published file URL (page HTML). */
-export type PlateHref=(dataUrl:string,ink:'a'|'b'|'c'|'d',kind:Motif)=>string;
+export type PlateHref=(dataUrl:string,key:string,kind:Motif)=>string;
 function motifParts(s:Settings,id:string,kind:Motif,href:PlateHref=u=>u){
  const p=s.fieldPitch,r=p*Math.sqrt(s.fieldCoverage/Math.PI),o=1-s.fieldOverlap;
  const pattern=['a','b'].map(plate=>`<pattern id="${id}-${plate}-dots" width="${p}" height="${p}" patternUnits="userSpaceOnUse" patternTransform="rotate(${plate==='a'?s.secondaryAngle:s.primaryAngle})"><circle cx="${p/2}" cy="${p/2}" r="${r}" fill="var(--${plate==='a'?'red':'blue'}-ink)"/></pattern>`).join('');
@@ -26,11 +35,14 @@ function motifParts(s:Settings,id:string,kind:Motif,href:PlateHref=u=>u){
  const b=kind==='windows'?`<circle cx="${174+o*30}" cy="115" r="94" fill="${dotsB}"/>`:kind==='sequence'?`<path d="M27 106h306v16H27z"/><circle cx="${132+o*30}" cy="110" r="70" fill="${dotsB}"/><path d="M46 35v18m118-18v18m118-18v18" stroke="currentColor" stroke-width="2"/>`:`<circle cx="${137-o*35}" cy="112" r="73" fill="none" stroke="currentColor" stroke-width="26"/><path d="M40 192h236" stroke="currentColor" stroke-width="3"/>`;
  // Project marks modelled in Blender (design/marks/*.py) and rendered to two
  // ink-density plates by design/marks/render.py. The pipeline only prints them.
- const plates:Partial<Record<Motif,Plates>>={query:icq,frontier:reexplore,scope:surgeon,strips:meretriever};
+ const plates:Partial<Record<Motif,Plates>>={query:icq,frontier:reexplore,scope:surgeon,strips:meretriever,gauze:vitagent};
  // Ocean and land are one source image before screening. The shared sphere
  // illumination is applied across both; coastlines change ink demand, not mesh.
  const earth=`<g data-print-tone="sphere" fill="${dotsA}" transform="translate(${185+o*35} 107)"><circle r="87" opacity=".32"/><path d="${earthLandPath}"/></g>`;
- const plate=plates[kind];if(plate){const img=(ink:'a'|'b'|'c'|'d')=>plate[ink]?`<image data-print-tone="source" href="${href(plate[ink]!,ink,kind)}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`:'';return {pattern,a:img('a'),b:img('b'),c:img('c'),d:img('d')};}
+ const plate=plates[kind];if(plate){
+  const screenAttrs=(sc?:PartScreen)=>(sc?.shape?` data-screen-shape="${sc.shape}"`:'')+(sc?.angle!==undefined?` data-screen-angle="${sc.angle}"`:'');
+  const img=(ink:Ink)=>plate.filter(p=>p.ink===ink).map(p=>`<image data-print-tone="source"${screenAttrs(p.screen)} href="${href(p.src,p.key,kind)}" x="0" y="0" width="360" height="220" preserveAspectRatio="none"/>`).join('');
+  return {pattern,a:img('a'),b:img('b'),c:img('c'),d:img('d')};}
  return {pattern,a:kind==='earth'?earth:a,b,c:'',d:''};
 }
 
@@ -42,7 +54,7 @@ export function motifMarkup(s:Settings,id:string,kind:Motif,href?:PlateHref){
 }
 /** Split only our generated XML siblings, retaining nested groups unchanged. */
 export function motifOriginals(s:Settings,id:string,kind:Motif){
- const parts=motifParts(s,id,kind),result:{ink:'a'|'b'|'c'|'d';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number}[]=[];
+ const parts=motifParts(s,id,kind),result:{ink:'a'|'b'|'c'|'d';markup:string;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number;screen?:PartScreen}[]=[];
  for(const ink of ['a','b','c','d'] as const){let depth=0,start=0,index=0;if(!parts[ink])continue;
   for(const match of parts[ink].matchAll(/<[^>]+>/g)){
    const tag=match[0];if(!depth)start=match.index!;
@@ -51,7 +63,9 @@ export function motifOriginals(s:Settings,id:string,kind:Motif){
    let markup=parts[ink].slice(start,match.index!+tag.length);const circle=markup.startsWith('<circle'),patterned=/^<[^>]*fill="url\(/.test(markup),ring=circle&&/^<[^>]*fill="none"/.test(markup)&&Number(markup.match(/stroke-width="([^"]+)"/)?.[1])>=6;
    if(patterned)markup=markup.replace(/fill="url\([^)]*\)"/,'fill="black"');
    const source=markup.startsWith('<image')&&markup.includes('data-print-tone="source"');
-   result.push({ink,markup,screened:patterned||ring||source,ring,kind:source?'source':markup.includes('data-print-tone="sphere"')||circle&&!ring?'sphere':'plane',index:index++});
+   const screen=partScreen(markup);
+   result.push({ink,markup,screened:patterned||ring||source,ring,kind:source?'source':markup.includes('data-print-tone="sphere"')||circle&&!ring?'sphere':'plane',index:index++,...(screen?{screen}:{})});
   }
  }return result;
 }
+
