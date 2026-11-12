@@ -8,14 +8,17 @@ import type {Rect} from '../design/reading-route';
  * borders, bars, ticks and small ink blocks, each printed through `rule-v1` on the
  * page's sheet. Lines are painted straight into small canvases (no encoding); marks that
  * must stay CSS boxes (pseudo bars, ink blocks) receive a printed mask. */
+/** Solid ink (user 2026-11-12): marks at least 3 CSS px thick — bars, indicators, ink blocks —
+ * print with the solid-ink character (noiseBudget.solid); thinner guide lines stay rule-v1. */
+const solidFor=(width:number,height:number)=>Math.min(width,height)>=3?1:0;
 function rule(width:number,height:number,origin:{x:number;y:number},dpr:number,config:DesignConfig,pad:number){
  const s=resolve(config).values,p=elementPress(pressSettings(s,'fine'),'guide','field');
- const transfer={grain:p.grain,starve:p.starve,holes:p.holes,band:p.band};
+ const transfer={grain:p.grain,starve:p.starve,holes:p.holes,band:p.band,solid:solidFor(width,height)};
  return printRule(width,height,dpr,{seed:s.seed,origin:{x:Math.round(origin.x*dpr)/dpr,y:Math.round(origin.y*dpr)/dpr}},transfer,pad);
 }
 const masks=new Map<string,Promise<string>>();
 export function ruleMask(width:number,height:number,origin:{x:number;y:number},dpr:number,config:DesignConfig,pad=0){
- const key=JSON.stringify([ruleVersion,Math.round(width*dpr),Math.round(height*dpr),Math.round(origin.x*dpr),Math.round(origin.y*dpr),dpr,resolve(config).values.seed,pad]);
+ const key=JSON.stringify([ruleVersion,'solid-a',Math.round(width*dpr),Math.round(height*dpr),Math.round(origin.x*dpr),Math.round(origin.y*dpr),dpr,resolve(config).values.seed,pad]);
  let url=masks.get(key);
  if(!url){const r=rule(width,height,origin,dpr,config,pad);url=alphaMaskBlob(r.alpha,r.width,r.height);if(masks.size>300)masks.clear();masks.set(key,url);}
  return url;
@@ -30,7 +33,7 @@ export function paintGuides(layer:HTMLElement,rects:InkRect[],origin:{x:number;y
   const x=Math.min(...group.map(r=>r.x)),y=Math.min(...group.map(r=>r.y)),width=Math.max(...group.map(r=>r.x+r.width))-x,height=Math.max(...group.map(r=>r.y+r.height))-y;
   const el=existing[i]||layer.appendChild(Object.assign(document.createElement('canvas'),{className:'he-guide'}));
   el.setAttribute('aria-hidden','true');el.dataset.level=String(Math.min(...group.map(r=>r.source.level)));
-  const key=JSON.stringify([ruleVersion,'same-ink-union',group,origin,dpr,resolve(config).values.seed]);
+  const key=JSON.stringify([ruleVersion,'solid-a','same-ink-union',group,origin,dpr,resolve(config).values.seed]);
   el.style.cssText=`left:${x}px;top:${y}px;width:${width}px;height:${height}px`;
   if(el.dataset.key===key)return;
   const fragments=group.map(r=>{const m=rule(r.source.width,r.source.height,{x:origin.x+r.source.x,y:origin.y+r.source.y},dpr,config,pad);return {coverage:m.alpha,width:m.width,height:m.height,x:(r.x-x)*dpr,y:(r.y-y)*dpr,drawWidth:r.width*dpr,drawHeight:r.height*dpr};});

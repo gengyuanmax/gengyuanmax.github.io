@@ -14,7 +14,7 @@ if(root){
  let config:DesignConfig=design,timer=0;
  // Scrollable content owns its printed borders, so they move and clip with it.
  const hostSelector='.he-page,.he-nav-shell,.he-colophon,.he-news-scroll > ol';
- const skip=(el:Element)=>!!el.closest('.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.em-ink,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
+ const skip=(el:Element)=>!!el.closest('.he-sheet-old,.he-sheet-marks,.he-contact-icon,.he-ink-group-output,.em-ink,.he-grid-guides,.he-guide,.he-rule-layer,select,input,textarea,.he-reading-route,.he-timeline-guides,.he-chapter-indicator,.he-mode-indicator,[data-style-element="grid"]');
  // Paper is not ink. The paper colour is read from the live token, never hard-coded: when the
  // paper changed (2026-10-27) a literal old value made every paper-backed page and the nav
  // count as solid ink blocks, and printing those page-sized masks froze the page for seconds.
@@ -27,7 +27,7 @@ if(root){
  const groundLike=(el:Element)=>el.matches('.he-project-ground,.he-divider-band,[data-material-mask],.he-type-a,.he-type-b,img,canvas,svg,svg *');
  function host(el:Element){return el.closest<HTMLElement>(hostSelector)||root!;}
  function measure(){
-  const borders=new Map<HTMLElement,InkRect[]>(),blocks:{el:HTMLElement;w:number;h:number}[]=[],pseudos:{el:HTMLElement;which:'before'|'after';w:number;h:number}[]=[];
+  const borders=new Map<HTMLElement,InkRect[]>(),blocks:{el:HTMLElement;w:number;h:number}[]=[],pseudos:{el:HTMLElement;which:'before'|'after';w:number;h:number}[]=[],pseudoRules:{el:HTMLElement;which:'before'|'after';w:number;h:number}[]=[];
   for(const el of root!.querySelectorAll<HTMLElement>('*')){
    if(skip(el))continue;
    const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')continue;
@@ -49,16 +49,19 @@ if(root){
     const pw=parseFloat(p.width),ph=parseFloat(p.height);if(!(pw>0&&ph>0))continue;
     // Paper grain layers are paper, not ink: never mask them.
     if(isGrain(p.backgroundImage))continue;
-    if(ink(p.backgroundColor)||p.backgroundImage!=='none')pseudos.push({el,which,w:pw,h:ph});}
+    if(ink(p.backgroundColor)||p.backgroundImage!=='none')pseudos.push({el,which,w:pw,h:ph});
+    // A pseudo's top rule (e.g. the compact section numbers' bar above the number): only the
+    // rule is printed; the pseudo's own text keeps a full mask below it.
+    else{const bt=parseFloat(p.borderTopWidth);if(bt>0&&p.borderTopStyle!=='none'&&ink(p.borderTopColor))pseudoRules.push({el,which,w:pw+parseFloat(p.paddingLeft)+parseFloat(p.paddingRight),h:bt});}}
   }
-  return {borders,blocks,pseudos};
+  return {borders,blocks,pseudos,pseudoRules};
  }
  function draw(){
   if(root!.dataset.navigating)return;
   paper=paperRGB();
   try{
    root!.dataset.rulesMeasure='';
-   const {borders,blocks,pseudos}=measure();
+   const {borders,blocks,pseudos,pseudoRules}=measure();
    delete root!.dataset.rulesMeasure;
    const dpr=Math.max(1,devicePixelRatio||1),pageOf=(el:Element)=>el.closest<HTMLElement>('.he-page')||root!;
    const hosts=new Set([...root!.querySelectorAll<HTMLElement>(hostSelector),root!]);
@@ -74,6 +77,10 @@ if(root){
    for(const {el,which,w,h} of pseudos){
     const o=paperOrigin(el,pageOf(el));
     pending.push(ruleMask(w,h,o,dpr,config).then(url=>{el.style.setProperty(`--print-${which}`,`url(${url})`);const set=new Set((el.dataset.printPseudo||'').split(' ').filter(Boolean));set.add(which);el.dataset.printPseudo=[...set].join(' ');}));
+   }
+   for(const {el,which,w,h} of pseudoRules){
+    const o=paperOrigin(el,pageOf(el));
+    pending.push(ruleMask(w,h,o,dpr,config).then(url=>{el.style.setProperty(`--print-${which}-rule`,`url(${url})`);el.style.setProperty(`--print-${which}-rule-h`,`${h}px`);const set=new Set((el.dataset.printPseudoRule||'').split(' ').filter(Boolean));set.add(which);el.dataset.printPseudoRule=[...set].join(' ');}));
    }
    // Marks hidden until printed appear together once their masks exist.
    void Promise.all(pending).then(()=>{root!.dataset.rulesReady='';root!.dataset.rulesPasses=String(Number(root!.dataset.rulesPasses||0)+1);},()=>{root!.dataset.rulesMeasure='';});

@@ -57,6 +57,8 @@ html:has(#personal-site){overflow-x:clip;}
 #personal-site[data-enhanced]:not([data-rules-ready]) .he-project-imprint h3::before{visibility:hidden;}
 #personal-site [data-print-block]{-webkit-mask-image:var(--print-block);mask-image:var(--print-block);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
 #personal-site [data-print-pseudo~="before"]::before{-webkit-mask-image:var(--print-before);mask-image:var(--print-before);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+#personal-site [data-print-pseudo-rule~="before"]::before{-webkit-mask-image:var(--print-before-rule),linear-gradient(#000,#000);mask-image:var(--print-before-rule),linear-gradient(#000,#000);-webkit-mask-size:100% var(--print-before-rule-h),100% calc(100% - var(--print-before-rule-h));mask-size:100% var(--print-before-rule-h),100% calc(100% - var(--print-before-rule-h));-webkit-mask-position:0 0,0 100%;mask-position:0 0,0 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-origin:border-box;mask-origin:border-box;}
+#personal-site [data-print-pseudo-rule~="after"]::after{-webkit-mask-image:var(--print-after-rule),linear-gradient(#000,#000);mask-image:var(--print-after-rule),linear-gradient(#000,#000);-webkit-mask-size:100% var(--print-after-rule-h),100% calc(100% - var(--print-after-rule-h));mask-size:100% var(--print-after-rule-h),100% calc(100% - var(--print-after-rule-h));-webkit-mask-position:0 0,0 100%;mask-position:0 0,0 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-origin:border-box;mask-origin:border-box;}
 #personal-site [data-print-pseudo~="after"]::after{-webkit-mask-image:var(--print-after);mask-image:var(--print-after);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
 #personal-site :is(.he-page,.he-nav-shell,.he-colophon){isolation:isolate;}
 #personal-site .he-colophon{position:relative;}
@@ -94,3 +96,9 @@ html:has(#personal-site){overflow-x:clip;}
 /* Plate pass / lay-down for Artifacts (plate-pass.ts, user 2026-11-12): held back until first view. */
 #personal-site .he-insert-stack[data-lay="waiting"] .he-insert-sheet{visibility:hidden;}
 @media (prefers-reduced-motion:reduce){#personal-site .he-insert-stack .he-insert-sheet{visibility:visible!important;}#personal-site .he-material-field{clip-path:none!important;}}
+/* Artifacts reorder drum (artifacts.ts, user 2026-11-12): the frozen old sheet over the new one,
+   and the shared vermilion line-v3 band rolling down across it. */
+#personal-site .he-artifact-groups{position:relative;}
+#personal-site .he-sheet-old{position:absolute;inset:0 0 auto 0;z-index:2;background-color:var(--paper);pointer-events:none;}
+#personal-site .he-artifact-drum{position:absolute;z-index:3;top:0;left:-8px;right:-8px;height:40px;color:var(--red-ink);mix-blend-mode:multiply;pointer-events:none;visibility:hidden;}
+#personal-site .he-artifact-drum svg{display:block;width:100%;height:100%;}
