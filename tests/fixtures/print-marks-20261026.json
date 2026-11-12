@@ -1,6 +1,6 @@
 {
  "date": "2026-10-26",
- "note": "Reviewed printed output of tool-rendered marks and the four-ink home landscape. Update only with an explicitly approved visual change. Me-Retriever/MeVTR strips added 2026-10-27.",
+ "note": "Reviewed printed output of tool-rendered marks and the four-ink home landscape. Update only with an explicitly approved visual change. Me-Retriever/MeVTR strips added 2026-10-27. VITAgent gauze-and-forceps blocks with per-part screens (ellipse/square/diamond) added 2026-11-12 (new element; existing fingerprints unchanged).",
  "results": {
   "mark-icq": "f2d1901366e894853743232cf70f25c19de20a27e63181d6a4e0e9bcf7061493",
   "mark-icqhl": "f2d1901366e894853743232cf70f25c19de20a27e63181d6a4e0e9bcf7061493",
@@ -8,6 +8,7 @@
   "mark-surgeon": "770850824f83ba52dccc6b3d93d45adfde8759841853d3a82f5f279ad820ac4f",
   "home-landscape": "cb8c33cbdfe52f22a99383a25244020c68958d2cfee5df6c4afde598f8ab85fa",
   "mark-meretriever": "9930a7d0850a312705ea848eab8c2102dc697abf6adf63010ea72661e9e51bc3",
-  "mark-mevtr": "9930a7d0850a312705ea848eab8c2102dc697abf6adf63010ea72661e9e51bc3"
+  "mark-mevtr": "9930a7d0850a312705ea848eab8c2102dc697abf6adf63010ea72661e9e51bc3",
+  "mark-vitagent": "09a80982e499f1863f8bf00c50f8d409de2c769e26db5c71ea160acb3c9727f8"
  }
 }

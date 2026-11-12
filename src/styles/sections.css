@@ -47,7 +47,7 @@
 #personal-site .he-artifact-square { aspect-ratio: 1/1; }
 #personal-site .he-artifact-lead { grid-column: 1/9; grid-row: 1; }
 #personal-site .he-artifact-margin { grid-column: 10/13; grid-row: 1; align-self: center; padding-top: 36px; }
-#personal-site .he-artifact-margin .he-item-meta { border-top: 2px solid var(--ink); padding-top: 18px; margin-top: 0; }
+#personal-site .he-artifact-margin .he-item-meta { margin-top: 0; } /* no slot rule: every artifact meta reads the same (user, 2026-11-12) */
 #personal-site .he-artifact-margin h2 { font-size: clamp(24px,3.5cqw,41px); }
 #personal-site .he-artifact-small { grid-column: 2/6; grid-row: 2; }
 #personal-site .he-artifact-type { grid-column: 7/13; grid-row: 2; align-self: center; padding-bottom: 16px; }

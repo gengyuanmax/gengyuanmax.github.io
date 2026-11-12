@@ -91,3 +91,6 @@ html:has(#personal-site){overflow-x:clip;}
    --mark-h (target height) and optionally --mark-w (width cap); the box takes the largest
    360:220 rectangle that fits both. */
 #personal-site .he-print-object{width:min(var(--mark-w,100%),calc(var(--mark-h,220px) * 360 / 220));height:auto;aspect-ratio:360/220;}
+/* Plate pass / lay-down for Artifacts (plate-pass.ts, user 2026-11-12): held back until first view. */
+#personal-site .he-insert-stack[data-lay="waiting"] .he-insert-sheet{visibility:hidden;}
+@media (prefers-reduced-motion:reduce){#personal-site .he-insert-stack .he-insert-sheet{visibility:visible!important;}#personal-site .he-material-field{clip-path:none!important;}}

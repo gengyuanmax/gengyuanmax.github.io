@@ -4,7 +4,9 @@ import {paintMaterial,type Press} from './material.ts';
 import type {Settings} from '../settings.ts';
 import type {RGB} from './types.ts';
 import type {PlateInk} from './plates.ts';
-export type FieldOriginal={ink:PlateInk;coverage:Float32Array;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number};
+import type {PartScreen} from '../screen.ts';
+/** screen: a part's declared dot shape/angle (tool-rendered marks); it overrides only that part's plate screen. */
+export type FieldOriginal={ink:PlateInk;coverage:Float32Array;screened:boolean;ring:boolean;kind:'sphere'|'plane'|'source';index:number;screen?:PartScreen};
 /** 'source': the original already is an ink-density plate (e.g. rendered by a design tool);
  * it is screened as given instead of receiving a constructed tone field. */
 export function renderFieldOriginals(originals:FieldOriginal[],w:number,h:number,scale:number,origin:{x:number;y:number},press:Press,settings:Settings,inks:{a:RGB;b:RGB;c?:RGB;d?:RGB;paper:RGB},retainInks=false){
@@ -15,7 +17,9 @@ export function renderFieldOriginals(originals:FieldOriginal[],w:number,h:number
   const source=item.kind==='source';
   const tone=item.kind==='source'?item.coverage:item.screened?makeToneField(item.coverage,w,h,scale,item.kind,toneSettings(settings,item.ring?1:settings.fieldCoverage/.42),press.seed+item.index*97):item.coverage;
   const mask=source?item.coverage.map(v=>v>.004?1:0):item.coverage;
-  const printed=screenOriginal(`field:${item.ink}:${item.index}`,{kind:'shape',mask,tone},w,h,item.ink,press,scale,origin,!item.screened);
+  // A part's own screen replaces the plate's shape/angle for that part; everything else stays the shared press.
+  const partPress=item.screen?{...press,shapes:{...press.shapes,...(item.screen.shape?{[item.ink]:item.screen.shape}:{})},angles:{...press.angles,...(item.screen.angle!==undefined?{[item.ink]:item.screen.angle}:{})}}:press;
+  const printed=screenOriginal(`field:${item.ink}:${item.index}`,{kind:'shape',mask,tone},w,h,item.ink,partPress,scale,origin,!item.screened);
   tones.push(tone);screens.push(printed);const dest=plates.find(p=>p.ink===item.ink)!.coverage;for(let i=0;i<dest.length;i++)dest[i]=Math.max(dest[i],printed[i]);
  }
  // Retain transferred, registered ink coverage for cross-element sheet assembly.

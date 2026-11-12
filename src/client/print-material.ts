@@ -5,6 +5,8 @@ import {dotPitch} from '../design/print-pipeline/index';
 import {recordScreen,clearScreen} from './screen-data';
 import {design} from '../config/design';
 import {resolve,getPalette,type DesignConfig,type Area} from '../design/settings';
+import {partScreen} from '../design/screen';
+import {passOrder,passReveal,printMotionOn,onFirstView} from './plate-pass';
 import {renderFieldOriginals,type FieldOriginal,onSheet,screenOriginal,paintMaterial,pressSettings,elementPress,materialVersion,textTextureVersion,textTier} from '../design/print-pipeline/index';
 import {rgb} from '../design/element-composition';
 import {makeToneField,toneSettings} from '../design/tone-field';
@@ -74,6 +76,24 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
  const offscreen=(el:Element)=>el.closest('.he-page')?.getAttribute('aria-hidden')==='true';
  let fieldMetrics=new Map<SVGSVGElement,{cw:number;ch:number;origin:{x:number;y:number};pageHeight:number}>();
  function measureField(svg:SVGSVGElement){const page=svg.closest<HTMLElement>('.he-page')||root!,b=svg.getBoundingClientRect();return {cw:b.width?svg.clientWidth:0,ch:b.height?svg.clientHeight:0,origin:paperOrigin(svg,page),pageHeight:page.offsetHeight};}
+ /** Plate pass for artifact marks (user, 2026-11-12): see plate-pass.ts. */
+ const passable=(el:Element)=>!!el.closest('.he-artifact')&&printMotionOn(root!)&&!['playing','done'].includes((el as HTMLElement).dataset.passState||'');
+ function stagePasses(el:HTMLElement,final:HTMLCanvasElement,sheets:ReturnType<typeof pixelSurface>[]){
+  el.querySelectorAll(':scope > .he-material-pass').forEach(c=>c.remove());
+  if(!sheets.length){el.dataset.passState='done';return;}
+  for(const sheet of sheets){const c=document.createElement('canvas');c.className='he-material-field he-material-pass';c.setAttribute('aria-hidden','true');publishCanvas(c,sheet);c.style.clipPath='inset(0 0 100% 0)';el.insertBefore(c,final);}
+  final.style.clipPath='inset(0 0 100% 0)';
+  const first=el.dataset.passState!=='waiting';el.dataset.passState='waiting';
+  if(!first)return;   // a reprint while waiting only replaces the sheets; the observer is already set
+  onFirstView(el,()=>{
+   if(el.dataset.passState!=='waiting')return;
+   const all=[...el.querySelectorAll<HTMLCanvasElement>(':scope > .he-material-pass'),final];
+   const finish=()=>{el.querySelectorAll(':scope > .he-material-pass').forEach(c=>c.remove());final.style.removeProperty('clip-path');el.dataset.passState='done';schedule();};
+   if(!printMotionOn(root!)){finish();return;}
+   el.dataset.passState='playing';all.forEach(c=>c.style.removeProperty('clip-path'));
+   const reveal=passReveal(all);reveal.finished.then(()=>{reveal.cancel();finish();});
+  });
+ }
  async function renderField(svg:SVGSVGElement,run:number){
    const fm=fieldMetrics.get(svg)||measureField(svg);if(!fm.cw||!fm.ch)return;
    const el=svg.parentElement!;
@@ -93,15 +113,24 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
       const ring=e.tagName==='circle'&&e.getAttribute('fill')==='none'&&Number(e.getAttribute('stroke-width'))>=6;
       const screened=patterned||ring||fromTool;if(screened)screenedInks.add(ink);
       const kind=fromTool?'source':e.getAttribute('data-print-tone')==='sphere'||e.tagName==='circle'&&!ring?'sphere':'plane';
-      originals.push({ink,coverage:source,screened,ring,kind,index});
+      const screen=partScreen(e.outerHTML);
+      originals.push({ink,coverage:source,screened,ring,kind,index,...(screen?{screen}:{})});
      }
     }
-    const {pixels,tones,screens,inkLayers}=await printField({retainInks:!!el.parentElement?.matches('.he-project-imprint,.he-artifact'),kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),c:proof?[255,255,255]:rgb(palette.yellow),d:proof?[255,255,255]:rgb(palette.dark),paper:[255,255,255]}});if(run!==generation||!ticket.current())return;
+    const job:Parameters<typeof printField>[0]={retainInks:!!el.parentElement?.matches('.he-project-imprint,.he-artifact'),kind:'field',originals,w,h,dpr,origin,press:p,settings:s,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),c:proof?[255,255,255]:rgb(palette.yellow),d:proof?[255,255,255]:rgb(palette.dark),paper:[255,255,255]}};
+    // Plate pass (artifact marks): the same print with only the first inks of the pass order,
+    // computed by the same pipeline; revealed in order on first view, ending on the final print.
+    // Coverage buffers are transferred to the worker, so the passes keep their own copies.
+    const passing=passable(el),passSource=passing?originals.map(o=>({...o,coverage:o.coverage.slice()})):[];
+    const {pixels,tones,screens,inkLayers}=await printField(job);if(run!==generation||!ticket.current())return;
+    const passSheets:ReturnType<typeof pixelSurface>[]=[];
+    if(passing){const inks=passOrder.filter(ink=>passSource.some(o=>o.ink===ink));
+     for(let k=1;k<inks.length;k++){const part=await printField({...job,retainInks:false,originals:passSource.filter(o=>(inks.slice(0,k) as string[]).includes(o.ink)).map(o=>({...o,coverage:o.coverage.slice()}))});if(run!==generation||!ticket.current())return;passSheets.push(pixelSurface(part.pixels,w,h));}}
     if(import.meta.env.DEV)originals.forEach((item,i)=>{if(item.screened)rememberTone(`${svg.dataset.printField}:${item.ink}:${item.index}`,tones[i],screens[i],w,h,dpr);});
-    let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field');
+    let canvas=el.querySelector<HTMLCanvasElement>('.he-material-field:not(.he-material-pass)');
     if(!canvas){canvas=document.createElement('canvas');canvas.className='he-material-field';canvas.setAttribute('aria-hidden','true');el.append(canvas);}
     const prepared=pixelSurface(pixels,w,h);
-    ticket.commit(()=>{publishCanvas(canvas!,prepared);el.dataset.materialReady='true';if(inkLayers)fieldInks.set(svg,{layers:inkLayers,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});});
+    ticket.commit(()=>{publishCanvas(canvas!,prepared);if(passing)stagePasses(el,canvas!,passSheets);el.dataset.materialReady='true';if(inkLayers)fieldInks.set(svg,{layers:inkLayers,inks:{a:proof==='blue'?[255,255,255]:rgb(palette.secondary),b:proof==='red'?[255,255,255]:rgb(palette.primary),paper:[255,255,255]}});});
     recordScreen(canvas,p,[...screenedInks].filter(i=>i==='a'||i==='b').join('') as 'a'|'b'|'ab');
     canvas.dataset.pressRecipe=JSON.stringify({level:p.level,shapes:p.shapes,pitch:p.pitch,angles:p.angles,offset:p.offset,origin,tone:p.tone,units:'CSS px',materialVersion});
 
@@ -160,7 +189,9 @@ const decodeImage=(url:string)=>{const image=new Image();image.src=url;return im
   await Promise.all(visible);if(run!==generation)return;
   for(const [svg,data] of fieldInks){
    if(hidden.get(svg))continue;
-   const art=svg.parentElement!.querySelector<HTMLCanvasElement>('.he-material-field'),host=svg.parentElement!.parentElement!,line=host.querySelector<HTMLElement>(':scope > h2 .he-type-line,:scope > h3 .he-type-line');
+   // An art still waiting for (or in) its plate pass joins its title's ink group once it is printed.
+   if(['waiting','playing'].includes(svg.parentElement!.dataset.passState||''))continue;
+   const art=svg.parentElement!.querySelector<HTMLCanvasElement>('.he-material-field:not(.he-material-pass)'),host=svg.parentElement!.parentElement!,line=host.querySelector<HTMLElement>(':scope > h2 .he-type-line,:scope > h3 .he-type-line');
    if(!art||!line)continue;
    const ar=art.getBoundingClientRect(),tr=line.getBoundingClientRect();
    if(ar.right<=tr.left||tr.right<=ar.left||ar.bottom<=tr.top||tr.bottom<=ar.top){host.removeAttribute('data-ink-group');host.querySelector(':scope > .he-ink-group-output')?.remove();continue;}

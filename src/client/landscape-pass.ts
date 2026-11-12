@@ -1,4 +1,4 @@
-export {};
+import {passReveal} from './plate-pass';
 /** Plate pass (user, 2026-11-10): the home landscape is printed light to dark, one ink per
  * pass (yellow → vermilion → blue → dark). Each pass is a whole sheet rendered by the shared
  * pipeline (scripts/render-home-landscape.mjs), revealed along the paper feed. The last pass
@@ -10,12 +10,12 @@ const figure=root?.querySelector<HTMLElement>('.he-landscape[data-passes]');
 const finalSheet=figure?.querySelector<HTMLImageElement>('img');
 if(root&&figure&&finalSheet){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const PASS=300,STAGGER=380,READY_WITHIN=1500,AFTER_NAME=1080;
+ const READY_WITHIN=1500,AFTER_NAME=1080;
  const enabled=()=>!reduced.matches&&root.dataset.printMotion==='press'&&'animate' in figure&&'IntersectionObserver' in window;
- let layers:HTMLImageElement[]=[],running:Animation[]=[],observer:IntersectionObserver|null=null;
+ let layers:HTMLImageElement[]=[],cancelReveal:(()=>void)|null=null,observer:IntersectionObserver|null=null;
  function done(){
   observer?.disconnect();observer=null;
-  running.forEach(a=>a.cancel());running=[];
+  const c=cancelReveal;cancelReveal=null;c?.();
   layers.forEach(l=>l.remove());layers=[];
   finalSheet!.style.removeProperty('position');
   figure!.dataset.passState='done';
@@ -24,10 +24,8 @@ if(root&&figure&&finalSheet){
   figure!.dataset.passState='playing';
   layers.forEach(l=>figure!.insertBefore(l,finalSheet!));
   if(getComputedStyle(finalSheet!).position==='static')finalSheet!.style.position='relative';
-  running=[...layers,finalSheet!].map((sheet,i)=>sheet.animate(
-   [{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)'}],
-   {duration:PASS,delay:i*STAGGER,easing:'steps(10,end)',fill:'both'}));
-  Promise.all(running.map(a=>a.finished)).then(done).catch(()=>{});
+  const reveal=passReveal([...layers,finalSheet!]);cancelReveal=reveal.cancel;
+  reveal.finished.then(()=>{if(cancelReveal===reveal.cancel)done();});
  }
  if(!enabled())done();
  else{
