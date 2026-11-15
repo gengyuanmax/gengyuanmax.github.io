@@ -3,6 +3,7 @@ export const sources:Record<string,{label:string;url?:string}>={
  homepage:{label:'现有主页',url:'https://gengyuanmax.github.io/'},scholar:{label:'Google Scholar · 已展开全部 20 个条目并去重',url:'https://scholar.google.com/citations?user=LN2tYr0AAAAJ'},
  'print-lab':{label:'Print Lab · 四个实验室',url:'https://gengyuanmax.github.io/print-labs/index.html'},
  neurips:{label:'NeurIPS 2026 poster 页面',url:'https://neurips.cc/virtual/2026/loc/sydney/poster/139078'},
+ 'surgeon-arxiv':{label:'arXiv:2611.11437 · How to Train a Surgeon?, submitted 2026-11-08',url:'https://arxiv.org/abs/2611.11437'},
  vitagent:{label:'VITAgent · public website and launch news, verified 2026-11-09',url:'https://vitagent.github.io/'},
  'vitagent-bench':{label:'SurgKnow-Bench · VITAgent project page, verified 2026-11-09',url:'https://vitagent.github.io/bench/'},
  'mosaic-release':{label:'Mosaic · public resources, verified 2026-10-17',url:'https://github.com/gengyuanmax/Mosaic'},
